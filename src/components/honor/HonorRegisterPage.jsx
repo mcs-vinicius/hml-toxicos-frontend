@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { FaTrash, FaPlus, FaUpload, FaEdit, FaSyncAlt, FaSave } from "react-icons/fa"; // Adicionado FaSave
+import { FaTrash, FaPlus, FaUpload, FaEdit, FaSyncAlt, FaSave } from "react-icons/fa";
 import "../../styles/components/HonorRegisterPage.css";
 
 const HonorRegisterPage = () => {
@@ -12,7 +12,6 @@ const HonorRegisterPage = () => {
     const [pageLoading, setPageLoading] = useState(true);
     const [editingIndex, setEditingIndex] = useState(null);
 
-    // Busca a lista de membros da última temporada ao carregar a página
     useEffect(() => {
         const fetchCurrentHonorList = async () => {
             setPageLoading(true);
@@ -73,29 +72,40 @@ const HonorRegisterPage = () => {
         }
     };
 
+    // --- LÓGICA DE REORDENAÇÃO CORRIGIDA ---
     const sortHonorList = () => {
-        // Pede confirmação antes de reordenar
-        if (!window.confirm("Deseja reordenar a lista? Os membros elegíveis (acesso e ataque='Sim') serão movidos para o topo.")) {
+        if (!window.confirm("Isso irá reordenar a lista para a próxima temporada de honra. Os 3 membros de honra atuais irão para o final da fila de elegíveis. Deseja continuar?")) {
             return;
         }
-        const sorted = [...members].sort((a, b) => {
-            const isAEligible = normalizeForSort(a.fase_acesso) && normalizeForSort(a.fase_ataque);
-            const isBEligible = normalizeForSort(b.fase_acesso) && normalizeForSort(b.fase_ataque);
-            if (isAEligible && !isBEligible) return -1;
-            if (!isAEligible && isBEligible) return 1;
-            return 0;
-        });
-        setMembers(sorted);
-        alert("Lista de Honra reordenada!");
-    };
-    
-    // Função auxiliar para a ordenação no frontend
-    const normalizeForSort = (value) => {
-        return typeof value === 'string' && value.toLowerCase().startsWith('s');
+
+        // 1. Separa os membros de honra atuais dos demais
+        const currentHonorMembers = members.slice(0, 3);
+        const otherMembers = members.slice(3);
+
+        // 2. Filtra os demais membros entre elegíveis e inelegíveis
+        const normalizeForSort = (value) => typeof value === 'string' && value.toLowerCase().startsWith('s');
+        
+        const eligibleMembers = otherMembers.filter(m => 
+            normalizeForSort(m.fase_acesso) && normalizeForSort(m.fase_ataque)
+        );
+
+        const ineligibleMembers = otherMembers.filter(m => 
+            !normalizeForSort(m.fase_acesso) || !normalizeForSort(m.fase_ataque)
+        );
+
+        // 3. Monta a nova lista na ordem correta
+        // Ordem: Elegíveis > Ex-Membros de Honra > Inelegíveis
+        const reorderedList = [
+            ...eligibleMembers,
+            ...currentHonorMembers,
+            ...ineligibleMembers
+        ];
+
+        setMembers(reorderedList);
+        alert("Lista reordenada com sucesso para a próxima temporada!");
     };
 
     const handleCsvUpload = (event) => {
-        // (Lógica de CSV permanece a mesma)
         const file = event.target.files[0];
         if (file) {
             const reader = new FileReader();
@@ -124,7 +134,6 @@ const HonorRegisterPage = () => {
         event.target.value = null;
     };
 
-    // NOVA FUNÇÃO: Salva o estado atual da lista no backend
     const handleSaveChanges = async () => {
         setLoading(true);
         try {
@@ -137,7 +146,6 @@ const HonorRegisterPage = () => {
         }
     };
 
-    // Função para criar uma NOVA temporada (Finalizar)
     const finalizeSeason = async () => {
         if (members.length === 0 || !startDate || !endDate) {
             alert("É necessário ter membros na lista e definir as datas para criar uma nova temporada.");
@@ -176,7 +184,6 @@ const HonorRegisterPage = () => {
                     <div className="management-column">
                         <h2>{editingIndex !== null ? "Editando Membro" : "Adicionar / Importar"}</h2>
                         <div className="member-form">
-                            {/* Formulário de edição/adição (sem alteração de estrutura) */}
                             <input name="name" value={currentMember.name} onChange={handleInputChange} placeholder="Nome do Membro" />
                             <input name="habby_id" value={currentMember.habby_id} onChange={handleInputChange} placeholder="Habby ID" />
                             
@@ -215,17 +222,15 @@ const HonorRegisterPage = () => {
                         <div className="members-list-header">
                             <h2>Lista de Honra Atual</h2>
                             <div className="header-buttons">
-                                {/* BOTÃO NOVO PARA SALVAR */}
                                 <button className="btn btn-save" onClick={handleSaveChanges} disabled={loading || members.length === 0}>
                                     <FaSave /> Salvar Alterações
                                 </button>
-                                <button className="btn btn-secondary update-list-btn" onClick={sortHonorList} disabled={loading || members.length === 0}>
+                                <button className="btn btn-secondary update-list-btn" onClick={sortHonorList} disabled={loading || members.length < 4}>
                                     <FaSyncAlt /> Reordenar
                                 </button>
                             </div>
                         </div>
                         <div className="members-list">
-                            {/* Tabela de membros (sem alteração de estrutura) */}
                             {members.length > 0 ? (
                                 <table>
                                     <thead>

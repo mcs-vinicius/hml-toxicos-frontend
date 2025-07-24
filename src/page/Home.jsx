@@ -15,26 +15,29 @@ const Home = ({ userRole }) => {
     requirements: [],
     content_section: ''
   });
-  // NOVO ESTADO PARA MEMBROS DE HONRA
   const [honorInfo, setHonorInfo] = useState({ members: [], period: '' });
 
   const fetchHomeData = async () => {
     setLoading(true);
     try {
+      // Faz todas as chamadas de API em paralelo
       const [seasonsRes, contentRes, honorRes] = await Promise.all([
         axios.get(`${import.meta.env.VITE_API_URL}/seasons`),
         axios.get(`${import.meta.env.VITE_API_URL}/home-content`),
-        axios.get(`${import.meta.env.VITE_API_URL}/latest-honor-members`) // Nova chamada
+        axios.get(`${import.meta.env.VITE_API_URL}/latest-honor-members`)
       ]);
 
+      // Processa os dados do ranking (pódio)
       if (seasonsRes.data.length > 0) {
         const latestSeason = seasonsRes.data[seasonsRes.data.length - 1];
+        // Ordena por 'fase' para obter o pódio corretamente
         setTopPlayers([...latestSeason.participants].sort((a, b) => b.fase - a.fase).slice(0, 3));
         setMemberCount(latestSeason.participants.length);
       }
       
+      // Processa o conteúdo da home e os membros de honra
       setHomeContent(contentRes.data);
-      setHonorInfo(honorRes.data); // Salva os dados de honra
+      setHonorInfo(honorRes.data);
 
     } catch (error) {
       console.error("Erro ao buscar dados para a Home:", error);
@@ -47,7 +50,6 @@ const Home = ({ userRole }) => {
     fetchHomeData();
   }, []);
   
-  // As funções de edição permanecem as mesmas
   const handleInputChange = (e) => setHomeContent(p => ({ ...p, [e.target.name]: e.target.value }));
   const handleRequirementChange = (index, value) => {
     const newRequirements = [...homeContent.requirements];
@@ -55,7 +57,6 @@ const Home = ({ userRole }) => {
     setHomeContent(p => ({ ...p, requirements: newRequirements }));
   };
   const handleSaveChanges = async () => {
-    // A função de salvar não precisa mudar, pois não edita os membros de honra
     try {
       await axios.put(`${import.meta.env.VITE_API_URL}/home-content`, homeContent);
       alert("Conteúdo salvo com sucesso!");
@@ -84,7 +85,6 @@ const Home = ({ userRole }) => {
         )}
 
         <div className="section home-header">
-          {/* ... Seção do cabeçalho e requisitos permanece a mesma ... */}
           <h1>Tóxicøs</h1>
           <div className="header-content-wrapper">
             <div className="header-column">
@@ -124,12 +124,27 @@ const Home = ({ userRole }) => {
           </div>
         </div>
 
+        {/* SEÇÃO DO PÓDIO RESTAURADA */}
         <div className="section">
           <h2 className="section-title">Pódio da Temporada</h2>
-          {/* ... Seção do pódio permanece a mesma ... */}
+          {loading ? (
+             <p style={{textAlign: 'center'}}>Carregando pódio...</p>
+          ) : topPlayers.length > 0 ? (
+            <div className="podium-container">
+              {topPlayers.map((player, index) => (
+                <div key={player.habby_id || index} className={`podium-card rank-${index + 1}`}>
+                  <div className="podium-rank">{index + 1}º</div>
+                  <div className="podium-name">{player.name}</div>
+                  <div className="podium-score">Fase: {player.fase}</div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p style={{textAlign: 'center'}}>O pódio da temporada ainda não foi definido.</p>
+          )}
         </div>
      
-        {/* SEÇÃO "SOBRE NÓS" SUBSTITUÍDA */}
+        {/* SEÇÃO "MEMBROS DE HONRA" */}
         <div className="section honor-section">
           <h2 className="section-title">Membros de Honra</h2>
           {loading ? (

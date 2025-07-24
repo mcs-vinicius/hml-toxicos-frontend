@@ -1,6 +1,6 @@
 /*
  * src/styles/components/HonorRegisterPage.css
- * Estilos corrigidos e devidamente escopados para não afetar outras páginas.
+ * Estilos corrigidos e com layout de gerenciamento
 */
 .honor-register-wrapper {
     padding: 40px 20px;
@@ -9,9 +9,8 @@
     min-height: 100vh;
 }
 
-/* Todos os seletores agora são descendentes de .honor-register-wrapper */
 .honor-register-wrapper .honor-register-container {
-    max-width: 900px;
+    max-width: 1400px; /* Aumenta a largura para o layout em grid */
     margin: auto;
     padding: 30px;
     background-color: rgba(10, 25, 47, 0.85);
@@ -29,49 +28,99 @@
     text-shadow: 0 0 10px #ff00ff;
 }
 
-.honor-register-wrapper .csv-upload-section, 
-.honor-register-wrapper .member-form, 
-.honor-register-wrapper .members-list, 
-.honor-register-wrapper .finalize-section {
+/* NOVO: Layout em Grid para o Gerenciamento */
+.honor-register-wrapper .honor-management-grid {
+    display: grid;
+    grid-template-columns: 1fr 2fr; /* Coluna da esquerda menor, da direita maior */
+    gap: 30px;
     margin-bottom: 40px;
-    border-bottom: 1px solid rgba(0, 255, 255, 0.1);
-    padding-bottom: 30px;
 }
 
-.honor-register-wrapper .csv-upload-section:last-child,
-.honor-register-wrapper .member-form:last-child,
-.honor-register-wrapper .members-list:last-child,
-.honor-register-wrapper .finalize-section:last-child {
-    border-bottom: none;
-    padding-bottom: 0;
+.honor-register-wrapper .management-column {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
 }
 
-
-.honor-register-wrapper .csv-upload-section p {
-    text-align: center;
-    margin-bottom: 15px;
-    color: rgba(224, 251, 252, 0.8);
+/* --- Estilos para o formulário de membro --- */
+.honor-register-wrapper .member-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    background-color: rgba(0,0,0,0.2);
+    padding: 20px;
+    border-radius: 6px;
 }
 
-.honor-register-wrapper .csv-upload-section .btn {
+/* CORREÇÃO: Estilização dos inputs de texto */
+.honor-register-wrapper .member-form input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    background-color: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(0, 255, 255, 0.3);
+    color: #e0fbfc;
+    border-radius: 4px;
+    font-family: inherit;
+    font-size: 1rem;
+    box-sizing: border-box; /* Garante que padding não afete a largura */
+}
+
+.honor-register-wrapper .radio-group {
     display: flex;
     align-items: center;
-    gap: 10px;
-    width: fit-content;
-    margin: auto;
+    justify-content: space-between;
 }
 
-.honor-register-wrapper .csv-upload-section input[type="file"] {
-    display: none;
+/* --- Seção de Upload --- */
+.honor-register-wrapper .csv-upload-section {
+    text-align: center;
+    padding: 20px;
+    background-color: rgba(0,0,0,0.2);
+    border-radius: 6px;
 }
+.honor-register-wrapper .csv-upload-section input[type="file"] { display: none; }
 
-.honor-register-wrapper .form-row {
+/* --- Lista de Membros --- */
+.honor-register-wrapper .members-list-header {
     display: flex;
+    justify-content: space-between;
+    align-items: center;
     gap: 15px;
-    margin-bottom: 15px;
+}
+.honor-register-wrapper .members-list {
+    max-height: 500px; /* Altura máxima com scroll */
+    overflow-y: auto;
+    padding-right: 10px; /* Espaço para a barra de rolagem */
+}
+.honor-register-wrapper .no-members-msg {
+    text-align: center;
+    padding: 40px;
+    color: rgba(255,255,255,0.5);
 }
 
-.honor-register-wrapper input[type="text"], 
+.honor-register-wrapper .members-list table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+/* --- Seção de Finalização --- */
+.honor-register-wrapper .finalize-section {
+    border-top: 1px solid rgba(0, 255, 255, 0.2);
+    padding-top: 30px;
+    text-align: center;
+}
+.honor-register-wrapper .finalize-section .form-row {
+    justify-content: center;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+}
+.honor-register-wrapper .finalize-btn {
+    font-size: 1.2rem;
+    padding: 12px 25px;
+}
+
+/* --- Estilos Gerais (Reutilizados do escopo anterior) --- */
 .honor-register-wrapper input[type="date"] {
     flex: 1;
     width: 100%;
@@ -83,164 +132,26 @@
     font-family: inherit;
     font-size: 1rem;
 }
-
-.honor-register-wrapper .radio-group {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 10px;
-    background-color: rgba(0,0,0,0.2);
-    border-radius: 4px;
-}
-.honor-register-wrapper .radio-group label {
-    margin-right: 15px;
-}
-.honor-register-wrapper .radio-group input[type="radio"] {
-    margin: 0 5px 0 15px;
-    accent-color: #00ffff; /* Estiliza a cor do radio button */
-}
-
-.honor-register-wrapper .update-list-btn {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin: 0 auto 20px auto;
-}
-
-.honor-register-wrapper .members-list table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
+.honor-register-wrapper .radio-group label { margin-right: 15px; }
+.honor-register-wrapper .radio-group input[type="radio"] { margin: 0 5px 0 15px; accent-color: #00ffff; }
 .honor-register-wrapper .members-list th, 
-.honor-register-wrapper .members-list td {
-    padding: 12px;
-    border-bottom: 1px solid rgba(0, 255, 255, 0.2);
-    text-align: left;
-}
+.honor-register-wrapper .members-list td { padding: 12px; border-bottom: 1px solid rgba(0, 255, 255, 0.2); text-align: left; }
+.honor-register-wrapper .members-list th { color: #00ffff; }
+.honor-register-wrapper .members-list .current-honor-member { background-color: rgba(255, 215, 0, 0.1); color: #ffd700; }
+.honor-register-wrapper .action-buttons { display: flex; gap: 10px; justify-content: flex-end; }
+.honor-register-wrapper .btn { padding: 10px 15px; font-family: 'Chakra Petch', sans-serif; border: 1px solid; border-radius: 4px; background: transparent; cursor: pointer; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 8px; font-size: 1rem; }
+.honor-register-wrapper .btn-primary { color: #00ffff; border-color: #00ffff; }
+.honor-register-wrapper .btn-primary:hover:not(:disabled) { background-color: #00ffff; color: #02040a; box-shadow: 0 0 10px #00ffff; }
+.honor-register-wrapper .btn:disabled { cursor: not-allowed; opacity: 0.4; }
+.honor-register-wrapper .btn-secondary { color: #c0c0c0; border-color: #c0c0c0; }
+.honor-register-wrapper .btn-secondary:hover:not(:disabled) { background-color: #c0c0c0; color: #02040a; box-shadow: 0 0 10px #c0c0c0; }
+.honor-register-wrapper .btn-edit { color: #ffc107; border-color: #ffc107; padding: 5px; }
+.honor-register-wrapper .btn-edit:hover { background-color: #ffc107; color: #02040a; }
+.honor-register-wrapper .btn-delete { color: #dc3545; border-color: #dc3545; padding: 5px; }
+.honor-register-wrapper .btn-delete:hover { background-color: #dc3545; color: #fff; }
 
-.honor-register-wrapper .members-list th {
-    color: #00ffff;
-}
-
-.honor-register-wrapper .members-list .current-honor-member {
-    background-color: rgba(255, 215, 0, 0.1);
-    color: #ffd700;
-}
-
-.honor-register-wrapper .members-list .current-honor-member td {
-    font-weight: bold;
-}
-
-.honor-register-wrapper .action-buttons {
-    display: flex;
-    gap: 10px;
-    justify-content: flex-end;
-}
-
-/* Estilos gerais para botões dentro desta página, para evitar conflitos */
-.honor-register-wrapper .btn {
-    padding: 10px 15px;
-    font-family: 'Chakra Petch', sans-serif;
-    border: 1px solid;
-    border-radius: 4px;
-    background: transparent;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 1rem;
-}
-
-.honor-register-wrapper .btn-primary {
-    color: #00ffff;
-    border-color: #00ffff;
-}
-.honor-register-wrapper .btn-primary:hover {
-    background-color: #00ffff;
-    color: #02040a;
-    box-shadow: 0 0 10px #00ffff;
-}
-
-.honor-register-wrapper .btn-secondary {
-    color: #c0c0c0;
-    border-color: #c0c0c0;
-}
-.honor-register-wrapper .btn-secondary:hover {
-    background-color: #c0c0c0;
-    color: #02040a;
-    box-shadow: 0 0 10px #c0c0c0;
-}
-
-
-.honor-register-wrapper .btn-edit {
-    color: #ffc107;
-    border-color: #ffc107;
-    padding: 5px;
-}
-.honor-register-wrapper .btn-edit:hover {
-    background-color: #ffc107;
-    color: #02040a;
-}
-
-.honor-register-wrapper .btn-delete {
-    color: #dc3545;
-    border-color: #dc3545;
-    padding: 5px;
-}
-.honor-register-wrapper .btn-delete:hover {
-    background-color: #dc3545;
-    color: #fff;
-}
-
-
-@media (max-width: 768px) {
-    .honor-register-wrapper .form-row {
-        flex-direction: column;
-    }
-    .honor-register-wrapper .radio-group {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 10px;
-    }
-    
-    .honor-register-wrapper .members-list table, 
-    .honor-register-wrapper .members-list thead, 
-    .honor-register-wrapper .members-list tbody, 
-    .honor-register-wrapper .members-list th, 
-    .honor-register-wrapper .members-list td, 
-    .honor-register-wrapper .members-list tr {
-        display: block;
-    }
-    .honor-register-wrapper .members-list thead tr {
-        position: absolute;
-        top: -9999px;
-        left: -9999px;
-    }
-    .honor-register-wrapper .members-list tr {
-        border: 1px solid rgba(0, 255, 255, 0.2);
-        margin-bottom: 15px;
-        padding: 5px;
-        border-radius: 4px;
-    }
-    .honor-register-wrapper .members-list td {
-        border: none;
-        border-bottom: 1px solid rgba(0, 255, 255, 0.1);
-        position: relative;
-        padding-left: 50%;
-        text-align: right;
-    }
-    .honor-register-wrapper .members-list td:last-child {
-        border-bottom: none;
-    }
-    .honor-register-wrapper .members-list td:before {
-        content: attr(data-label);
-        position: absolute;
-        left: 10px;
-        width: 45%;
-        font-weight: bold;
-        color: #00ffff;
-        text-align: left;
+@media (max-width: 992px) {
+    .honor-register-wrapper .honor-management-grid {
+        grid-template-columns: 1fr; /* Colunas empilhadas em telas menores */
     }
 }

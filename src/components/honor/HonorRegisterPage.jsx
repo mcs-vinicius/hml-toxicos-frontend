@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react"; // Adicionado useRef
 import axios from "axios";
 import { FaTrash, FaPlus, FaUpload, FaEdit, FaSyncAlt, FaSave } from "react-icons/fa";
 import "../../styles/components/HonorRegisterPage.css";
@@ -12,12 +12,17 @@ const HonorRegisterPage = () => {
     const [pageLoading, setPageLoading] = useState(true);
     const [editingIndex, setEditingIndex] = useState(null);
 
+    // NOVO: Usando useRef para guardar a lista inicial sem causar re-renders
+    const initialMemberListRef = useRef([]);
+
     useEffect(() => {
         const fetchCurrentHonorList = async () => {
             setPageLoading(true);
             try {
                 const response = await axios.get(`${import.meta.env.VITE_API_URL}/honor-members-management`);
                 setMembers(response.data);
+                // Guarda a lista original para comparar depois
+                initialMemberListRef.current = response.data.map(m => m.habby_id);
             } catch (error) {
                 console.error("Erro ao buscar lista de gerenciamento de honra:", error);
                 alert("Não foi possível carregar a lista de membros. Tente recarregar a página.");
@@ -28,6 +33,50 @@ const HonorRegisterPage = () => {
         fetchCurrentHonorList();
     }, []);
 
+    // --- LÓGICA DE REORDENAÇÃO COMPLETAMENTE REVISADA ---
+    const sortHonorList = () => {
+        if (!window.confirm("Isso irá reordenar a lista para a próxima temporada de honra, seguindo a hierarquia de elegibilidade. Deseja continuar?")) {
+            return;
+        }
+
+        const normalizeForSort = (value) => typeof value === 'string' && value.toLowerCase().startsWith('s');
+
+        // 1. Separa os membros de honra atuais
+        const currentHonorMembers = members.slice(0, 3);
+        const otherMembers = members.slice(3);
+
+        // 2. Identifica os diferentes grupos de membros
+        const eligibleMembers = [];
+        const newMembers = [];
+        const ineligibleMembers = [];
+
+        otherMembers.forEach(member => {
+            const isEligible = normalizeForSort(member.fase_acesso) && normalizeForSort(member.fase_ataque);
+            const isNew = !initialMemberListRef.current.includes(member.habby_id);
+
+            if (isNew) {
+                newMembers.push(member);
+            } else if (isEligible) {
+                eligibleMembers.push(member);
+            } else {
+                ineligibleMembers.push(member);
+            }
+        });
+
+        // 3. Monta a nova lista na hierarquia correta
+        const reorderedList = [
+            ...eligibleMembers,      // 1. Membros antigos que são elegíveis
+            ...currentHonorMembers,  // 2. Ex-membros de honra
+            ...newMembers,           // 3. Novos membros adicionados na sessão
+            ...ineligibleMembers     // 4. Membros antigos que são inelegíveis
+        ];
+
+        setMembers(reorderedList);
+        alert("Lista reordenada com sucesso seguindo a nova hierarquia!");
+    };
+
+    // --- Demais funções do componente (sem alterações na lógica interna) ---
+
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setCurrentMember({ ...currentMember, [name]: value });
@@ -36,26 +85,23 @@ const HonorRegisterPage = () => {
     const handleRadioChange = (field, value) => {
         setCurrentMember({ ...currentMember, [field]: value });
     };
-    
+
     const handleAddOrUpdateMember = () => {
         if (!currentMember.name || !currentMember.habby_id) {
             alert("Nome e Habby ID são obrigatórios.");
             return;
         }
-
         const habbyIdExists = members.some((m, index) => m.habby_id === currentMember.habby_id && index !== editingIndex);
         if (habbyIdExists) {
             alert("Este Habby ID já existe na lista. Para atualizar, edite o membro existente.");
             return;
         }
-
         let updatedMembers = [...members];
         if (editingIndex !== null) {
             updatedMembers[editingIndex] = currentMember;
         } else {
             updatedMembers.push(currentMember);
         }
-        
         setMembers(updatedMembers);
         setEditingIndex(null);
         setCurrentMember({ name: "", habby_id: "", fase_acesso: "Não", fase_ataque: "Não" });
@@ -72,39 +118,6 @@ const HonorRegisterPage = () => {
         }
     };
 
-    // --- LÓGICA DE REORDENAÇÃO CORRIGIDA ---
-    const sortHonorList = () => {
-        if (!window.confirm("Isso irá reordenar a lista para a próxima temporada de honra. Os 3 membros de honra atuais irão para o final da fila de elegíveis. Deseja continuar?")) {
-            return;
-        }
-
-        // 1. Separa os membros de honra atuais dos demais
-        const currentHonorMembers = members.slice(0, 3);
-        const otherMembers = members.slice(3);
-
-        // 2. Filtra os demais membros entre elegíveis e inelegíveis
-        const normalizeForSort = (value) => typeof value === 'string' && value.toLowerCase().startsWith('s');
-        
-        const eligibleMembers = otherMembers.filter(m => 
-            normalizeForSort(m.fase_acesso) && normalizeForSort(m.fase_ataque)
-        );
-
-        const ineligibleMembers = otherMembers.filter(m => 
-            !normalizeForSort(m.fase_acesso) || !normalizeForSort(m.fase_ataque)
-        );
-
-        // 3. Monta a nova lista na ordem correta
-        // Ordem: Elegíveis > Ex-Membros de Honra > Inelegíveis
-        const reorderedList = [
-            ...eligibleMembers,
-            ...currentHonorMembers,
-            ...ineligibleMembers
-        ];
-
-        setMembers(reorderedList);
-        alert("Lista reordenada com sucesso para a próxima temporada!");
-    };
-
     const handleCsvUpload = (event) => {
         const file = event.target.files[0];
         if (file) {
@@ -112,9 +125,7 @@ const HonorRegisterPage = () => {
             reader.onload = (e) => {
                 const text = e.target.result;
                 const lines = text.split(/\r?\n/).slice(1);
-                
                 const membersMap = new Map(members.map(m => [m.habby_id, m]));
-
                 lines.forEach(line => {
                     const [name, habby_id, fase_acesso, fase_ataque] = line.split(',').map(s => s ? s.trim() : '');
                     if (name && habby_id) {
@@ -125,7 +136,6 @@ const HonorRegisterPage = () => {
                         });
                     }
                 });
-
                 setMembers(Array.from(membersMap.values()));
                 alert(`Lista atualizada com ${lines.length} registros do CSV! Clique em 'Salvar Alterações' para persistir.`);
             };
@@ -138,6 +148,8 @@ const HonorRegisterPage = () => {
         setLoading(true);
         try {
             await axios.put(`${import.meta.env.VITE_API_URL}/honor-seasons/latest/update`, members);
+            // Atualiza a lista de "membros iniciais" após salvar com sucesso
+            initialMemberListRef.current = members.map(m => m.habby_id);
             alert("Alterações salvas com sucesso!");
         } catch (error) {
             alert(`Erro ao salvar alterações: ${error.response?.data?.error || error.message}`);
@@ -162,6 +174,8 @@ const HonorRegisterPage = () => {
                 participants: members,
             });
             alert(response.data.message);
+            // Atualiza a lista de "membros iniciais" para a nova temporada
+            initialMemberListRef.current = members.map(m => m.habby_id);
             setStartDate("");
             setEndDate("");
         } catch (error) {
@@ -170,7 +184,8 @@ const HonorRegisterPage = () => {
             setLoading(false);
         }
     };
-
+    
+    // --- Renderização do Componente (JSX) ---
     if (pageLoading) {
         return <div className="honor-register-wrapper"><p>Carregando gerenciador de honra...</p></div>;
     }

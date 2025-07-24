@@ -1,0 +1,71 @@
+/* NAVBAR */
+.navsup{
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 15px 40px;
+    background-color: rgba(2, 4, 10, 0.5);
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
+    backdrop-filter: blur(5px); 
+    position: sticky;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    box-sizing: border-box; 
+    flex-wrap: wrap;
+    justify-content: space-around; 
+
+
+  /* Linha neon na base */
+  border-bottom: 1px solid #00ffff;
+  /* Fonte futurista (necessário ter o link no index.html) */
+  font-family: 'Chakra Petch', sans-serif;
+}
+
+/* Botão Menu Navbar */
+.btt-menu {
+  font-size: 18px;
+  color: #e1e1e1;
+  font-family: inherit;
+  font-weight: 750;
+  cursor: pointer;
+  position: relative;
+  border: none;
+  background: none;
+  text-transform: uppercase;
+  transition-timing-function: cubic-bezier(0.25, 0.8, 0.25, 1);
+  transition-duration: 400ms;
+  transition-property: color;
+
+  font-size: 16px; /* Reduz o tamanho da fonte dos botões */
+    margin-bottom: 10px; /* Adiciona espaço caso quebre a linha */
+}
+
+.btt-menu:focus,
+.btt-menu:hover {
+  color: #fff;
+}
+
+.btt-menu:focus:after,
+.btt-menu:hover:after {
+  width: 100%;
+  left: 0%;
+}
+
+.btt-menu:after {
+  content: "";
+  pointer-events: none;
+  bottom: -2px;
+  left: 50%;
+  position: absolute;
+  width: 0%;
+  height: 2px;
+  background-color: #fff;
+  transition-timing-function: cubic-bezier(0.25, 0.8, 0.25, 1);
+  transition-duration: 400ms;
+  transition-property: width, left;
+}
+
+

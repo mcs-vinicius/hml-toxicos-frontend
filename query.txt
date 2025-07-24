@@ -1,0 +1,34 @@
+CREATE DATABASE ranking_system;
+
+USE ranking_system;
+
+-- Tabela para temporadas
+CREATE TABLE seasons (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    start_date DATE NOT NULL,
+    end_date DATE NOT NULL
+);
+
+-- Tabela para participantes vinculados a uma temporada
+CREATE TABLE participants (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    season_id INT NOT NULL,
+    name VARCHAR(100) NOT NULL,
+    fase INT NOT NULL,
+    r1 INT NOT NULL,
+    r2 INT NOT NULL,
+    r3 INT NOT NULL,
+    total INT AS (r1 + r2 + r3) STORED,
+    FOREIGN KEY (season_id) REFERENCES seasons(id) ON DELETE CASCADE
+);
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL
+);
+
+
+SELECT * FROM participants;
+SELECT * FROM seasons;
+SELECT * FROM users;
+

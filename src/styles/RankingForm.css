@@ -1,0 +1,12 @@
+/* styles/components/RankingForm.css */
+
+.ranking-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.ranking-form input {
+  flex: 1 1 200px;
+}

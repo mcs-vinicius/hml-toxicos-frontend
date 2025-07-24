@@ -1,0 +1,171 @@
+/* src/styles/UserManagementPage.css */
+.user-management-container {
+    padding: 100px 20px;
+    font-family: 'Chakra Petch', sans-serif;
+    color: #e0fbfc;
+}
+
+.user-management-container h1 {
+    color: #ffffff;
+    text-align: center;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    margin-bottom: 40px;
+    text-shadow: 0 0 5px #fff, 0 0 15px #ff00ff;
+}
+
+.user-list-table-wrapper {
+    max-width: 1000px;
+    margin: auto;
+    background-color: rgba(10, 25, 47, 0.85);
+    border: 1px solid #00ffff;
+    border-radius: 8px;
+    padding: 20px;
+    overflow-x: auto;
+}
+
+.user-list-table-wrapper table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.user-list-table-wrapper th, .user-list-table-wrapper td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+}
+
+.user-list-table-wrapper th {
+    color: #00ffff;
+    text-transform: uppercase;
+}
+
+.profile-thumbnail {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #00ffff;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+    justify-content: center ;
+}
+
+.action-space{
+    width: 330px;
+    height: 47px;
+}
+
+.btn {
+    padding: 8px 12px;
+    font-family: 'Chakra Petch', sans-serif;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 4px;
+    background: transparent;
+    transition: all 0.3s ease;
+}
+
+.btn-view { border: 1px solid #00ffff; color: #00ffff; }
+.btn-view:hover { background: #00ffff; color: #02040a; }
+
+.btn-promote { border: 1px solid #00ff00; color: #00ff00; }
+.btn-promote:hover { background: #00ff00; color: #02040a; }
+
+.btn-demote { border: 1px solid #ffd700; color: #ffd700; }
+.btn-demote:hover { background: #ffd700; color: #02040a; }
+
+.btn-delete { border: 1px solid #ff2d55; color: #ff2d55; }
+.btn-delete:hover { background: #ff2d55; color: #fff; }
+
+
+/* UserManagementPage.css */
+/* ... (estilos existentes) ... */
+
+@media (max-width: 768px) {
+    .user-management-container {
+        padding: 60px 10px;
+    }
+    
+    .user-list-table-wrapper table, 
+    .user-list-table-wrapper thead, 
+    .user-list-table-wrapper tbody, 
+    .user-list-table-wrapper th, 
+    .user-list-table-wrapper td, 
+    .user-list-table-wrapper tr {
+        display: block;
+    }
+    
+    .user-list-table-wrapper thead tr {
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+    }
+    
+    .user-list-table-wrapper tr {
+        border: 1px solid rgba(0, 255, 255, 0.2);
+        margin-bottom: 15px;
+    }
+    
+    .user-list-table-wrapper td {
+        border: none;
+        border-bottom: 1px solid rgba(0, 255, 255, 0.1);
+        position: relative;
+        padding-left: 120px; /* Espaço para o rótulo */
+        text-align: right;
+        min-height: 50px; /* Altura mínima para acomodar a imagem de perfil */
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+    }
+    
+    .user-list-table-wrapper td:before {
+        content: attr(data-label);
+        position: absolute;
+        left: 10px;
+        width: 100px; /* Largura fixa para o rótulo */
+        white-space: nowrap;
+        text-align: left;
+        font-weight: bold;
+        color: #00ffff;
+    }
+
+    .action-buttons {
+        flex-direction: row;
+        
+        gap: 5px;
+    }
+    
+    .action-space {
+        width: auto;
+        height: auto;
+    }
+
+    .btn {
+    padding: 2px 2px;
+    font-family: 'Chakra Petch', sans-serif;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 4px;
+    background: transparent;
+    transition: all 0.3s ease;
+    font-size: 10px;
+}
+
+.btn-view { border: 1px solid #00ffff; color: #00ffff; }
+.btn-view:hover { background: #00ffff; color: #02040a; }
+
+.btn-promote { border: 1px solid #00ff00; color: #00ff00; }
+.btn-promote:hover { background: #00ff00; color: #02040a; }
+
+.btn-demote { border: 1px solid #ffd700; color: #ffd700; }
+.btn-demote:hover { background: #ffd700; color: #02040a; }
+
+.btn-delete { border: 1px solid #ff2d55; color: #ff2d55; }
+.btn-delete:hover { background: #ff2d55; color: #fff; }
+}

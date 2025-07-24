@@ -1,0 +1,162 @@
+/* styles/LoginPage.css */
+
+/* --- Container Principal da Autenticação --- */
+.auth-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 80vh;
+  padding: 20px;
+  
+
+  /* Aplica o fundo escuro e a fonte futurista (adicione a fonte no index.html) */
+  font-family: 'Chakra Petch', sans-serif;
+  background-color: #02040a;
+  background-image: 
+    linear-gradient(rgba(0, 255, 255, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 255, 255, 0.07) 1px, transparent 1px);
+  background-size: 30px 30px;
+}
+
+/* --- Formulário de Autenticação Flutuante --- */
+.auth-form {
+  width: 100%;
+  max-width: 400px;
+  padding: 40px;
+  background-color: rgba(10, 25, 47, 0.85);
+  border: 1px solid #00ffff;
+  border-radius: 8px;
+  box-shadow: 0 0 30px rgba(0, 255, 255, 0.3), inset 0 0 20px rgba(0, 255, 255, 0.1);
+  backdrop-filter: blur(5px);
+  position: relative;
+  animation: fadeIn 1s ease-out; /* Reutiliza a animação de fade-in */
+}
+
+/* Cantoneiras decorativas (opcional, mas adiciona ao estilo) */
+.auth-form::before, .auth-form::after {
+  content: '';
+  position: absolute;
+  width: 25px;
+  height: 25px;
+  border-color: #ff00ff; /* Magenta */
+  border-style: solid;
+}
+.auth-form::before {
+  top: -5px; left: -5px;
+  border-width: 2px 0 0 2px;
+}
+.auth-form::after {
+  bottom: -5px; right: -5px;
+  border-width: 0 2px 2px 0;
+}
+
+/* --- Elementos do Formulário --- */
+.auth-form h2 {
+  color: #ffffff;
+  text-align: center;
+  font-size: 2rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 4px;
+  margin-bottom: 30px;
+  text-shadow: 0 0 5px #fff, 0 0 15px #ff00ff; /* Sombra Magenta */
+}
+
+.form-group {
+  margin-bottom: 25px;
+  position: relative;
+}
+
+.form-group label {
+  display: block;
+  color: #00ffff;
+  font-size: 1rem;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 10px 5px;
+  background-color: transparent;
+  border: none;
+  border-bottom: 2px solid rgba(0, 255, 255, 0.5);
+  color: #e0fbfc;
+  font-size: 1.1rem;
+  font-family: 'Chakra Petch', sans-serif;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-bottom-color: #00ffff;
+  box-shadow: 0 5px 15px -5px rgba(0, 255, 255, 0.4);
+}
+
+/* --- Botão e Mensagens --- */
+.auth-form button {
+  width: 100%;
+  padding: 12px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  font-family: 'Chakra Petch', sans-serif;
+  color: #00ffff;
+  background-color: transparent;
+  border: 2px solid #00ffff;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-top: 10px;
+}
+
+.auth-form button:hover {
+  background-color: #00ffff;
+  color: #02040a; /* Cor do fundo */
+  box-shadow: 0 0 20px #00ffff;
+}
+
+.error-message {
+  color: #ff2d55; /* Vermelho Neon */
+  background-color: rgba(255, 45, 85, 0.1);
+  border: 1px solid #ff2d55;
+  text-align: center;
+  padding: 10px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  font-size: 0.9rem;
+}
+
+.auth-switch {
+  color: rgba(224, 251, 252, 0.7);
+  text-align: center;
+  margin-top: 25px;
+  font-size: 0.9rem;
+}
+
+.auth-switch a {
+  color: #ff00ff; /* Magenta */
+  font-weight: bold;
+  text-decoration: none;
+  transition: text-shadow 0.3s;
+}
+
+.auth-switch a:hover {
+  text-decoration: underline;
+  text-shadow: 0 0 8px #ff00ff;
+}
+
+/* LoginPage.css */
+/* ... (estilos existentes) ... */
+
+@media (max-width: 480px) {
+    .auth-form {
+        padding: 25px; /* Reduz o padding do formulário */
+    }
+
+    .auth-form h2 {
+        font-size: 1.6rem; /* Reduz o título do formulário */
+    }
+}

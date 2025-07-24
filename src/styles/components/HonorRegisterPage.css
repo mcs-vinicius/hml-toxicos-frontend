@@ -1,20 +1,26 @@
-/* src/styles/components/HonorRegisterPage.css */
+/*
+ * src/styles/components/HonorRegisterPage.css
+ * Estilos corrigidos e devidamente escopados para não afetar outras páginas.
+*/
 .honor-register-wrapper {
-    padding: 60px 20px;
+    padding: 40px 20px;
     font-family: 'Chakra Petch', sans-serif;
     color: #e0fbfc;
+    min-height: 100vh;
 }
 
-.honor-register-container {
+/* Todos os seletores agora são descendentes de .honor-register-wrapper */
+.honor-register-wrapper .honor-register-container {
     max-width: 900px;
     margin: auto;
     padding: 30px;
     background-color: rgba(10, 25, 47, 0.85);
-    border: 1px solid #00ffff;
+    border: 1px solid rgba(0, 255, 255, 0.3);
     border-radius: 8px;
 }
 
-.honor-register-container h1, .honor-register-container h2 {
+.honor-register-wrapper h1, 
+.honor-register-wrapper h2 {
     color: #ffffff;
     text-align: center;
     text-transform: uppercase;
@@ -23,32 +29,50 @@
     text-shadow: 0 0 10px #ff00ff;
 }
 
-.csv-upload-section, .member-form, .members-list, .finalize-section {
-    margin-bottom: 30px;
+.honor-register-wrapper .csv-upload-section, 
+.honor-register-wrapper .member-form, 
+.honor-register-wrapper .members-list, 
+.honor-register-wrapper .finalize-section {
+    margin-bottom: 40px;
+    border-bottom: 1px solid rgba(0, 255, 255, 0.1);
+    padding-bottom: 30px;
 }
 
-.csv-upload-section p {
+.honor-register-wrapper .csv-upload-section:last-child,
+.honor-register-wrapper .member-form:last-child,
+.honor-register-wrapper .members-list:last-child,
+.honor-register-wrapper .finalize-section:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+
+.honor-register-wrapper .csv-upload-section p {
     text-align: center;
     margin-bottom: 15px;
+    color: rgba(224, 251, 252, 0.8);
 }
 
-.csv-upload-section label {
-    display: block;
+.honor-register-wrapper .csv-upload-section .btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
     width: fit-content;
     margin: auto;
 }
 
-.csv-upload-section input[type="file"] {
+.honor-register-wrapper .csv-upload-section input[type="file"] {
     display: none;
 }
 
-.form-row {
+.honor-register-wrapper .form-row {
     display: flex;
     gap: 15px;
     margin-bottom: 15px;
 }
 
-.form-row input[type="text"], .form-row input[type="date"] {
+.honor-register-wrapper input[type="text"], 
+.honor-register-wrapper input[type="date"] {
     flex: 1;
     width: 100%;
     padding: 10px;
@@ -60,76 +84,163 @@
     font-size: 1rem;
 }
 
-.radio-group {
+.honor-register-wrapper .radio-group {
+    display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 10px;
     background-color: rgba(0,0,0,0.2);
     border-radius: 4px;
 }
-.radio-group label {
+.honor-register-wrapper .radio-group label {
     margin-right: 15px;
 }
-.radio-group input {
+.honor-register-wrapper .radio-group input[type="radio"] {
     margin: 0 5px 0 15px;
+    accent-color: #00ffff; /* Estiliza a cor do radio button */
 }
 
-.update-list-btn {
+.honor-register-wrapper .update-list-btn {
     display: flex;
     align-items: center;
     gap: 10px;
     margin: 0 auto 20px auto;
 }
 
-.members-list table {
+.honor-register-wrapper .members-list table {
     width: 100%;
     border-collapse: collapse;
 }
 
-.members-list th, .members-list td {
-    padding: 10px;
+.honor-register-wrapper .members-list th, 
+.honor-register-wrapper .members-list td {
+    padding: 12px;
     border-bottom: 1px solid rgba(0, 255, 255, 0.2);
     text-align: left;
 }
 
-.members-list .current-honor-member {
+.honor-register-wrapper .members-list th {
+    color: #00ffff;
+}
+
+.honor-register-wrapper .members-list .current-honor-member {
     background-color: rgba(255, 215, 0, 0.1);
     color: #ffd700;
 }
 
-.action-buttons {
-    display: flex;
-    gap: 10px;
+.honor-register-wrapper .members-list .current-honor-member td {
+    font-weight: bold;
 }
 
+.honor-register-wrapper .action-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+/* Estilos gerais para botões dentro desta página, para evitar conflitos */
+.honor-register-wrapper .btn {
+    padding: 10px 15px;
+    font-family: 'Chakra Petch', sans-serif;
+    border: 1px solid;
+    border-radius: 4px;
+    background: transparent;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1rem;
+}
+
+.honor-register-wrapper .btn-primary {
+    color: #00ffff;
+    border-color: #00ffff;
+}
+.honor-register-wrapper .btn-primary:hover {
+    background-color: #00ffff;
+    color: #02040a;
+    box-shadow: 0 0 10px #00ffff;
+}
+
+.honor-register-wrapper .btn-secondary {
+    color: #c0c0c0;
+    border-color: #c0c0c0;
+}
+.honor-register-wrapper .btn-secondary:hover {
+    background-color: #c0c0c0;
+    color: #02040a;
+    box-shadow: 0 0 10px #c0c0c0;
+}
+
+
+.honor-register-wrapper .btn-edit {
+    color: #ffc107;
+    border-color: #ffc107;
+    padding: 5px;
+}
+.honor-register-wrapper .btn-edit:hover {
+    background-color: #ffc107;
+    color: #02040a;
+}
+
+.honor-register-wrapper .btn-delete {
+    color: #dc3545;
+    border-color: #dc3545;
+    padding: 5px;
+}
+.honor-register-wrapper .btn-delete:hover {
+    background-color: #dc3545;
+    color: #fff;
+}
+
+
 @media (max-width: 768px) {
-    .form-row {
+    .honor-register-wrapper .form-row {
         flex-direction: column;
     }
-     .members-list table, .members-list thead, .members-list tbody, .members-list th, .members-list td, .members-list tr {
+    .honor-register-wrapper .radio-group {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    
+    .honor-register-wrapper .members-list table, 
+    .honor-register-wrapper .members-list thead, 
+    .honor-register-wrapper .members-list tbody, 
+    .honor-register-wrapper .members-list th, 
+    .honor-register-wrapper .members-list td, 
+    .honor-register-wrapper .members-list tr {
         display: block;
     }
-    .members-list thead tr {
+    .honor-register-wrapper .members-list thead tr {
         position: absolute;
         top: -9999px;
         left: -9999px;
     }
-    .members-list tr {
+    .honor-register-wrapper .members-list tr {
         border: 1px solid rgba(0, 255, 255, 0.2);
-        margin-bottom: 10px;
+        margin-bottom: 15px;
+        padding: 5px;
+        border-radius: 4px;
     }
-    .members-list td {
+    .honor-register-wrapper .members-list td {
+        border: none;
+        border-bottom: 1px solid rgba(0, 255, 255, 0.1);
+        position: relative;
         padding-left: 50%;
         text-align: right;
-        position: relative;
     }
-    .members-list td:before {
+    .honor-register-wrapper .members-list td:last-child {
+        border-bottom: none;
+    }
+    .honor-register-wrapper .members-list td:before {
         content: attr(data-label);
         position: absolute;
         left: 10px;
         width: 45%;
         font-weight: bold;
-        text-align: left;
         color: #00ffff;
+        text-align: left;
     }
 }

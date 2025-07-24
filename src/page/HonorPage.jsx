@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import "../../styles/HonorPage.css"; // Estilos específicos para esta página
+import "../styles/HonorPage.css"; // <-- CORREÇÃO APLICADA AQUI
 
 const HonorPage = () => {
   const [honorSeasons, setHonorSeasons] = useState([]);

@@ -1,0 +1,135 @@
+/* src/styles/components/HonorRegisterPage.css */
+.honor-register-wrapper {
+    padding: 60px 20px;
+    font-family: 'Chakra Petch', sans-serif;
+    color: #e0fbfc;
+}
+
+.honor-register-container {
+    max-width: 900px;
+    margin: auto;
+    padding: 30px;
+    background-color: rgba(10, 25, 47, 0.85);
+    border: 1px solid #00ffff;
+    border-radius: 8px;
+}
+
+.honor-register-container h1, .honor-register-container h2 {
+    color: #ffffff;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    margin-bottom: 25px;
+    text-shadow: 0 0 10px #ff00ff;
+}
+
+.csv-upload-section, .member-form, .members-list, .finalize-section {
+    margin-bottom: 30px;
+}
+
+.csv-upload-section p {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.csv-upload-section label {
+    display: block;
+    width: fit-content;
+    margin: auto;
+}
+
+.csv-upload-section input[type="file"] {
+    display: none;
+}
+
+.form-row {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.form-row input[type="text"], .form-row input[type="date"] {
+    flex: 1;
+    width: 100%;
+    padding: 10px;
+    background-color: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(0, 255, 255, 0.3);
+    color: #e0fbfc;
+    border-radius: 4px;
+    font-family: inherit;
+    font-size: 1rem;
+}
+
+.radio-group {
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+    background-color: rgba(0,0,0,0.2);
+    border-radius: 4px;
+}
+.radio-group label {
+    margin-right: 15px;
+}
+.radio-group input {
+    margin: 0 5px 0 15px;
+}
+
+.update-list-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0 auto 20px auto;
+}
+
+.members-list table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.members-list th, .members-list td {
+    padding: 10px;
+    border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+    text-align: left;
+}
+
+.members-list .current-honor-member {
+    background-color: rgba(255, 215, 0, 0.1);
+    color: #ffd700;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+@media (max-width: 768px) {
+    .form-row {
+        flex-direction: column;
+    }
+     .members-list table, .members-list thead, .members-list tbody, .members-list th, .members-list td, .members-list tr {
+        display: block;
+    }
+    .members-list thead tr {
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+    }
+    .members-list tr {
+        border: 1px solid rgba(0, 255, 255, 0.2);
+        margin-bottom: 10px;
+    }
+    .members-list td {
+        padding-left: 50%;
+        text-align: right;
+        position: relative;
+    }
+    .members-list td:before {
+        content: attr(data-label);
+        position: absolute;
+        left: 10px;
+        width: 45%;
+        font-weight: bold;
+        text-align: left;
+        color: #00ffff;
+    }
+}

@@ -10,11 +10,13 @@ import RegisterMemberPage from "./components/ranking/RegisterPage.jsx";
 import ResultsPage from "./components/ranking/ResultsPage.jsx";
 import UserManagementPage from "./page/UserManagementPage.jsx";
 import ProfilePage from "./page/ProfilePage.jsx";
+// NOVAS PÁGINAS DE HONRA
+import HonorPage from "./page/HonorPage.jsx";
+import HonorRegisterPage from "./components/honor/HonorRegisterPage.jsx";
 
 // CSS
 import "./App.css";
 
-// Configura o axios para enviar cookies em todas as requisições
 axios.defaults.withCredentials = true;
 
 const App = () => {
@@ -52,28 +54,26 @@ const App = () => {
     try {
       await axios.post(`${import.meta.env.VITE_API_URL}/logout`);
       setAuth({ isLoggedIn: false, user: null, loading: false });
-       // Redireciona para a home após o logout
     } catch (error) {
       console.error("Falha ao fazer logout:", error);
     }
   };
 
-  // Componente de Rota Protegida
   const ProtectedRoute = ({ children, roles }) => {
     if (auth.loading) {
-      return <div>Verificando acesso...</div>; // Ou um componente de loader
+      return <div>Verificando acesso...</div>;
     }
     if (!auth.isLoggedIn) {
       return <Navigate to="/login" state={{ from: location }} replace />;
     }
     if (roles && !roles.includes(auth.user.role)) {
-       return <Navigate to="/" replace />; // Redireciona para home se não tiver permissão
+       return <Navigate to="/" replace />;
     }
     return children;
   };
 
   if (auth.loading) {
-    return <div>Carregando...</div>; // Loader principal
+    return <div>Carregando...</div>;
   }
 
   return (
@@ -81,6 +81,8 @@ const App = () => {
       <div className="navsup">
         <Link to="/" className="btt-menu" style={{ marginRight: "15px" }}>Home</Link>
         <Link to="/results" className="btt-menu" style={{ marginRight: "15px" }}>Ranking</Link>
+        {/* NOVO LINK PARA HONRA */}
+        <Link to="/honor" className="btt-menu" style={{ marginRight: "15px" }}>Honra</Link>
         
         {auth.isLoggedIn && (
           <Link to={`/profile/${auth.user.habby_id}`} className="btt-menu" style={{ marginRight: "15px" }}>
@@ -92,6 +94,10 @@ const App = () => {
           <>
             <Link to="/register-member" className="btt-menu" style={{ marginRight: "15px" }}>
                Temporada
+            </Link>
+            {/* NOVO LINK PARA GERENCIAR HONRA */}
+            <Link to="/register-honor" className="btt-menu" style={{ marginRight: "15px" }}>
+               Gerenciar Honra
             </Link>
             <Link to="/user-management" className="btt-menu" style={{ marginRight: "15px" }}>
               Gerenciar Usuários
@@ -115,11 +121,19 @@ const App = () => {
           <Route path="/results" element={<ResultsPage currentUser={auth.user} />} />
           <Route path="/login" element={<LoginPage onLogin={handleLogin} />} />
           <Route path="/register-user" element={<RegisterUserPage />} />
+          {/* NOVA ROTA PÚBLICA DE HONRA */}
+          <Route path="/honor" element={<HonorPage />} />
 
           {/* Rotas Protegidas */}
           <Route path="/register-member" element={
             <ProtectedRoute roles={['admin', 'leader']}>
               <RegisterMemberPage />
+            </ProtectedRoute>
+          } />
+          {/* NOVA ROTA PROTEGIDA DE HONRA */}
+           <Route path="/register-honor" element={
+            <ProtectedRoute roles={['admin', 'leader']}>
+              <HonorRegisterPage />
             </ProtectedRoute>
           } />
           <Route path="/user-management" element={
@@ -133,7 +147,6 @@ const App = () => {
             </ProtectedRoute>
           } />
 
-          {/* Rota de Fallback */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </div>

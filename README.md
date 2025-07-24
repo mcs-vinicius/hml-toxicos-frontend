@@ -1,12 +1,15 @@
 # React + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Deploy da aplicação:
 
-Currently, two official plugins are available:
+Backend:
+- Para realizar o Deploy, sera necessario alterar o link contido no "prod_origin" para  o link do deploy do frontend. 
+- Usar o codigo: "with app.app_context(): db.create_all()" apenas no deploy inicial para que seja criado o banco de dados, após a criação do banco o mesmo deverá ser removido ou comentado.
+    Variaveis de ambiente e Ajustes: 
+    - DATABASE_URL: inserir o valor contido no campo "Internal Database URL" do Banco de dados;
+    - FRONTEND_URL: Link do Frontend;
+    - SECRET_KEY: Gerar Altomaticamente.
+    - Build Command: Alterar para "pip install -r requirements.txt && python app.py init-db" (Ele irar instalar as dependencias do requirements.txt e criar o banco de dados).
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Frontend:
+ - Altera o link do Backend contido no arquivo ".env";

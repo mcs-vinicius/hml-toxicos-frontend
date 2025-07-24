@@ -1,0 +1,129 @@
+/* src/styles/HonorPage.css */
+.honor-container {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 30px;
+  background-color: rgba(10, 25, 47, 0.85);
+  border: 1px solid #00ffff;
+  border-radius: 8px;
+  box-shadow: 0 0 30px rgba(0, 255, 255, 0.3);
+  backdrop-filter: blur(5px);
+  animation: fadeIn 1s ease-out;
+  font-family: 'Chakra Petch', sans-serif;
+}
+
+.honor-title {
+  text-align: center;
+  font-size: 2.5rem;
+  color: #ffffff;
+  text-transform: uppercase;
+  letter-spacing: 4px;
+  text-shadow: 0 0 10px #ff00ff;
+  margin-bottom: 20px;
+}
+
+.honor-season-info {
+  text-align: center;
+  margin-bottom: 30px;
+  font-size: 1.2rem;
+  color: #00ffff;
+  border: 1px dashed rgba(0, 255, 255, 0.3);
+  padding: 10px;
+  border-radius: 4px;
+}
+
+.honor-list-wrapper table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.honor-list-wrapper th,
+.honor-list-wrapper td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+}
+
+.honor-list-wrapper th {
+  color: #00ffff;
+  text-transform: uppercase;
+}
+
+.honor-list-wrapper .honor-member {
+  background-color: rgba(255, 215, 0, 0.1);
+  color: #ffd700;
+  font-weight: bold;
+}
+
+.honor-list-wrapper .honor-member td:first-child::after {
+  content: ' ★';
+  color: #ffd700;
+}
+
+/* Estilos de Paginação (reutilizados de ResultsPage.css) */
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 30px;
+}
+
+.pagination button {
+  padding: 10px 20px;
+  font-size: 1rem;
+  font-weight: bold;
+  font-family: 'Chakra Petch', sans-serif;
+  color: #00ffff;
+  background-color: transparent;
+  border: 2px solid #00ffff;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.pagination button:hover:not(:disabled) {
+  background-color: #00ffff;
+  color: #02040a;
+}
+
+.pagination button:disabled {
+  color: rgba(0, 255, 255, 0.3);
+  border-color: rgba(0, 255, 255, 0.3);
+  cursor: not-allowed;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .honor-container {
+    padding: 20px 15px;
+  }
+  .honor-list-wrapper table, .honor-list-wrapper thead, .honor-list-wrapper tbody, .honor-list-wrapper th, .honor-list-wrapper td, .honor-list-wrapper tr {
+    display: block;
+  }
+  .honor-list-wrapper thead tr {
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+  }
+  .honor-list-wrapper tr {
+    border: 1px solid rgba(0, 255, 255, 0.2);
+    margin-bottom: 15px;
+    padding: 5px;
+  }
+  .honor-list-wrapper td {
+    border: none;
+    border-bottom: 1px solid rgba(0, 255, 255, 0.1);
+    position: relative;
+    padding-left: 50%;
+    text-align: right;
+  }
+  .honor-list-wrapper td:before {
+    content: attr(data-label);
+    position: absolute;
+    left: 10px;
+    width: 45%;
+    font-weight: bold;
+    color: #00ffff;
+    text-align: left;
+  }
+}

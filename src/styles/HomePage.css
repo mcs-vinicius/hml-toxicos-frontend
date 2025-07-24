@@ -287,3 +287,40 @@
       max-width: 200px; /* Permite que as barras do pódio fiquem mais largas */
     }
 }
+
+/* Adicione no final de src/styles/HomePage.css */
+
+/* --- Seção Membros de Honra --- */
+.honor-section {
+  text-align: center;
+}
+
+.honor-members-grid {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.honor-member-card {
+  padding: 20px 30px;
+  background-color: rgba(255, 215, 0, 0.1);
+  border: 1px solid #ffd700;
+  border-radius: 6px;
+  min-width: 200px;
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
+}
+
+.honor-member-name {
+  font-size: 1.4rem;
+  font-weight: bold;
+  color: #ffd700; /* Dourado */
+  text-shadow: 0 0 8px #ffd700;
+  margin: 0;
+}
+
+.honor-period {
+  font-size: 1rem;
+  color: rgba(224, 251, 252, 0.7);
+}

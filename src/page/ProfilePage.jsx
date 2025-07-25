@@ -21,7 +21,7 @@ const ProfilePage = ({ currentUser }) => {
                 axios.get(`${import.meta.env.VITE_API_URL}/honor-status/${habby_id}`),
                 axios.get(`${import.meta.env.VITE_API_URL}/history/${habby_id}`)
             ]);
-
+            
             setProfile(profileRes.data);
             setFormData(profileRes.data);
             setIsHonorMember(honorRes.data.is_honor_member);
@@ -33,7 +33,7 @@ const ProfilePage = ({ currentUser }) => {
             setLoading(false);
         }
     };
-
+    
     useEffect(() => {
         fetchProfileData();
     }, [habby_id]);
@@ -70,19 +70,21 @@ const ProfilePage = ({ currentUser }) => {
     }
 
     const containerClassName = `profile-container ${isHonorMember ? 'gloria-profile' : ''}`;
-
-    const renderField = (label, name, formatter = formatStat) => (
+    
+    // Helper para renderizar campos (visualização ou edição)
+    // Ajustado para renderizar campos de texto também
+    const renderField = (label, name, formatter = formatStat, type = 'number') => (
         <li>
             {label}:
             {isEditing ? (
                 <input
-                    type="number"
+                    type={type}
                     name={name}
-                    value={formData ? formData.hasOwnProperty(name) ? formData.name : '' : ''}
+                    value={formData[name] || ''}
                     onChange={handleChange}
                 />
             ) : (
-                <span>{formatter(profile ? profile.hasOwnProperty(name) ? profile.name : '' : '')}</span>
+                <span>{formatter(profile[name])}</span>
             )}
         </li>
     );
@@ -91,38 +93,37 @@ const ProfilePage = ({ currentUser }) => {
         <div className={containerClassName}>
             <div className="profile-main-info">
                 <div className="profile-pic-wrapper">
-                    <img src={profile.profile_pic_url} alt={`Foto de ${profile.nick}`} className="profile-pic" />
+                    <img src={isEditing ? formData.profile_pic_url : profile.profile_pic_url} alt={`Foto de ${profile.nick}`} className="profile-pic" />
                 </div>
                 <div className="profile-details">
                     {isEditing ? (
-                        <input
-                            type="text"
-                            name="nick"
-                            className="nick-edit-input"
-                            value={formData.nick || ''}
-                            onChange={handleChange}
-                        />
+                        <>
+                            <input
+                                type="text"
+                                name="nick"
+                                className="nick-edit-input"
+                                value={formData.nick || ''}
+                                onChange={handleChange}
+                            />
+                            {/* CAMPO PARA EDITAR A FOTO - AGORA CONDICIONAL */}
+                            <input
+                                type="text"
+                                name="profile_pic_url"
+                                className="pic-url-edit-input"
+                                value={formData.profile_pic_url || ''}
+                                onChange={handleChange}
+                                placeholder="URL da nova imagem de perfil"
+                            />
+                        </>
                     ) : (
-                        <h1>{profile.nick || 'Nome não definido'}</h1>
+                        <>
+                            <h1>{profile.nick || 'Nome não definido'}</h1>
+                        </>
                     )}
                     <p>Habby ID: {profile.habby_id}</p>
                     <div className="main-stats">
-                        <div className="stat-item">
-                            ATK:
-                            {isEditing ? (
-                                <input type="number" name="atk" value={formData.atk || ''} onChange={handleChange} />
-                            ) : (
-                                <span>{formatStat(profile.atk)}</span>
-                            )}
-                        </div>
-                        <div className="stat-item">
-                            HP:
-                            {isEditing ? (
-                                <input type="number" name="hp" value={formData.hp || ''} onChange={handleChange} />
-                            ) : (
-                                <span>{formatStat(profile.hp)}</span>
-                            )}
-                        </div>
+                        <div className="stat-item">ATK: <span>{formatStat(isEditing ? formData.atk : profile.atk)}</span></div>
+                        <div className="stat-item">HP: <span>{formatStat(isEditing ? formData.hp : profile.hp)}</span></div>
                     </div>
 
                     {history && history.position != null ? (
@@ -180,7 +181,7 @@ const ProfilePage = ({ currentUser }) => {
                     </ul>
                 </div>
             </div>
-
+            
             <div className="stats-section">
                 <div className="stats-group">
                     <h3>Atributos do Pet</h3>

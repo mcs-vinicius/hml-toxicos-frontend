@@ -270,3 +270,15 @@
     font-size: 0.9rem;
     color: rgba(224, 251, 252, 0.7);
 }
+
+.pic-url-edit-input {
+    width: 100%;
+    padding: 5px 8px;
+    margin-top: 5px; /* Espaçamento abaixo do input do nick */
+    background-color: rgba(0, 0, 0, 0.5);
+    border: 1px solid #00ffff;
+    border-radius: 4px;
+    color: #fff;
+    font-family: inherit;
+    font-size: 0.9rem;
+}

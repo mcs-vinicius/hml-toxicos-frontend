@@ -15,6 +15,7 @@ import ProfilePage from "./page/ProfilePage.jsx";
 import HonorPage from "./page/HonorPage.jsx";
 import HonorRegisterPage from "./components/honor/HonorRegisterPage.jsx";
 import UserSearch from "./components/search/UserSearch.jsx";
+import SearchedUserProfile from "./components/search/SearchedUserProfile.jsx"; // Importa o modal aqui
 
 // CSS
 import "./App.css";
@@ -28,16 +29,19 @@ const App = () => {
     loading: true,
   });
 
+  // NOVO: Estado para controlar o modal de busca
+  const [searchedHabbyId, setSearchedHabbyId] = useState(null);
+
   const location = useLocation();
 
   const checkSession = async () => {
     try {
       const response = await axios.get(`${import.meta.env.VITE_API_URL}/session`);
-      if (response.data.isLoggedIn) {
-        setAuth({ isLoggedIn: true, user: response.data.user, loading: false });
-      } else {
-        setAuth({ isLoggedIn: false, user: null, loading: false });
-      }
+      setAuth({
+        isLoggedIn: response.data.isLoggedIn,
+        user: response.data.user || null,
+        loading: false
+      });
     } catch (error) {
       console.error("Falha ao verificar sessão:", error);
       setAuth({ isLoggedIn: false, user: null, loading: false });
@@ -48,10 +52,15 @@ const App = () => {
     checkSession();
   }, []);
 
-  const handleLogin = (userData) => {
-    setAuth({ isLoggedIn: true, user: userData, loading: false });
+  // NOVAS FUNÇÕES: Para abrir e fechar o modal
+  const handleUserSelect = (habbyId) => {
+    setSearchedHabbyId(habbyId);
+  };
+  const handleCloseModal = () => {
+    setSearchedHabbyId(null);
   };
 
+  const handleLogin = (userData) => setAuth({ isLoggedIn: true, user: userData, loading: false });
   const handleLogout = async () => {
     try {
       await axios.post(`${import.meta.env.VITE_API_URL}/logout`);
@@ -62,37 +71,24 @@ const App = () => {
   };
 
   const ProtectedRoute = ({ children, roles }) => {
-    if (auth.loading) {
-      return <div>Verificando acesso...</div>;
-    }
-    if (!auth.isLoggedIn) {
-      return <Navigate to="/login" state={{ from: location }} replace />;
-    }
-    if (roles && !roles.includes(auth.user.role)) {
-       return <Navigate to="/" replace />;
-    }
+    if (auth.loading) return <div>Verificando acesso...</div>;
+    if (!auth.isLoggedIn) return <Navigate to="/login" state={{ from: location }} replace />;
+    if (roles && !roles.includes(auth.user.role)) return <Navigate to="/" replace />;
     return children;
   };
 
-  if (auth.loading) {
-    return <div>Carregando...</div>;
-  }
+  if (auth.loading) return <div>Carregando...</div>;
 
   return (
     <>
       <div className="navsup">
-        {/* Itens da Esquerda */}
         <div className="nav-left">
           <Link to="/" className="btt-menu">Home</Link>
           <Link to="/results" className="btt-menu">Ranking</Link>
           <Link to="/honor" className="btt-menu">Honra</Link>
-          
           {auth.isLoggedIn && (
-            <Link to={`/profile/${auth.user.habby_id}`} className="btt-menu">
-              Meu Perfil
-            </Link>
+            <Link to={`/profile/${auth.user.habby_id}`} className="btt-menu">Meu Perfil</Link>
           )}
-          
           {auth.isLoggedIn && ['admin', 'leader'].includes(auth.user.role) && (
             <>
               <Link to="/register-member" className="btt-menu">Temporada</Link>
@@ -101,13 +97,10 @@ const App = () => {
             </>
           )}
         </div>
-
-        {/* Item Central (Busca) */}
         <div className="nav-center">
-            {auth.isLoggedIn && <UserSearch />}
+          {/* Passa a função para o componente de busca */}
+          {auth.isLoggedIn && <UserSearch onUserSelect={handleUserSelect} />}
         </div>
-
-        {/* Itens da Direita */}
         <div className="nav-right">
           {auth.isLoggedIn ? (
             <button onClick={handleLogout} className="btt-menu btt-logout">Sair</button>
@@ -139,6 +132,11 @@ const App = () => {
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </div>
+
+      {/* O modal agora é renderizado aqui, no topo da aplicação */}
+      {searchedHabbyId && (
+        <SearchedUserProfile habbyId={searchedHabbyId} onClose={handleCloseModal} />
+      )}
     </>
   );
 };

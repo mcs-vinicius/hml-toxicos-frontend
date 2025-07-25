@@ -14,7 +14,8 @@ import UserManagementPage from "./page/UserManagementPage.jsx";
 import ProfilePage from "./page/ProfilePage.jsx";
 import HonorPage from "./page/HonorPage.jsx";
 import HonorRegisterPage from "./components/honor/HonorRegisterPage.jsx";
-import UserSearch from "./components/search/UserSearch.jsx"; // <<< Componente de busca
+// CAMINHO CORRIGIDO ABAIXO
+import UserSearch from "components/search/UserSearch.jsx";
 
 // CSS
 import "./App.css";

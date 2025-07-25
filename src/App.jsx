@@ -14,8 +14,8 @@ import UserManagementPage from "./page/UserManagementPage.jsx";
 import ProfilePage from "./page/ProfilePage.jsx";
 import HonorPage from "./page/HonorPage.jsx";
 import HonorRegisterPage from "./components/honor/HonorRegisterPage.jsx";
-// CAMINHO CORRIGIDO ABAIXO
-import UserSearch from "components/search/UserSearch.jsx";
+// --- CAMINHO CORRIGIDO ABAIXO ---
+import UserSearch from "./components/search/UserSearch.jsx";
 
 // CSS
 import "./App.css";
@@ -143,6 +143,5 @@ const App = () => {
     </>
   );
 };
-
 
 export default App;

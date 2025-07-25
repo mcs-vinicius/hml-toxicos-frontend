@@ -158,3 +158,71 @@
     from { transform: translateY(-30px); opacity: 0; }
     to { transform: translateY(0); opacity: 1; }
 }
+
+/* Adicione este código no final do seu SearchedUserProfile.css */
+
+.profile-details {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.profile-history {
+    display: flex;
+    gap: 10px;
+    background: rgba(0, 0, 0, 0.25);
+    padding: 10px;
+    border-radius: 6px;
+    border-top: 1px solid rgba(0, 255, 255, 0.2);
+    align-items: center;
+    justify-content: space-around;
+}
+
+.history-item {
+    text-align: center;
+    flex: 1;
+    min-width: 0;
+}
+
+.history-item h4 {
+    margin: 0 0 3px 0;
+    font-size: 0.8rem;
+    color: #00ffff;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+.history-item p {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #fff;
+}
+
+.history-item p.positive {
+    color: #28a745;
+    text-shadow: 0 0 5px #28a745;
+}
+.history-item p.positive::before {
+    content: '▲ ';
+}
+
+.history-item p.negative {
+    color: #dc3545;
+    text-shadow: 0 0 5px #dc3545;
+}
+.history-item p.negative::before {
+    content: '▼ ';
+}
+
+.profile-history-empty {
+    background: rgba(0, 0, 0, 0.25);
+    padding: 10px;
+    border-radius: 6px;
+    border-top: 1px solid rgba(0, 255, 255, 0.2);
+    text-align: center;
+    font-size: 0.9rem;
+    color: rgba(224, 251, 252, 0.7);
+    margin-top: 10px;
+}

@@ -1,123 +1,61 @@
-/* NAVBAR */
-.navsup{
+/* src/App.css */
 
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 15px 40px;
-    background-color: rgba(2, 4, 10, 0.5);
-    box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
-    backdrop-filter: blur(5px); 
-    position: sticky;
-    top: 0;
-    left: 0;
-    width: 100%;
-    z-index: 1000;
-    box-sizing: border-box; 
-    flex-wrap: wrap;
-    justify-content: space-around; 
-
-
-  /* Linha neon na base */
-  border-bottom: 1px solid #00ffff;
-  /* Fonte futurista (necessário ter o link no index.html) */
-  font-family: 'Chakra Petch', sans-serif;
-}
-
-/* Botão Menu Navbar */
-.btt-menu {
-  font-size: 18px;
-  color: #e1e1e1;
-  font-family: inherit;
-  font-weight: 750;
-  cursor: pointer;
-  position: relative;
-  border: none;
-  background: none;
-  text-transform: uppercase;
-  transition-timing-function: cubic-bezier(0.25, 0.8, 0.25, 1);
-  transition-duration: 400ms;
-  transition-property: color;
-
-  font-size: 16px; /* Reduz o tamanho da fonte dos botões */
-    margin-bottom: 10px; /* Adiciona espaço caso quebre a linha */
-}
-
-.btt-menu:focus,
-.btt-menu:hover {
-  color: #fff;
-}
-
-.btt-menu:focus:after,
-.btt-menu:hover:after {
+.navsup {
+  display: flex;
+  justify-content: space-between; /* Distribui o espaço entre os containers */
+  align-items: center;
+  padding: 10px 20px;
+  background-color: rgba(10, 25, 47, 0.8);
+  backdrop-filter: blur(5px);
+  border-bottom: 1px solid rgba(0, 255, 255, 0.3);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
   width: 100%;
-  left: 0%;
+  box-sizing: border-box;
 }
 
-.btt-menu:after {
-  content: "";
-  pointer-events: none;
-  bottom: -2px;
-  left: 50%;
-  position: absolute;
-  width: 0%;
-  height: 2px;
-  background-color: #fff;
-  transition-timing-function: cubic-bezier(0.25, 0.8, 0.25, 1);
-  transition-duration: 400ms;
-  transition-property: width, left;
+/* Container para os links da esquerda */
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: 15px;
 }
 
-
-/* Adicione no final do seu arquivo src/App.css */
-
-/* --- ESTILIZAÇÃO GLOBAL PARA MEMBROS DE HONRA --- */
-
-/* Contêiner com brilho dourado (funciona em .profile-container e .searched-user-profile-modal) */
-.gloria-profile {
-    border: 2px solid #ffd700 !important;
-    box-shadow: 0 0 20px rgba(255, 215, 0, 0.7), 0 0 30px rgba(255, 174, 0, 0.5) !important;
+/* Container para a busca no centro */
+.nav-center {
+  display: flex;
+  justify-content: center;
 }
 
-/* Foto com borda dourada */
-.gloria-profile .profile-pic {
-    border-color: #ffd700 !important;
-    box-shadow: 0 0 20px rgba(255, 215, 0, 0.6) !important;
+/* Container para o login/logout na direita */
+.nav-right {
+  display: flex;
+  align-items: center;
 }
 
-/* Coroa de neon sobre a foto */
-.gloria-profile .profile-pic-wrapper::after {
-    content: '👑';
-    position: absolute;
-    top: -15px; /* Posição acima da imagem */
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 32px;
-    color: #ffd700;
-    text-shadow: 
-        0 0 5px #ffd700,
-        0 0 10px #ffd700,
-        0 0 15px #ffae00,
-        0 0 20px #ffae00;
-    animation: flicker 1.5s infinite alternate;
-    z-index: 10;
+.btt-menu {
+  color: #00ffff;
+  text-decoration: none;
+  font-family: 'Chakra Petch', sans-serif;
+  padding: 8px 12px;
+  border-radius: 4px;
+  transition: background-color 0.3s, color 0.3s;
+  border: 1px solid transparent;
 }
 
-/* Animação de 'piscar' para o efeito neon */
-@keyframes flicker {
-  0%, 100% {
-    opacity: 1;
-    text-shadow: 
-        0 0 5px #ffd700,
-        0 0 10px #ffd700,
-        0 0 15px #ffae00,
-        0 0 20px #ffae00;
-  }
-  50% {
-    opacity: 0.8;
-    text-shadow: 
-        0 0 5px #ffd700,
-        0 0 8px #ffd700,
-        0 0 12px #ffae00;
-  }
+.btt-menu:hover {
+  background-color: rgba(0, 255, 255, 0.1);
+  border-color: rgba(0, 255, 255, 0.5);
+}
+
+.btt-logout {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.content-area {
+  padding-top: 20px; /* Espaço para o conteúdo não ficar colado na navbar */
 }

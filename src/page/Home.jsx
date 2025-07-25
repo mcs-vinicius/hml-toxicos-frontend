@@ -125,7 +125,7 @@ const Home = ({ userRole }) => {
         </div>
 
         {/* SEÇÃO DO PÓDIO RESTAURADA */}
-         <div className="section">
+        <div className="section">
           <h2 className="section-title">Pódio da Temporada</h2>
           {loading ? (
              <p style={{textAlign: 'center'}}>Carregando pódio...</p>

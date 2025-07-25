@@ -9,22 +9,26 @@ const ProfilePage = ({ currentUser }) => {
     const [loading, setLoading] = useState(true);
     const [isEditing, setIsEditing] = useState(false);
     const [formData, setFormData] = useState({});
-    
-    // NOVO: Estado para controlar a estilização de honra
     const [isHonorMember, setIsHonorMember] = useState(false);
+    
+    // NOVO: Estado para guardar os dados do histórico
+    const [history, setHistory] = useState(null);
 
     const fetchProfileData = async () => {
         if (!habby_id) return;
         setLoading(true);
         try {
-            const [profileRes, honorRes] = await Promise.all([
+            // Busca todos os dados necessários em paralelo
+            const [profileRes, honorRes, historyRes] = await Promise.all([
                 axios.get(`${import.meta.env.VITE_API_URL}/profile/${habby_id}`),
-                axios.get(`${import.meta.env.VITE_API_URL}/honor-status/${habby_id}`)
+                axios.get(`${import.meta.env.VITE_API_URL}/honor-status/${habby_id}`),
+                axios.get(`${import.meta.env.VITE_API_URL}/history/${habby_id}`) // Busca o histórico
             ]);
             
             setProfile(profileRes.data);
             setFormData(profileRes.data);
             setIsHonorMember(honorRes.data.is_honor_member);
+            setHistory(historyRes.data); // Salva os dados do histórico
 
         } catch (error) {
             console.error("Erro ao buscar dados do perfil:", error);
@@ -52,8 +56,7 @@ const ProfilePage = ({ currentUser }) => {
             setProfile(formData);
             setIsEditing(false);
             alert("Perfil atualizado com sucesso!");
-        } catch (error)
-        {
+        } catch (error) {
             alert(`Erro ao salvar: ${error.response?.data?.error || 'Tente novamente.'}`);
         }
     };
@@ -110,10 +113,30 @@ const ProfilePage = ({ currentUser }) => {
                         <div className="stat-item">ATK: <span>{formatStat(isEditing ? formData.atk : profile.atk)}</span></div>
                         <div className="stat-item">HP: <span>{formatStat(isEditing ? formData.hp : profile.hp)}</span></div>
                     </div>
+
+                    {/* SEÇÃO DE HISTÓRICO RESTAURADA AQUI */}
+                    {history && history.position ? (
+                        <div className="profile-history">
+                            <div className="history-item">
+                                <h4>Última Posição</h4>
+                                <p>{history.position}º</p>
+                            </div>
+                            <div className="history-item">
+                                <h4>Última Fase</h4>
+                                <p>{history.fase_acesso}</p>
+                            </div>
+                            <div className="history-item">
+                                <h4>Evolução</h4>
+                                <p className={history.evolution > 0 ? 'positive' : history.evolution < 0 ? 'negative' : ''}>
+                                    {history.evolution > 0 ? `+${history.evolution}` : history.evolution}
+                                </p>
+                            </div>
+                        </div>
+                    ) : null}
                 </div>
             </div>
 
-            {/* A estrutura de seções e grupos foi restaurada para o original */}
+            {/* O restante do seu código de atributos permanece igual */}
             <div className="stats-section">
                 <div className="stats-group">
                     <h3>Atributos do Sobrevivente</h3>

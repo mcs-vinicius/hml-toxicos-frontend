@@ -272,3 +272,11 @@
   text-shadow: 0 0 8px #ffd700;
   margin: 0;
 }
+
+.season-period {
+  text-align: center;
+  margin-top: 25px; /* Espaçamento acima da data */
+  font-size: 1rem;
+  color: rgba(224, 251, 252, 0.7);
+  font-weight: 500;
+}

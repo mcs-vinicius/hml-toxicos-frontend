@@ -136,6 +136,7 @@ const ProfilePage = ({ currentUser }) => {
                 </div>
             </div>
 
+
             {/* O restante do seu código de atributos permanece igual */}
             <div className="stats-section">
                 <div className="stats-group">

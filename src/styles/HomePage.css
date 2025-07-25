@@ -238,3 +238,37 @@
   color: #ff00ff;
   text-shadow: 0 0 5px #ff00ff;
 }
+
+/* Adicione este código ao seu HomePage.css */
+
+.honor-member-card {
+  padding: 20px;
+  min-width: 220px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  /* A estilização da borda e sombra virá da classe global .gloria-profile */
+}
+
+/* Wrapper da foto para posicionar a coroa */
+.honor-member-card .profile-pic-wrapper {
+  position: relative;
+}
+
+/* Estilo para a foto de perfil */
+.honor-member-card .profile-pic {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  /* A estilização da borda virá da classe global .gloria-profile */
+}
+
+.honor-member-name {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #ffd700;
+  text-shadow: 0 0 8px #ffd700;
+  margin: 0;
+}

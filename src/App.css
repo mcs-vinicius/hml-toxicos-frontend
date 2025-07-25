@@ -2,7 +2,7 @@
 
 .navsup {
   display: flex;
-  justify-content: space-between; /* Distribui o espaço entre os containers */
+  justify-content: space-between;
   align-items: center;
   padding: 10px 20px;
   background-color: rgba(10, 25, 47, 0.8);
@@ -15,23 +15,19 @@
   box-sizing: border-box;
 }
 
-/* Container para os links da esquerda */
 .nav-left {
   display: flex;
   align-items: center;
   gap: 15px;
+  flex-shrink: 0; /* Previne que os itens da esquerda encolham */
 }
 
-/* Container para a busca no centro */
-.nav-center {
-  display: flex;
-  justify-content: center;
-}
+/* O container do centro foi removido */
 
-/* Container para o login/logout na direita */
 .nav-right {
   display: flex;
   align-items: center;
+  gap: 20px; /* Espaçamento entre a busca e o botão de sair */
 }
 
 .btt-menu {
@@ -42,6 +38,7 @@
   border-radius: 4px;
   transition: background-color 0.3s, color 0.3s;
   border: 1px solid transparent;
+  white-space: nowrap; /* Impede que o texto do botão quebre linha */
 }
 
 .btt-menu:hover {
@@ -57,7 +54,7 @@
 }
 
 .content-area {
-  padding-top: 20px; /* Espaço para o conteúdo não ficar colado na navbar */
+  padding-top: 20px;
 }
 
 /* Adicione no final do seu arquivo src/App.css */

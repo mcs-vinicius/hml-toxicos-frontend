@@ -153,7 +153,11 @@ const Home = ({ userRole }) => {
             <>
               <div className="honor-members-grid">
                 {honorInfo.members.map(member => (
-                  <div key={member.habby_id} className="honor-member-card">
+                  // Card do membro de honra com a classe 'gloria-profile'
+                  <div key={member.habby_id} className="honor-member-card gloria-profile">
+                    <div className="profile-pic-wrapper">
+                      <img src={member.profile_pic_url} alt={member.name} className="profile-pic" />
+                    </div>
                     <p className="honor-member-name">{member.name}</p>
                   </div>
                 ))}

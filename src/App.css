@@ -69,3 +69,20 @@
 }
 
 
+/* Adicione no final do seu arquivo src/App.css */
+
+.navsup {
+    display: flex;
+    align-items: center;
+    gap: 15px; /* Espaçamento entre os itens */
+}
+
+.nav-center-item {
+    flex-grow: 1; /* Faz este item ocupar o espaço central */
+    display: flex;
+    justify-content: center; /* Centraliza a barra de busca */
+}
+
+.nav-right-item {
+    margin-left: auto; /* Empurra o login/logout para a direita */
+}

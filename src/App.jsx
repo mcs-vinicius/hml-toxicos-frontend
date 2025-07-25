@@ -1,3 +1,5 @@
+// src/App.jsx
+
 import React, { useState, useEffect } from "react";
 import { Routes, Route, Link, Navigate, useLocation } from "react-router-dom";
 import axios from "axios";
@@ -12,6 +14,7 @@ import UserManagementPage from "./page/UserManagementPage.jsx";
 import ProfilePage from "./page/ProfilePage.jsx";
 import HonorPage from "./page/HonorPage.jsx";
 import HonorRegisterPage from "./components/honor/HonorRegisterPage.jsx";
+import UserSearch from "./components/search/UserSearch.jsx"; // <<< IMPORTADO
 
 // CSS
 import "./App.css";
@@ -78,31 +81,30 @@ const App = () => {
   return (
     <>
       <div className="navsup">
-        <Link to="/" className="btt-menu" style={{ marginRight: "15px" }}>Home</Link>
-        <Link to="/results" className="btt-menu" style={{ marginRight: "15px" }}>Ranking</Link>
-        <Link to="/honor" className="btt-menu" style={{ marginRight: "15px" }}>Honra</Link>
+        <Link to="/" className="btt-menu">Home</Link>
+        <Link to="/results" className="btt-menu">Ranking</Link>
+        <Link to="/honor" className="btt-menu">Honra</Link>
         
         {auth.isLoggedIn && (
-          <Link to={`/profile/${auth.user.habby_id}`} className="btt-menu" style={{ marginRight: "15px" }}>
+          <Link to={`/profile/${auth.user.habby_id}`} className="btt-menu">
             Meu Perfil
           </Link>
         )}
         
         {auth.isLoggedIn && ['admin', 'leader'].includes(auth.user.role) && (
           <>
-            <Link to="/register-member" className="btt-menu" style={{ marginRight: "15px" }}>
-               Temporada
-            </Link>
-            <Link to="/register-honor" className="btt-menu" style={{ marginRight: "15px" }}>
-               Gerenciar Honra
-            </Link>
-            <Link to="/user-management" className="btt-menu" style={{ marginRight: "15px" }}>
-              Gerenciar Usuários
-            </Link>
+            <Link to="/register-member" className="btt-menu">Temporada</Link>
+            <Link to="/register-honor" className="btt-menu">Gerenciar Honra</Link>
+            <Link to="/user-management" className="btt-menu">Gerenciar Usuários</Link>
           </>
         )}
 
-        <div style={{ marginLeft: "auto" }}>
+        <div className="nav-center-item">
+            {/* <<< BARRA DE BUSCA ADICIONADA AQUI >>> */}
+            {auth.isLoggedIn && <UserSearch />}
+        </div>
+
+        <div className="nav-right-item">
           {auth.isLoggedIn ? (
             <button onClick={handleLogout} className="btt-menu btt-logout">Sair</button>
           ) : (
@@ -117,29 +119,19 @@ const App = () => {
           <Route path="/results" element={<ResultsPage currentUser={auth.user} />} />
           <Route path="/login" element={<LoginPage onLogin={handleLogin} />} />
           <Route path="/register-user" element={<RegisterUserPage />} />
-          
-          {/* ROTA ATUALIZADA */}
           <Route path="/honor" element={<HonorPage currentUser={auth.user} />} />
 
           <Route path="/register-member" element={
-            <ProtectedRoute roles={['admin', 'leader']}>
-              <RegisterMemberPage />
-            </ProtectedRoute>
+            <ProtectedRoute roles={['admin', 'leader']}><RegisterMemberPage /></ProtectedRoute>
           } />
            <Route path="/register-honor" element={
-            <ProtectedRoute roles={['admin', 'leader']}>
-              <HonorRegisterPage />
-            </ProtectedRoute>
+            <ProtectedRoute roles={['admin', 'leader']}><HonorRegisterPage /></ProtectedRoute>
           } />
           <Route path="/user-management" element={
-             <ProtectedRoute roles={['admin', 'leader']}>
-              <UserManagementPage currentUser={auth.user} />
-            </ProtectedRoute>
+             <ProtectedRoute roles={['admin', 'leader']}><UserManagementPage currentUser={auth.user} /></ProtectedRoute>
           } />
            <Route path="/profile/:habby_id" element={
-            <ProtectedRoute roles={['admin', 'leader', 'member']}>
-              <ProfilePage currentUser={auth.user}/>
-            </ProtectedRoute>
+            <ProtectedRoute roles={['admin', 'leader', 'member']}><ProfilePage currentUser={auth.user}/></ProtectedRoute>
           } />
 
           <Route path="*" element={<Navigate to="/" replace />} />

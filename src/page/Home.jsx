@@ -125,20 +125,26 @@ const Home = ({ userRole }) => {
         </div>
 
         {/* SEÇÃO DO PÓDIO RESTAURADA */}
-        <div className="section">
+         <div className="section">
           <h2 className="section-title">Pódio da Temporada</h2>
           {loading ? (
              <p style={{textAlign: 'center'}}>Carregando pódio...</p>
           ) : topPlayers.length > 0 ? (
-            <div className="podium-container">
-              {topPlayers.map((player, index) => (
-                <div key={player.habby_id || index} className={`podium-card rank-${index + 1}`}>
-                  <div className="podium-rank">{index + 1}º</div>
-                  <div className="podium-name">{player.name}</div>
-                  <div className="podium-score">Fase: {player.fase}</div>
-                </div>
-              ))}
-            </div>
+            <>
+              <div className="podium-container">
+                {topPlayers.map((player, index) => (
+                  <div key={player.habby_id || index} className={`podium-card rank-${index + 1}`}>
+                    <div className="podium-rank">{index + 1}º</div>
+                    <div className="podium-name">{player.name}</div>
+                    <div className="podium-score">Fase: {player.fase}</div>
+                  </div>
+                ))}
+              </div>
+              {/* DATA DA TEMPORADA ADICIONADA AQUI */}
+              <p className="season-period">
+                Temporada de {podiumSeasonDates.start} até {podiumSeasonDates.end}
+              </p>
+            </>
           ) : (
             <p style={{textAlign: 'center'}}>O pódio da temporada ainda não foi definido.</p>
           )}

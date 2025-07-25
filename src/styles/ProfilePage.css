@@ -184,7 +184,7 @@
 .gloria-profile .profile-pic-wrapper::after {
     content: '👑';
     position: absolute;
-    top: -15px;
+    top: -3px;
     left: 50%;
     transform: translateX(-50%);
     font-size: 32px;

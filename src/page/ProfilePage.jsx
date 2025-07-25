@@ -1,5 +1,3 @@
-// src/page/ProfilePage.jsx
-
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
@@ -19,7 +17,6 @@ const ProfilePage = ({ currentUser }) => {
         if (!habby_id) return;
         setLoading(true);
         try {
-            // Faz as duas chamadas em paralelo para otimizar
             const [profileRes, honorRes] = await Promise.all([
                 axios.get(`${import.meta.env.VITE_API_URL}/profile/${habby_id}`),
                 axios.get(`${import.meta.env.VITE_API_URL}/honor-status/${habby_id}`)
@@ -27,7 +24,7 @@ const ProfilePage = ({ currentUser }) => {
             
             setProfile(profileRes.data);
             setFormData(profileRes.data);
-            setIsHonorMember(honorRes.data.is_honor_member); // Define o status
+            setIsHonorMember(honorRes.data.is_honor_member);
 
         } catch (error) {
             console.error("Erro ao buscar dados do perfil:", error);
@@ -55,7 +52,8 @@ const ProfilePage = ({ currentUser }) => {
             setProfile(formData);
             setIsEditing(false);
             alert("Perfil atualizado com sucesso!");
-        } catch (error) {
+        } catch (error)
+        {
             alert(`Erro ao salvar: ${error.response?.data?.error || 'Tente novamente.'}`);
         }
     };
@@ -71,7 +69,6 @@ const ProfilePage = ({ currentUser }) => {
         return <div className="profile-container"><p>Perfil não encontrado.</p></div>;
     }
 
-    // Adiciona a classe 'gloria-profile' condicionalmente
     const containerClassName = `profile-container ${isHonorMember ? 'gloria-profile' : ''}`;
     
     const renderField = (label, name, formatter = formatStat) => (
@@ -116,6 +113,7 @@ const ProfilePage = ({ currentUser }) => {
                 </div>
             </div>
 
+            {/* A estrutura de seções e grupos foi restaurada para o original */}
             <div className="stats-section">
                 <div className="stats-group">
                     <h3>Atributos do Sobrevivente</h3>
@@ -147,7 +145,6 @@ const ProfilePage = ({ currentUser }) => {
                 </div>
             </div>
             
-            {/* Seus outros .stats-section para Pet e Colecionáveis continuam aqui... */}
             <div className="stats-section">
                 <div className="stats-group">
                     <h3>Atributos do Pet</h3>

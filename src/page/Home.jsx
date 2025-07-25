@@ -9,7 +9,6 @@ const Home = ({ userRole }) => {
   const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
   
-  // Estado para guardar as datas da temporada do pódio
   const [podiumSeasonDates, setPodiumSeasonDates] = useState({ start: '', end: '' });
 
   const [homeContent, setHomeContent] = useState({
@@ -21,7 +20,6 @@ const Home = ({ userRole }) => {
   });
   const [honorInfo, setHonorInfo] = useState({ members: [], period: '' });
 
-  // Função para formatar a data, corrigindo o fuso horário
   const formatDate = (dateString) => {
     if (!dateString) return '';
     const date = new Date(dateString);
@@ -43,7 +41,6 @@ const Home = ({ userRole }) => {
         setTopPlayers([...latestSeason.participants].sort((a, b) => b.fase - a.fase).slice(0, 3));
         setMemberCount(latestSeason.participants.length);
         
-        // Salva as datas da temporada do pódio
         setPodiumSeasonDates({
           start: formatDate(latestSeason.start_date),
           end: formatDate(latestSeason.end_date)
@@ -103,11 +100,36 @@ const Home = ({ userRole }) => {
             <div className="header-content-wrapper">
                 <div className="header-column">
                     <h3>Informações do Clã</h3>
-                    {/* ... código de edição ... */}
+                    {isEditing ? (
+                        <div className="edit-fields">
+                            <input type="text" name="leader" value={homeContent.leader} onChange={handleInputChange} placeholder="Líder" />
+                            <input type="text" name="focus" value={homeContent.focus} onChange={handleInputChange} placeholder="Foco" />
+                            <input type="text" name="league" value={homeContent.league} onChange={handleInputChange} placeholder="Liga" />
+                        </div>
+                    ) : (
+                        <ul className="info-list">
+                            <li>Líder: {homeContent.leader}</li>
+                            <li>Membros: {memberCount} / 40</li>
+                            <li>Foco: {homeContent.focus}</li>
+                            <li>Liga Atual: {homeContent.league}</li>
+                        </ul>
+                    )}
                 </div>
                 <div className="header-column">
                     <h3>Requisitos de Alistamento</h3>
-                    {/* ... código de edição ... */}
+                    {isEditing ? (
+                        <div className="edit-fields">
+                            {homeContent.requirements.map((req, index) => (
+                                <input key={index} type="text" value={req} onChange={(e) => handleRequirementChange(index, e.target.value)} />
+                            ))}
+                        </div>
+                    ) : (
+                        <ul className="requirements-list">
+                            {homeContent.requirements.map((req, index) => (
+                                <li key={index}>{req}</li>
+                            ))}
+                        </ul>
+                    )}
                 </div>
             </div>
         </div>
@@ -127,7 +149,6 @@ const Home = ({ userRole }) => {
                   </div>
                 ))}
               </div>
-              {/* DATA DA TEMPORADA ADICIONADA AQUI */}
               <p className="season-period">
                 Temporada de {podiumSeasonDates.start} até {podiumSeasonDates.end}
               </p>

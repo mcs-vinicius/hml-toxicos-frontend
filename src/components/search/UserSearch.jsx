@@ -1,11 +1,8 @@
-// src/components/search/UserSearch.jsx
-
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import '../../styles/components/UserSearch.css';
 import { FaSearch } from 'react-icons/fa';
 
-// O componente agora recebe uma função 'onUserSelect' como propriedade
 const UserSearch = ({ onUserSelect }) => {
     const [query, setQuery] = useState('');
     const [results, setResults] = useState([]);
@@ -43,7 +40,6 @@ const UserSearch = ({ onUserSelect }) => {
         setQuery('');
         setResults([]);
         setIsActive(false);
-        // Em vez de controlar o modal, ele chama a função do pai
         onUserSelect(habby_id);
     };
 
@@ -71,7 +67,6 @@ const UserSearch = ({ onUserSelect }) => {
                 </ul>
             )}
         </div>
-        // O modal foi removido daqui
     );
 };
 

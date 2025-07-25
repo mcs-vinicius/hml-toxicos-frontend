@@ -1,5 +1,3 @@
-/* src/styles/SearchedUserProfile.css */
-
 .modal-overlay {
     position: fixed;
     top: 0;
@@ -15,11 +13,6 @@
     animation: fadeInOverlay 0.3s ease;
 }
 
-@keyframes fadeInOverlay {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
 .searched-user-profile-modal {
     background-color: #0a192f;
     border: 1px solid #00ffff;
@@ -33,15 +26,9 @@
     color: #e0fbfc;
     box-shadow: 0 0 25px rgba(0, 255, 255, 0.3);
     position: relative;
-    transition: all 0.4s ease-in-out;
     animation: slideInModal 0.4s ease;
+    transition: all 0.4s ease-in-out;
 }
-
-@keyframes slideInModal {
-    from { transform: translateY(-30px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
-}
-
 
 .close-button {
     position: absolute;
@@ -66,7 +53,6 @@
     padding: 25px;
 }
 
-/* O restante dos estilos para o conteúdo do modal (baseado no seu repositório) */
 .profile-main-info {
     display: flex;
     align-items: center;
@@ -161,4 +147,14 @@
 .stats-group li span {
     font-weight: bold;
     color: #ffffff;
+}
+
+@keyframes fadeInOverlay {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideInModal {
+    from { transform: translateY(-30px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
 }

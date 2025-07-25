@@ -21,7 +21,7 @@ const ProfilePage = ({ currentUser }) => {
                 axios.get(`${import.meta.env.VITE_API_URL}/honor-status/${habby_id}`),
                 axios.get(`${import.meta.env.VITE_API_URL}/history/${habby_id}`)
             ]);
-            
+
             setProfile(profileRes.data);
             setFormData(profileRes.data);
             setIsHonorMember(honorRes.data.is_honor_member);
@@ -33,7 +33,7 @@ const ProfilePage = ({ currentUser }) => {
             setLoading(false);
         }
     };
-    
+
     useEffect(() => {
         fetchProfileData();
     }, [habby_id]);
@@ -70,7 +70,7 @@ const ProfilePage = ({ currentUser }) => {
     }
 
     const containerClassName = `profile-container ${isHonorMember ? 'gloria-profile' : ''}`;
-    
+
     const renderField = (label, name, formatter = formatStat) => (
         <li>
             {label}:
@@ -78,11 +78,11 @@ const ProfilePage = ({ currentUser }) => {
                 <input
                     type="number"
                     name={name}
-                    value={formData[name] || ''}
+                    value={formData ? formData.hasOwnProperty(name) ? formData.name : '' : ''}
                     onChange={handleChange}
                 />
             ) : (
-                <span>{formatter(profile[name])}</span>
+                <span>{formatter(profile ? profile.hasOwnProperty(name) ? profile.name : '' : '')}</span>
             )}
         </li>
     );
@@ -107,11 +107,24 @@ const ProfilePage = ({ currentUser }) => {
                     )}
                     <p>Habby ID: {profile.habby_id}</p>
                     <div className="main-stats">
-                        <div className="stat-item">ATK: <span>{formatStat(isEditing ? formData.atk : profile.atk)}</span></div>
-                        <div className="stat-item">HP: <span>{formatStat(isEditing ? formData.hp : profile.hp)}</span></div>
+                        <div className="stat-item">
+                            ATK:
+                            {isEditing ? (
+                                <input type="number" name="atk" value={formData.atk || ''} onChange={handleChange} />
+                            ) : (
+                                <span>{formatStat(profile.atk)}</span>
+                            )}
+                        </div>
+                        <div className="stat-item">
+                            HP:
+                            {isEditing ? (
+                                <input type="number" name="hp" value={formData.hp || ''} onChange={handleChange} />
+                            ) : (
+                                <span>{formatStat(profile.hp)}</span>
+                            )}
+                        </div>
                     </div>
 
-                    {/* LÓGICA DE EXIBIÇÃO CORRIGIDA */}
                     {history && history.position != null ? (
                         <div className="profile-history">
                             <div className="history-item">
@@ -137,7 +150,6 @@ const ProfilePage = ({ currentUser }) => {
                 </div>
             </div>
 
-            {/* O restante do seu código de atributos permanece igual */}
             <div className="stats-section">
                 <div className="stats-group">
                     <h3>Atributos do Sobrevivente</h3>
@@ -168,7 +180,7 @@ const ProfilePage = ({ currentUser }) => {
                     </ul>
                 </div>
             </div>
-            
+
             <div className="stats-section">
                 <div className="stats-group">
                     <h3>Atributos do Pet</h3>

@@ -1,21 +1,18 @@
-/*
- * src/styles/ProfilePage.css
- * Estilos completos, incluindo a base e a estilização de honra.
-*/
+/* src/styles/ProfilePage.css */
 
 .profile-container {
-    max-width: 1000px;
+    max-width: 1200px;
     margin: 40px auto;
     padding: 30px;
-    background-color: rgba(10, 25, 47, 0.85); /* Fundo escuro padrão */
-    border: 1px solid rgba(0, 255, 255, 0.3); /* Borda ciano padrão */
+    background-color: rgba(10, 25, 47, 0.85);
+    border: 1px solid rgba(0, 255, 255, 0.3);
     border-radius: 8px;
     font-family: 'Chakra Petch', sans-serif;
     color: #e0fbfc;
-    transition: all 0.4s ease-in-out; /* Animação suave para a borda */
+    transition: all 0.4s ease-in-out;
 }
 
-.profile-header {
+.profile-main-info {
     display: flex;
     align-items: center;
     gap: 30px;
@@ -25,7 +22,8 @@
 }
 
 .profile-pic-wrapper {
-    position: relative; /* Essencial para a coroa */
+    position: relative;
+    flex-shrink: 0;
 }
 
 .profile-pic {
@@ -37,54 +35,75 @@
     box-shadow: 0 0 15px rgba(0, 255, 255, 0.4);
 }
 
-.profile-info h1 {
+.profile-details h1 {
     margin: 0 0 10px 0;
     font-size: 2.5rem;
     color: #ffffff;
     text-shadow: 0 0 10px #ff00ff;
 }
 
-.profile-info p {
-    margin: 0;
+.profile-details p {
+    margin: 0 0 15px 0;
     font-size: 1.1rem;
     color: rgba(224, 251, 252, 0.7);
 }
 
-.profile-stats-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 25px;
+.main-stats {
+    display: flex;
+    gap: 20px;
 }
 
-.stat-card {
+.stat-item {
+    background: rgba(0,0,0,0.2);
+    padding: 8px 15px;
+    border-radius: 4px;
+    font-size: 1rem;
+    color: #00ffff;
+}
+
+.stat-item span {
+    color: #fff;
+    font-weight: bold;
+    margin-left: 8px;
+}
+
+.stats-section {
+    display: flex;
+    gap: 25px;
+    margin-bottom: 25px;
+}
+
+.stats-group {
     background-color: rgba(0, 0, 0, 0.2);
     padding: 20px;
     border-radius: 6px;
+    flex: 1;
     border-left: 3px solid #00ffff;
 }
 
-.stat-card h3 {
+.stats-group h3 {
     margin-top: 0;
     color: #00ffff;
     border-bottom: 1px solid rgba(0, 255, 255, 0.2);
     padding-bottom: 10px;
     margin-bottom: 15px;
+    font-size: 1.2rem;
 }
 
-.stat-card ul {
+.stats-group ul {
     list-style: none;
     padding: 0;
     margin: 0;
 }
 
-.stat-card li {
+.stats-group li {
     display: flex;
     justify-content: space-between;
     padding: 8px 0;
     font-size: 1rem;
 }
 
-.stat-card li span {
+.stats-group li span {
     font-weight: bold;
     color: #ffffff;
 }
@@ -112,22 +131,15 @@
     box-shadow: 0 0 15px #00ffff;
 }
 
-
 /* --- ESTILIZAÇÃO PARA MEMBROS DE HONRA --- */
-
-/* Contêiner principal com brilho dourado */
 .gloria-profile {
-    border: 2px solid #ffd700;
+    border-color: #ffd700;
     box-shadow: 0 0 20px rgba(255, 215, 0, 0.7), 0 0 30px rgba(255, 174, 0, 0.5);
 }
-
-/* Foto com borda dourada */
 .gloria-profile .profile-pic {
     border-color: #ffd700;
     box-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
 }
-
-/* A coroa de neon */
 .gloria-profile .profile-pic-wrapper::after {
     content: '👑';
     position: absolute;
@@ -136,29 +148,26 @@
     transform: translateX(-50%);
     font-size: 32px;
     color: #ffd700;
-    text-shadow: 
-        0 0 5px #ffd700,
-        0 0 10px #ffd700,
-        0 0 15px #ffae00,
-        0 0 20px #ffae00;
+    text-shadow: 0 0 5px #ffd700, 0 0 10px #ffd700, 0 0 15px #ffae00, 0 0 20px #ffae00;
     animation: flicker 1.5s infinite alternate;
 }
-
-/* Animação de 'piscar' para o efeito neon */
 @keyframes flicker {
   0%, 100% {
     opacity: 1;
-    text-shadow: 
-        0 0 5px #ffd700,
-        0 0 10px #ffd700,
-        0 0 15px #ffae00,
-        0 0 20px #ffae00;
+    text-shadow: 0 0 5px #ffd700, 0 0 10px #ffd700, 0 0 15px #ffae00, 0 0 20px #ffae00;
   }
   50% {
     opacity: 0.8;
-    text-shadow: 
-        0 0 5px #ffd700,
-        0 0 8px #ffd700,
-        0 0 12px #ffae00;
+    text-shadow: 0 0 5px #ffd700, 0 0 8px #ffd700, 0 0 12px #ffae00;
   }
+}
+
+@media (max-width: 768px) {
+    .stats-section {
+        flex-direction: column;
+    }
+    .profile-main-info {
+        flex-direction: column;
+        text-align: center;
+    }
 }

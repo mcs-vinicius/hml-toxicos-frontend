@@ -1,30 +1,45 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import "../styles/HonorPage.css"; // <-- CORREÇÃO APLICADA AQUI
+import { FaTrash } from "react-icons/fa";
+import "../styles/HonorPage.css"; 
 
-const HonorPage = () => {
+const HonorPage = ({ currentUser }) => { // Recebe currentUser
   const [honorSeasons, setHonorSeasons] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchHonorSeasons = async () => {
-      setLoading(true);
-      try {
-        const response = await axios.get(`${import.meta.env.VITE_API_URL}/honor-seasons`);
-        const data = response.data;
-        setHonorSeasons(data);
-        if (data.length > 0) {
-          setCurrentPage(data.length);
-        }
-      } catch (error) {
-        console.error("Erro ao buscar temporadas de honra:", error);
-      } finally {
-        setLoading(false);
+  const fetchHonorSeasons = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/honor-seasons`);
+      const data = response.data;
+      setHonorSeasons(data);
+      if (data.length > 0) {
+        setCurrentPage(data.length);
       }
-    };
+    } catch (error) {
+      console.error("Erro ao buscar temporadas de honra:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+  useEffect(() => {
     fetchHonorSeasons();
   }, []);
+
+  const handleDelete = async (seasonId) => {
+    if (window.confirm("Tem certeza que deseja excluir permanentemente este registro de temporada? Esta ação não pode ser desfeita.")) {
+      try {
+        await axios.delete(`${import.meta.env.VITE_API_URL}/honor-seasons/${seasonId}`);
+        alert("Temporada excluída com sucesso!");
+        // Recarrega os dados para refletir a exclusão
+        fetchHonorSeasons();
+      } catch (error) {
+        alert(`Erro ao excluir temporada: ${error.response?.data?.error || error.message}`);
+      }
+    }
+  };
 
   const totalPages = honorSeasons.length;
   const season = honorSeasons[currentPage - 1];
@@ -44,8 +59,16 @@ const HonorPage = () => {
       <h1 className="honor-title">Membros de Honra</h1>
       {season ? (
         <>
-          <div className="honor-season-info">
-            Temporada {currentPage} - {formatDateBR(season.start_date)} até {formatDateBR(season.end_date)}
+          <div className="honor-season-header">
+            <div className="honor-season-info">
+              Temporada {currentPage} - {formatDateBR(season.start_date)} até {formatDateBR(season.end_date)}
+            </div>
+            {/* Botão de Excluir visível apenas para Admins */}
+            {currentUser?.role === 'admin' && (
+              <button onClick={() => handleDelete(season.id)} className="btn-delete-season">
+                <FaTrash /> Excluir Temporada
+              </button>
+            )}
           </div>
 
           <div className="honor-list-wrapper">
@@ -61,7 +84,8 @@ const HonorPage = () => {
               </thead>
               <tbody>
                 {season.participants.map((p, index) => (
-                  <tr key={p.id || index} className={index < 3 ? 'honor-member' : ''}>
+                  // AJUSTE: Mudou de index < 3 para index < 2
+                  <tr key={p.id || index} className={index < 2 ? 'honor-member' : ''}>
                     <td data-label="Posição">{index + 1}º</td>
                     <td data-label="Nome">{p.name}</td>
                     <td data-label="ID Habby">{p.habby_id}</td>
@@ -74,16 +98,10 @@ const HonorPage = () => {
           </div>
 
           <div className="pagination">
-            <button
-              onClick={() => setCurrentPage(currentPage - 1)}
-              disabled={currentPage === 1}
-            >
+            <button onClick={() => setCurrentPage(currentPage - 1)} disabled={currentPage === 1}>
               &lt; Anterior
             </button>
-            <button
-              onClick={() => setCurrentPage(currentPage + 1)}
-              disabled={currentPage === totalPages}
-            >
+            <button onClick={() => setCurrentPage(currentPage + 1)} disabled={currentPage === totalPages}>
               Próximo &gt;
             </button>
           </div>

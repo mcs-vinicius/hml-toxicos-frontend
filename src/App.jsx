@@ -10,7 +10,6 @@ import RegisterMemberPage from "./components/ranking/RegisterPage.jsx";
 import ResultsPage from "./components/ranking/ResultsPage.jsx";
 import UserManagementPage from "./page/UserManagementPage.jsx";
 import ProfilePage from "./page/ProfilePage.jsx";
-// NOVAS PÁGINAS DE HONRA
 import HonorPage from "./page/HonorPage.jsx";
 import HonorRegisterPage from "./components/honor/HonorRegisterPage.jsx";
 
@@ -81,7 +80,6 @@ const App = () => {
       <div className="navsup">
         <Link to="/" className="btt-menu" style={{ marginRight: "15px" }}>Home</Link>
         <Link to="/results" className="btt-menu" style={{ marginRight: "15px" }}>Ranking</Link>
-        {/* NOVO LINK PARA HONRA */}
         <Link to="/honor" className="btt-menu" style={{ marginRight: "15px" }}>Honra</Link>
         
         {auth.isLoggedIn && (
@@ -95,7 +93,6 @@ const App = () => {
             <Link to="/register-member" className="btt-menu" style={{ marginRight: "15px" }}>
                Temporada
             </Link>
-            {/* NOVO LINK PARA GERENCIAR HONRA */}
             <Link to="/register-honor" className="btt-menu" style={{ marginRight: "15px" }}>
                Gerenciar Honra
             </Link>
@@ -116,21 +113,19 @@ const App = () => {
       
       <div className="content-area">
         <Routes>
-          {/* Rotas Públicas */}
           <Route path="/" element={<HomePage userRole={auth.user?.role} />} />
           <Route path="/results" element={<ResultsPage currentUser={auth.user} />} />
           <Route path="/login" element={<LoginPage onLogin={handleLogin} />} />
           <Route path="/register-user" element={<RegisterUserPage />} />
-          {/* NOVA ROTA PÚBLICA DE HONRA */}
-          <Route path="/honor" element={<HonorPage />} />
+          
+          {/* ROTA ATUALIZADA */}
+          <Route path="/honor" element={<HonorPage currentUser={auth.user} />} />
 
-          {/* Rotas Protegidas */}
           <Route path="/register-member" element={
             <ProtectedRoute roles={['admin', 'leader']}>
               <RegisterMemberPage />
             </ProtectedRoute>
           } />
-          {/* NOVA ROTA PROTEGIDA DE HONRA */}
            <Route path="/register-honor" element={
             <ProtectedRoute roles={['admin', 'leader']}>
               <HonorRegisterPage />

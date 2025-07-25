@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useRef } from "react"; // Adicionado useRef
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
-import { FaTrash, FaPlus, FaUpload, FaEdit, FaSyncAlt, FaSave } from "react-icons/fa";
+import { FaTrash, FaPlus, FaUpload, FaEdit, FaSyncAlt } from "react-icons/fa";
 import "../../styles/components/HonorRegisterPage.css";
 
 const HonorRegisterPage = () => {
@@ -12,7 +12,6 @@ const HonorRegisterPage = () => {
     const [pageLoading, setPageLoading] = useState(true);
     const [editingIndex, setEditingIndex] = useState(null);
 
-    // NOVO: Usando useRef para guardar a lista inicial sem causar re-renders
     const initialMemberListRef = useRef([]);
 
     useEffect(() => {
@@ -21,11 +20,9 @@ const HonorRegisterPage = () => {
             try {
                 const response = await axios.get(`${import.meta.env.VITE_API_URL}/honor-members-management`);
                 setMembers(response.data);
-                // Guarda a lista original para comparar depois
                 initialMemberListRef.current = response.data.map(m => m.habby_id);
             } catch (error) {
-                console.error("Erro ao buscar lista de gerenciamento de honra:", error);
-                alert("Não foi possível carregar a lista de membros. Tente recarregar a página.");
+                console.error("Erro ao carregar lista para gerenciamento:", error);
             } finally {
                 setPageLoading(false);
             }
@@ -33,19 +30,17 @@ const HonorRegisterPage = () => {
         fetchCurrentHonorList();
     }, []);
 
-    // --- LÓGICA DE REORDENAÇÃO COMPLETAMENTE REVISADA ---
     const sortHonorList = () => {
-        if (!window.confirm("Isso irá reordenar a lista para a próxima temporada de honra, seguindo a hierarquia de elegibilidade. Deseja continuar?")) {
+        if (!window.confirm("Isso irá reordenar a lista para a próxima temporada, movendo os 2 membros de honra atuais para o final da fila de elegíveis. Deseja continuar?")) {
             return;
         }
 
         const normalizeForSort = (value) => typeof value === 'string' && value.toLowerCase().startsWith('s');
 
-        // 1. Separa os membros de honra atuais
-        const currentHonorMembers = members.slice(0, 3);
-        const otherMembers = members.slice(3);
+        // AJUSTE: Mudou de 3 para 2
+        const currentHonorMembers = members.slice(0, 2);
+        const otherMembers = members.slice(2);
 
-        // 2. Identifica os diferentes grupos de membros
         const eligibleMembers = [];
         const newMembers = [];
         const ineligibleMembers = [];
@@ -63,19 +58,19 @@ const HonorRegisterPage = () => {
             }
         });
 
-        // 3. Monta a nova lista na hierarquia correta
         const reorderedList = [
-            ...eligibleMembers,      // 1. Membros antigos que são elegíveis
-            ...currentHonorMembers,  // 2. Ex-membros de honra
-            ...newMembers,           // 3. Novos membros adicionados na sessão
-            ...ineligibleMembers     // 4. Membros antigos que são inelegíveis
+            ...eligibleMembers,
+            ...currentHonorMembers,
+            ...newMembers,
+            ...ineligibleMembers
         ];
 
         setMembers(reorderedList);
-        alert("Lista reordenada com sucesso seguindo a nova hierarquia!");
+        alert("Lista reordenada com sucesso!");
     };
-
-    // --- Demais funções do componente (sem alterações na lógica interna) ---
+    
+    // As demais funções (handleAddOrUpdateMember, handleCsvUpload, etc.) permanecem como estão,
+    // pois a lógica de salvar apenas ao finalizar está correta.
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -137,27 +132,13 @@ const HonorRegisterPage = () => {
                     }
                 });
                 setMembers(Array.from(membersMap.values()));
-                alert(`Lista atualizada com ${lines.length} registros do CSV! Clique em 'Salvar Alterações' para persistir.`);
+                alert(`Lista atualizada com ${lines.length} registros do CSV!`);
             };
             reader.readAsText(file);
         }
         event.target.value = null;
     };
-
-    const handleSaveChanges = async () => {
-        setLoading(true);
-        try {
-            await axios.put(`${import.meta.env.VITE_API_URL}/honor-seasons/latest/update`, members);
-            // Atualiza a lista de "membros iniciais" após salvar com sucesso
-            initialMemberListRef.current = members.map(m => m.habby_id);
-            alert("Alterações salvas com sucesso!");
-        } catch (error) {
-            alert(`Erro ao salvar alterações: ${error.response?.data?.error || error.message}`);
-        } finally {
-            setLoading(false);
-        }
-    };
-
+    
     const finalizeSeason = async () => {
         if (members.length === 0 || !startDate || !endDate) {
             alert("É necessário ter membros na lista e definir as datas para criar uma nova temporada.");
@@ -174,7 +155,6 @@ const HonorRegisterPage = () => {
                 participants: members,
             });
             alert(response.data.message);
-            // Atualiza a lista de "membros iniciais" para a nova temporada
             initialMemberListRef.current = members.map(m => m.habby_id);
             setStartDate("");
             setEndDate("");
@@ -184,8 +164,7 @@ const HonorRegisterPage = () => {
             setLoading(false);
         }
     };
-    
-    // --- Renderização do Componente (JSX) ---
+
     if (pageLoading) {
         return <div className="honor-register-wrapper"><p>Carregando gerenciador de honra...</p></div>;
     }
@@ -194,14 +173,12 @@ const HonorRegisterPage = () => {
         <div className="honor-register-wrapper">
             <div className="honor-register-container">
                 <h1>Gerenciador da Lista de Honra</h1>
-                
                 <div className="honor-management-grid">
                     <div className="management-column">
                         <h2>{editingIndex !== null ? "Editando Membro" : "Adicionar / Importar"}</h2>
                         <div className="member-form">
                             <input name="name" value={currentMember.name} onChange={handleInputChange} placeholder="Nome do Membro" />
                             <input name="habby_id" value={currentMember.habby_id} onChange={handleInputChange} placeholder="Habby ID" />
-                            
                             <div className="radio-group">
                                 <label>Fase Acesso:</label>
                                 <div>
@@ -225,22 +202,18 @@ const HonorRegisterPage = () => {
                             </button>
                         </div>
                         <div className="csv-upload-section">
-                             <p>Ou importe/atualize em massa via CSV</p>
+                            <p>Ou importe/atualize em massa via CSV</p>
                             <label htmlFor="csv-upload" className="btn btn-secondary">
                                 <FaUpload /> Anexar CSV
                             </label>
                             <input id="csv-upload" type="file" accept=".csv" onChange={handleCsvUpload} />
                         </div>
                     </div>
-                    
                     <div className="management-column">
                         <div className="members-list-header">
-                            <h2>Lista de Honra Atual</h2>
+                            <h2>Lista de Honra (Em Preparação)</h2>
                             <div className="header-buttons">
-                                <button className="btn btn-save" onClick={handleSaveChanges} disabled={loading || members.length === 0}>
-                                    <FaSave /> Salvar Alterações
-                                </button>
-                                <button className="btn btn-secondary update-list-btn" onClick={sortHonorList} disabled={loading || members.length < 4}>
+                                <button className="btn btn-secondary update-list-btn" onClick={sortHonorList} disabled={loading || members.length < 3}>
                                     <FaSyncAlt /> Reordenar
                                 </button>
                             </div>
@@ -259,7 +232,8 @@ const HonorRegisterPage = () => {
                                     </thead>
                                     <tbody>
                                         {members.map((p, index) => (
-                                            <tr key={p.habby_id || index} className={index < 3 ? 'current-honor-member' : ''}>
+                                            // AJUSTE: Mudou de index < 3 para index < 2
+                                            <tr key={p.habby_id || index} className={index < 2 ? 'current-honor-member' : ''}>
                                                 <td data-label="Posição">{index + 1}º</td>
                                                 <td data-label="Nome">{p.name}</td>
                                                 <td data-label="Acesso">{p.fase_acesso}</td>
@@ -276,7 +250,6 @@ const HonorRegisterPage = () => {
                         </div>
                     </div>
                 </div>
-
                 <div className="finalize-section">
                     <h2>Finalizar e Criar Nova Temporada</h2>
                     <p>Preencha as datas para criar um novo registro histórico com a lista atual. Use esta opção apenas ao final de um período.</p>

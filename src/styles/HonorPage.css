@@ -22,14 +22,41 @@
   margin-bottom: 20px;
 }
 
-.honor-season-info {
-  text-align: center;
+.honor-season-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 15px;
   margin-bottom: 30px;
+  border: 1px dashed rgba(0, 255, 255, 0.3);
+  padding: 10px 15px;
+  border-radius: 4px;
+}
+
+.honor-season-info {
   font-size: 1.2rem;
   color: #00ffff;
-  border: 1px dashed rgba(0, 255, 255, 0.3);
-  padding: 10px;
+}
+
+.btn-delete-season {
+  background: transparent;
+  border: 1px solid #dc3545;
+  color: #dc3545;
+  padding: 8px 12px;
   border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Chakra Petch', sans-serif;
+  transition: all 0.3s ease;
+}
+
+.btn-delete-season:hover {
+  background: #dc3545;
+  color: #fff;
+  box-shadow: 0 0 10px #dc3545;
 }
 
 .honor-list-wrapper table {
@@ -60,7 +87,6 @@
   color: #ffd700;
 }
 
-/* Estilos de Paginação (reutilizados de ResultsPage.css) */
 .pagination {
   display: flex;
   justify-content: center;
@@ -92,38 +118,11 @@
   cursor: not-allowed;
 }
 
-/* Responsividade */
 @media (max-width: 768px) {
-  .honor-container {
-    padding: 20px 15px;
-  }
-  .honor-list-wrapper table, .honor-list-wrapper thead, .honor-list-wrapper tbody, .honor-list-wrapper th, .honor-list-wrapper td, .honor-list-wrapper tr {
-    display: block;
-  }
-  .honor-list-wrapper thead tr {
-    position: absolute;
-    top: -9999px;
-    left: -9999px;
-  }
-  .honor-list-wrapper tr {
-    border: 1px solid rgba(0, 255, 255, 0.2);
-    margin-bottom: 15px;
-    padding: 5px;
-  }
-  .honor-list-wrapper td {
-    border: none;
-    border-bottom: 1px solid rgba(0, 255, 255, 0.1);
-    position: relative;
-    padding-left: 50%;
-    text-align: right;
-  }
-  .honor-list-wrapper td:before {
-    content: attr(data-label);
-    position: absolute;
-    left: 10px;
-    width: 45%;
-    font-weight: bold;
-    color: #00ffff;
-    text-align: left;
-  }
+  .honor-container { padding: 20px 15px; }
+  .honor-list-wrapper table, .honor-list-wrapper thead, .honor-list-wrapper tbody, .honor-list-wrapper th, .honor-list-wrapper td, .honor-list-wrapper tr { display: block; }
+  .honor-list-wrapper thead tr { position: absolute; top: -9999px; left: -9999px; }
+  .honor-list-wrapper tr { border: 1px solid rgba(0, 255, 255, 0.2); margin-bottom: 15px; padding: 5px; }
+  .honor-list-wrapper td { border: none; border-bottom: 1px solid rgba(0, 255, 255, 0.1); position: relative; padding-left: 50%; text-align: right; }
+  .honor-list-wrapper td:before { content: attr(data-label); position: absolute; left: 10px; width: 45%; font-weight: bold; color: #00ffff; text-align: left; }
 }

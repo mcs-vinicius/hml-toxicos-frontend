@@ -1,141 +1,145 @@
-.searched-profile-modal {
+/* src/styles/SearchedUserProfile.css */
+
+.modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7);
     display: flex;
-    justify-content: center;
     align-items: center;
-    background-color: rgba(0, 0, 0, 0.5);
-    -webkit-backdrop-filter: blur(5px); /* Para Safari e Chrome */
+    justify-content: center;
+    z-index: 2000;
     backdrop-filter: blur(5px);
-    z-index: 1001; /* Garante que o modal fique sobre a navbar */
-  }
+}
 
-.modal-content {
-    background-color: #0d203d;
-    margin: auto;
-    padding: 25px;
+.searched-user-profile-modal {
+    background-color: #0a192f;
     border: 1px solid #00ffff;
     border-radius: 8px;
     width: 90%;
-    max-width: 600px;
-    position: relative;
+    max-width: 800px; /* Aumenta a largura máxima para caber mais conteúdo */
+    max-height: 90vh; /* Altura máxima */
+    display: flex;
+    flex-direction: column; /* Organiza o conteúdo verticalmente */
+    font-family: 'Chakra Petch', sans-serif;
     color: #e0fbfc;
-    box-shadow: 0 0 25px rgba(0, 255, 255, 0.25);
-    animation: fadeIn 0.3s ease-in-out;
+    box-shadow: 0 0 25px rgba(0, 255, 255, 0.3);
+    position: relative;
+    transition: all 0.4s ease-in-out;
 }
 
-@keyframes fadeIn {
-    from { opacity: 0; transform: scale(0.95); }
-    to { opacity: 1; transform: scale(1); }
-}
-
-.close-btn {
-    color: #aaa;
+.close-button {
     position: absolute;
     top: 10px;
-    right: 20px;
-    font-size: 32px;
-    font-weight: bold;
+    right: 15px;
     background: none;
     border: none;
+    color: #fff;
+    font-size: 2rem;
     cursor: pointer;
     line-height: 1;
 }
 
-.close-btn:hover,
-.close-btn:focus {
-    color: #fff;
+/* NOVO: Área de rolagem para o conteúdo */
+.modal-scroll-content {
+    overflow-y: auto;
+    padding: 25px;
 }
 
-.modal-profile-header {
+.profile-main-info {
     display: flex;
     align-items: center;
-    gap: 20px;
-    margin-bottom: 20px;
-    padding-bottom: 20px;
+    gap: 30px;
+    padding-bottom: 25px;
+    margin-bottom: 25px;
     border-bottom: 1px solid rgba(0, 255, 255, 0.2);
 }
 
-.modal-profile-picture {
-    width: 80px;
-    height: 80px;
+.profile-pic-wrapper {
+    position: relative;
+    flex-shrink: 0;
+}
+
+.profile-pic {
+    width: 100px;
+    height: 100px;
     border-radius: 50%;
-    border: 2px solid #00ffff;
+    border: 3px solid #00ffff;
     object-fit: cover;
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.4);
 }
 
-.modal-profile-titles h1 {
-    margin: 0;
-    color: #00ffff;
-    font-size: 1.8rem;
+.profile-details h1 {
+    margin: 0 0 10px 0;
+    font-size: 2rem;
+    color: #ffffff;
+    text-shadow: 0 0 10px #ff00ff;
 }
 
-.modal-profile-titles p {
-    margin: 5px 0 0;
-    color: #8892b0;
+.profile-details p {
+    margin: 0 0 15px 0;
+    font-size: 1rem;
+    color: rgba(224, 251, 252, 0.7);
 }
 
-.modal-profile-tabs {
+.main-stats {
     display: flex;
-    border-bottom: 1px solid #304a6e;
+    gap: 15px;
+}
+
+.stat-item {
+    background: rgba(0,0,0,0.2);
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    color: #00ffff;
+}
+
+.stat-item span {
+    color: #fff;
+    font-weight: bold;
+    margin-left: 6px;
+}
+
+.stats-section {
+    display: flex;
+    gap: 20px;
     margin-bottom: 20px;
 }
 
-.modal-profile-tabs button {
-    background: none;
-    border: none;
-    color: #8892b0;
-    padding: 10px 20px;
-    cursor: pointer;
-    border-bottom: 3px solid transparent;
-    font-size: 1rem;
-    transition: all 0.2s ease;
+.stats-group {
+    background-color: rgba(0, 0, 0, 0.2);
+    padding: 15px;
+    border-radius: 6px;
+    flex: 1;
+    border-left: 3px solid #00ffff;
 }
 
-.modal-profile-tabs button.active {
+.stats-group h3 {
+    margin-top: 0;
     color: #00ffff;
-    border-bottom-color: #00ffff;
+    border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+    font-size: 1.1rem;
 }
 
-.modal-body {
-    padding: 10px;
+.stats-group ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
 }
 
-.field-item {
+.stats-group li {
     display: flex;
     justify-content: space-between;
-    padding: 10px 5px;
-    border-bottom: 1px solid rgba(0, 255, 255, 0.1);
+    padding: 6px 0;
+    font-size: 0.9rem;
 }
 
-.field-item:last-child {
-    border-bottom: none;
-}
-
-.field-label {
+.stats-group li span {
     font-weight: bold;
-    color: #8892b0;
-}
-
-.field-value {
-    color: #e0fbfc;
-    font-weight: 500;
-}
-
-/* SearchedUserProfile.css */
-/* ... (estilos existentes) ... */
-
-@media (max-width: 768px) {
-    .modal-content {
-        width: 95%;
-        padding: 20px;
-    }
-
-    .modal-profile-header {
-        flex-direction: column;
-        text-align: center;
-    }
+    color: #ffffff;
 }

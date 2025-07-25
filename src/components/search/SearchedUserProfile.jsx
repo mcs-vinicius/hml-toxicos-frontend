@@ -1,106 +1,103 @@
+// src/components/search/SearchedUserProfile.jsx
+
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import '../../styles/SearchedUserProfile.css'; // Estilo para o modal
+import '../../styles/SearchedUserProfile.css';
 
 const SearchedUserProfile = ({ habbyId, onClose }) => {
     const [profile, setProfile] = useState(null);
-    const [history, setHistory] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [activeTab, setActiveTab] = useState('status');
+    const [isHonorMember, setIsHonorMember] = useState(false);
 
     useEffect(() => {
         if (!habbyId) return;
 
-        setLoading(true);
-        setActiveTab('status'); // Reseta para a aba status
-        setHistory(null); // Limpa o histórico anterior
-
-        const fetchProfile = async () => {
+        const fetchProfileData = async () => {
+            setLoading(true);
             try {
-                const profileRes = await axios.get(`${import.meta.env.VITE_API_URL}/profile/${habbyId}`);
+                const [profileRes, honorRes] = await Promise.all([
+                    axios.get(`${import.meta.env.VITE_API_URL}/profile/${habbyId}`),
+                    axios.get(`${import.meta.env.VITE_API_URL}/honor-status/${habbyId}`)
+                ]);
+                
                 setProfile(profileRes.data);
+                setIsHonorMember(honorRes.data.is_honor_member);
             } catch (error) {
-                console.error("Erro ao buscar dados do perfil pesquisado:", error);
-                setProfile(null);
+                console.error("Erro ao buscar perfil pesquisado:", error);
             } finally {
                 setLoading(false);
             }
         };
-        fetchProfile();
+
+        fetchProfileData();
     }, [habbyId]);
 
-    useEffect(() => {
-        const fetchHistory = async () => {
-            // Busca o histórico apenas quando a aba é clicada e os dados ainda não foram carregados
-            if (activeTab === 'history' && habbyId && !history) {
-                try {
-                    const historyRes = await axios.get(`${import.meta.env.VITE_API_URL}/history/${habbyId}`);
-                    setHistory(historyRes.data);
-                } catch (error) {
-                    console.error("Erro ao buscar histórico:", error);
-                    setHistory(null);
-                }
-            }
-        };
-        fetchHistory();
-    }, [activeTab, habbyId, history]);
+    const formatStat = (value) => parseInt(value, 10) || 0;
+    const formatPercent = (value) => `${parseInt(value, 10) || 0}%`;
 
-    const renderField = (label, value) => (
-        <div className="field-item">
-            <span className="field-label">{label}:</span>
-            <span className="field-value">{value || 'N/A'}</span>
-        </div>
-    );
+    const modalClassName = `searched-user-profile-modal ${isHonorMember ? 'gloria-profile' : ''}`;
 
     return (
-        <div className="searched-profile-modal">
-            <div className="modal-content">
-                <button onClick={onClose} className="close-btn" title="Fechar">&times;</button>
-                
-                {loading && <p>Carregando perfil...</p>}
-                
-                {!loading && !profile && <p>Perfil não encontrado.</p>}
-
-                {!loading && profile && (
-                    <>
-                        <div className="modal-profile-header">
-                            <img src={profile.profile_pic_url || 'https://via.placeholder.com/100'} alt="Perfil" className="modal-profile-picture" />
-                            <div className="modal-profile-titles">
+        <div className="modal-overlay" onClick={onClose}>
+            <div className={modalClassName} onClick={(e) => e.stopPropagation()}>
+                <button className="close-button" onClick={onClose}>×</button>
+                {loading ? (
+                    <p>Carregando perfil...</p>
+                ) : profile ? (
+                    <div className="modal-scroll-content">
+                        <div className="profile-main-info">
+                            <div className="profile-pic-wrapper">
+                                <img src={profile.profile_pic_url} alt={`Foto de ${profile.nick}`} className="profile-pic" />
+                            </div>
+                            <div className="profile-details">
                                 <h1>{profile.nick || 'N/A'}</h1>
-                                <p>ID Habby: {profile.habby_id}</p>
+                                <p>Habby ID: {profile.habby_id}</p>
+                                <div className="main-stats">
+                                    <div className="stat-item">ATK: <span>{formatStat(profile.atk)}</span></div>
+                                    <div className="stat-item">HP: <span>{formatStat(profile.hp)}</span></div>
+                                </div>
                             </div>
                         </div>
 
-                        <div className="modal-profile-tabs">
-                            <button onClick={() => setActiveTab('status')} className={activeTab === 'status' ? 'active' : ''}>Status</button>
-                            <button onClick={() => setActiveTab('history')} className={activeTab === 'history' ? 'active' : ''}>Histórico</button>
-                        </div>
-
-                        {activeTab === 'status' && (
-                            <div className="modal-body status-tab">
-                                {renderField('ATK Total', profile.atk)}
-                                {renderField('HP Total', profile.hp)}
-                                {renderField('ATQ Sobrevivente', profile.survivor_base_atk)}
-                                {renderField('HP Sobrevivente', profile.survivor_base_hp)}
-                                {renderField('ATQ Pet', profile.pet_base_atk)}
-                                {renderField('HP Pet', profile.pet_base_hp)}
+                        {/* --- Seção de Atributos Completos --- */}
+                        <div className="stats-section">
+                            <div className="stats-group">
+                                <h3>Sobrevivente</h3>
+                                <ul>
+                                    <li>ATK Base: <span>{formatStat(profile.survivor_base_atk)}</span></li>
+                                    <li>HP Base: <span>{formatStat(profile.survivor_base_hp)}</span></li>
+                                    <li>Bônus ATK: <span>{formatPercent(profile.survivor_bonus_atk)}</span></li>
+                                    <li>Bônus HP: <span>{formatPercent(profile.survivor_bonus_hp)}</span></li>
+                                    <li>ATK Final: <span>{formatStat(profile.survivor_final_atk)}</span></li>
+                                    <li>HP Final: <span>{formatStat(profile.survivor_final_hp)}</span></li>
+                                    <li>Taxa Crítica: <span>{formatPercent(profile.survivor_crit_rate)}</span></li>
+                                    <li>Dano Crítico: <span>{formatPercent(profile.survivor_crit_damage)}</span></li>
+                                </ul>
                             </div>
-                        )}
+                             <div className="stats-group">
+                                <h3>Pet</h3>
+                                 <ul>
+                                    <li>ATK Base: <span>{formatStat(profile.pet_base_atk)}</span></li>
+                                    <li>HP Base: <span>{formatStat(profile.pet_base_hp)}</span></li>
+                                    <li>Dano Crítico: <span>{formatPercent(profile.pet_crit_damage)}</span></li>
+                                </ul>
+                            </div>
+                        </div>
                         
-                        {activeTab === 'history' && (
-                            <div className="modal-body history-tab">
-                                {history ? (
-                                    <>
-                                        {renderField('Posição no Ranking', `${history.position}º`)}
-                                        {renderField('Pontuação (Acesso)', history.fase_acesso)}
-                                        {renderField('Evolução vs Temporada Anterior', history.evolution)}
-                                    </>
-                                ) : (
-                                <p>Carregando histórico ou nenhum encontrado...</p>
-                                )}
+                        <div className="stats-section">
+                           <div className="stats-group">
+                                <h3>Colecionáveis</h3>
+                                <ul>
+                                    <li>ATK Final: <span>{formatStat(profile.collect_final_atk)}</span></li>
+                                    <li>HP Final: <span>{formatStat(profile.collect_final_hp)}</span></li>
+                                    <li>Taxa Crítica: <span>{formatPercent(profile.collect_crit_rate)}</span></li>
+                                    <li>Dano Crítico: <span>{formatPercent(profile.collect_crit_damage)}</span></li>
+                                </ul>
                             </div>
-                        )}
-                    </>
+                        </div>
+                    </div>
+                ) : (
+                    <p>Não foi possível carregar o perfil.</p>
                 )}
             </div>
         </div>

@@ -1,26 +1,33 @@
+// src/page/ProfilePage.jsx
+
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
-import EditProfileModal from '../components/profile/EditProfileModal';
 import '../styles/ProfilePage.css';
 
 const ProfilePage = ({ currentUser }) => {
     const { habby_id } = useParams();
     const [profile, setProfile] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [isEditing, setIsEditing] = useState(false);
+    const [formData, setFormData] = useState({});
+    
+    // NOVO: Estado para controlar a estilização de honra
     const [isHonorMember, setIsHonorMember] = useState(false);
-    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
     const fetchProfileData = async () => {
+        if (!habby_id) return;
         setLoading(true);
         try {
+            // Faz as duas chamadas em paralelo para otimizar
             const [profileRes, honorRes] = await Promise.all([
                 axios.get(`${import.meta.env.VITE_API_URL}/profile/${habby_id}`),
                 axios.get(`${import.meta.env.VITE_API_URL}/honor-status/${habby_id}`)
             ]);
             
             setProfile(profileRes.data);
-            setIsHonorMember(honorRes.data.is_honor_member);
+            setFormData(profileRes.data);
+            setIsHonorMember(honorRes.data.is_honor_member); // Define o status
 
         } catch (error) {
             console.error("Erro ao buscar dados do perfil:", error);
@@ -28,18 +35,29 @@ const ProfilePage = ({ currentUser }) => {
             setLoading(false);
         }
     };
-
-    useEffect(() => {
-        if (habby_id) {
-            fetchProfileData();
-        }
-    }, [habby_id]);
     
-    const handleOpenEditModal = () => setIsEditModalOpen(true);
-    const handleCloseEditModal = () => setIsEditModalOpen(false);
-    const handleProfileUpdate = (updatedProfile) => {
-        setProfile(updatedProfile);
-        alert("Perfil atualizado com sucesso!");
+    useEffect(() => {
+        fetchProfileData();
+    }, [habby_id]);
+
+    const handleEdit = () => setIsEditing(true);
+    const handleCancel = () => {
+        setIsEditing(false);
+        setFormData(profile);
+    };
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({ ...prev, [name]: value }));
+    };
+    const handleSave = async () => {
+        try {
+            await axios.put(`${import.meta.env.VITE_API_URL}/profile`, formData);
+            setProfile(formData);
+            setIsEditing(false);
+            alert("Perfil atualizado com sucesso!");
+        } catch (error) {
+            alert(`Erro ao salvar: ${error.response?.data?.error || 'Tente novamente.'}`);
+        }
     };
 
     const formatStat = (value) => parseInt(value, 10) || 0;
@@ -53,108 +71,134 @@ const ProfilePage = ({ currentUser }) => {
         return <div className="profile-container"><p>Perfil não encontrado.</p></div>;
     }
 
+    // Adiciona a classe 'gloria-profile' condicionalmente
     const containerClassName = `profile-container ${isHonorMember ? 'gloria-profile' : ''}`;
+    
+    const renderField = (label, name, formatter = formatStat) => (
+        <li>
+            {label}:
+            {isEditing ? (
+                <input
+                    type="number"
+                    name={name}
+                    value={formData[name] || ''}
+                    onChange={handleChange}
+                />
+            ) : (
+                <span>{formatter(profile[name])}</span>
+            )}
+        </li>
+    );
 
     return (
-        <>
-            <div className={containerClassName}>
-                <div className="profile-main-info">
-                    <div className="profile-pic-wrapper">
-                        <img src={profile.profile_pic_url} alt={`Foto de ${profile.nick}`} className="profile-pic" />
-                    </div>
-                    <div className="profile-details">
+        <div className={containerClassName}>
+            <div className="profile-main-info">
+                <div className="profile-pic-wrapper">
+                    <img src={profile.profile_pic_url} alt={`Foto de ${profile.nick}`} className="profile-pic" />
+                </div>
+                <div className="profile-details">
+                    {isEditing ? (
+                        <input
+                            type="text"
+                            name="nick"
+                            className="nick-edit-input"
+                            value={formData.nick || ''}
+                            onChange={handleChange}
+                        />
+                    ) : (
                         <h1>{profile.nick || 'Nome não definido'}</h1>
-                        <p>Habby ID: {profile.habby_id}</p>
-                        <div className="main-stats">
-                            <div className="stat-item">ATK: <span>{formatStat(profile.atk)}</span></div>
-                            <div className="stat-item">HP: <span>{formatStat(profile.hp)}</span></div>
-                        </div>
+                    )}
+                    <p>Habby ID: {profile.habby_id}</p>
+                    <div className="main-stats">
+                        <div className="stat-item">ATK: <span>{formatStat(isEditing ? formData.atk : profile.atk)}</span></div>
+                        <div className="stat-item">HP: <span>{formatStat(isEditing ? formData.hp : profile.hp)}</span></div>
                     </div>
                 </div>
+            </div>
 
-                <div className="stats-section">
-                    <div className="stats-group">
-                        <h3>Atributos do Sobrevivente</h3>
-                        <ul>
-                            <li>ATK Base: <span>{formatStat(profile.survivor_base_atk)}</span></li>
-                            <li>HP Base: <span>{formatStat(profile.survivor_base_hp)}</span></li>
-                            <li>Bônus ATK: <span>{formatPercent(profile.survivor_bonus_atk)}</span></li>
-                            <li>Bônus HP: <span>{formatPercent(profile.survivor_bonus_hp)}</span></li>
-                            <li>ATK Final: <span>{formatStat(profile.survivor_final_atk)}</span></li>
-                            <li>HP Final: <span>{formatStat(profile.survivor_final_hp)}</span></li>
-                        </ul>
-                    </div>
-                    <div className="stats-group">
-                        <h3>Bônus de Dano (Sobrevivente)</h3>
-                         <ul>
-                            <li>Taxa Crítica: <span>{formatPercent(profile.survivor_crit_rate)}</span></li>
-                            <li>Dano Crítico: <span>{formatPercent(profile.survivor_crit_damage)}</span></li>
-                            <li>Dano de Habilidade: <span>{formatPercent(profile.survivor_skill_damage)}</span></li>
-                        </ul>
-                    </div>
-                     <div className="stats-group">
-                        <h3>Bônus Especiais (Sobrevivente)</h3>
-                         <ul>
-                            <li>Reforço de Escudo: <span>{formatPercent(profile.survivor_shield_boost)}</span></li>
-                            <li>Alvos Envenenados: <span>{formatPercent(profile.survivor_poison_targets)}</span></li>
-                            <li>Alvos Enfraquecidos: <span>{formatPercent(profile.survivor_weak_targets)}</span></li>
-                            <li>Alvos Congelados: <span>{formatPercent(profile.survivor_frozen_targets)}</span></li>
-                        </ul>
-                    </div>
+            <div className="stats-section">
+                <div className="stats-group">
+                    <h3>Atributos do Sobrevivente</h3>
+                    <ul>
+                        {renderField("ATK Base", "survivor_base_atk")}
+                        {renderField("HP Base", "survivor_base_hp")}
+                        {renderField("Bônus ATK", "survivor_bonus_atk", formatPercent)}
+                        {renderField("Bônus HP", "survivor_bonus_hp", formatPercent)}
+                        {renderField("ATK Final", "survivor_final_atk")}
+                        {renderField("HP Final", "survivor_final_hp")}
+                    </ul>
                 </div>
-
-                 <div className="stats-section">
-                    <div className="stats-group">
-                        <h3>Atributos do Pet</h3>
-                         <ul>
-                            <li>ATK Base: <span>{formatStat(profile.pet_base_atk)}</span></li>
-                            <li>HP Base: <span>{formatStat(profile.pet_base_hp)}</span></li>
-                            <li>Dano Crítico: <span>{formatPercent(profile.pet_crit_damage)}</span></li>
-                            <li>Dano de Habilidade: <span>{formatPercent(profile.pet_skill_damage)}</span></li>
-                        </ul>
-                    </div>
+                <div className="stats-group">
+                    <h3>Bônus de Dano (Sobrevivente)</h3>
+                     <ul>
+                        {renderField("Taxa Crítica", "survivor_crit_rate", formatPercent)}
+                        {renderField("Dano Crítico", "survivor_crit_damage", formatPercent)}
+                        {renderField("Dano de Habilidade", "survivor_skill_damage", formatPercent)}
+                    </ul>
                 </div>
-
-                <div className="stats-section">
-                    <div className="stats-group">
-                        <h3>Atributos de Colecionáveis</h3>
-                        <ul>
-                            <li>ATK Final: <span>{formatStat(profile.collect_final_atk)}</span></li>
-                            <li>HP Final: <span>{formatStat(profile.collect_final_hp)}</span></li>
-                        </ul>
-                    </div>
-                    <div className="stats-group">
-                        <h3>Bônus de Dano (Colecionáveis)</h3>
-                         <ul>
-                            <li>Taxa Crítica: <span>{formatPercent(profile.collect_crit_rate)}</span></li>
-                            <li>Dano Crítico: <span>{formatPercent(profile.collect_crit_damage)}</span></li>
-                            <li>Dano de Habilidade: <span>{formatPercent(profile.collect_skill_damage)}</span></li>
-                        </ul>
-                    </div>
-                     <div className="stats-group">
-                        <h3>Bônus Especiais (Colecionáveis)</h3>
-                         <ul>
-                            <li>Alvos Envenenados: <span>{formatPercent(profile.collect_poison_targets)}</span></li>
-                            <li>Alvos Enfraquecidos: <span>{formatPercent(profile.collect_weak_targets)}</span></li>
-                            <li>Alvos Congelados: <span>{formatPercent(profile.collect_frozen_targets)}</span></li>
-                        </ul>
-                    </div>
+                 <div className="stats-group">
+                    <h3>Bônus Especiais (Sobrevivente)</h3>
+                     <ul>
+                        {renderField("Reforço de Escudo", "survivor_shield_boost", formatPercent)}
+                        {renderField("Alvos Envenenados", "survivor_poison_targets", formatPercent)}
+                        {renderField("Alvos Enfraquecidos", "survivor_weak_targets", formatPercent)}
+                        {renderField("Alvos Congelados", "survivor_frozen_targets", formatPercent)}
+                    </ul>
                 </div>
-
-                {currentUser && currentUser.habby_id === habby_id && (
-                    <div className="profile-edit-cta">
-                        <button onClick={handleOpenEditModal}>Editar Perfil</button>
-                    </div>
-                )}
             </div>
             
-            <EditProfileModal
-                profile={profile}
-                isOpen={isEditModalOpen}
-                onClose={handleCloseEditModal}
-                onSave={handleProfileUpdate}
-            />
-        </>
+            {/* Seus outros .stats-section para Pet e Colecionáveis continuam aqui... */}
+            <div className="stats-section">
+                <div className="stats-group">
+                    <h3>Atributos do Pet</h3>
+                    <ul>
+                        {renderField("ATK Base", "pet_base_atk")}
+                        {renderField("HP Base", "pet_base_hp")}
+                        {renderField("Dano Crítico", "pet_crit_damage", formatPercent)}
+                        {renderField("Dano de Habilidade", "pet_skill_damage", formatPercent)}
+                    </ul>
+                </div>
+            </div>
+
+            <div className="stats-section">
+                <div className="stats-group">
+                    <h3>Atributos de Colecionáveis</h3>
+                    <ul>
+                        {renderField("ATK Final", "collect_final_atk")}
+                        {renderField("HP Final", "collect_final_hp")}
+                    </ul>
+                </div>
+                <div className="stats-group">
+                    <h3>Bônus de Dano (Colecionáveis)</h3>
+                    <ul>
+                        {renderField("Taxa Crítica", "collect_crit_rate", formatPercent)}
+                        {renderField("Dano Crítico", "collect_crit_damage", formatPercent)}
+                        {renderField("Dano de Habilidade", "collect_skill_damage", formatPercent)}
+                    </ul>
+                </div>
+                <div className="stats-group">
+                    <h3>Bônus Especiais (Colecionáveis)</h3>
+                    <ul>
+                        {renderField("Alvos Envenenados", "collect_poison_targets", formatPercent)}
+                        {renderField("Alvos Enfraquecidos", "collect_weak_targets", formatPercent)}
+                        {renderField("Alvos Congelados", "collect_frozen_targets", formatPercent)}
+                    </ul>
+                </div>
+            </div>
+
+            {currentUser && currentUser.habby_id === habby_id && (
+                <div className="profile-edit-cta">
+                    {isEditing ? (
+                        <>
+                            <button onClick={handleCancel} className="btn-cancel">Cancelar</button>
+                            <button onClick={handleSave} className="btn-save">Salvar</button>
+                        </>
+                    ) : (
+                        <button onClick={handleEdit}>Editar Perfil</button>
+                    )}
+                </div>
+            )}
+        </div>
     );
 };
 

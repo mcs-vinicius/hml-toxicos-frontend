@@ -1,173 +1,372 @@
 /* src/styles/ProfilePage.css */
-
-.profile-container {
+.profile-page-wrapper {
     max-width: 1200px;
     margin: 40px auto;
-    padding: 30px;
-    background-color: rgba(10, 25, 47, 0.85);
-    border: 1px solid rgba(0, 255, 255, 0.3);
-    border-radius: 8px;
+    padding: 40px;
     font-family: 'Chakra Petch', sans-serif;
     color: #e0fbfc;
-    transition: all 0.4s ease-in-out;
+    background-color: rgba(10, 25, 47, 0.85);
+    border: 1px solid #00ffff;
+    border-radius: 8px;
+    animation: fadeIn 1s ease-out;
 }
 
-.profile-main-info {
+.profile-header {
     display: flex;
     align-items: center;
     gap: 30px;
-    padding-bottom: 25px;
-    margin-bottom: 25px;
+    margin-bottom: 30px;
     border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+    padding-bottom: 30px;
 }
 
-.profile-pic-wrapper {
-    position: relative;
-    flex-shrink: 0;
-}
-
-.profile-pic {
-    width: 120px;
-    height: 120px;
+.profile-picture {
+    width: 150px;
+    height: 150px;
     border-radius: 50%;
     border: 3px solid #00ffff;
+    box-shadow: 0 0 15px #00ffff;
     object-fit: cover;
-    box-shadow: 0 0 15px rgba(0, 255, 255, 0.4);
 }
 
-.profile-details h1 {
-    margin: 0 0 10px 0;
+.profile-titles h1 {
+    margin: 0;
     font-size: 2.5rem;
-    color: #ffffff;
+    color: #fff;
     text-shadow: 0 0 10px #ff00ff;
 }
 
-.profile-details p {
-    margin: 0 0 15px 0;
-    font-size: 1.1rem;
-    color: rgba(224, 251, 252, 0.7);
-}
-
-.main-stats {
-    display: flex;
-    gap: 20px;
-}
-
-.stat-item {
-    background: rgba(0,0,0,0.2);
-    padding: 8px 15px;
-    border-radius: 4px;
-    font-size: 1rem;
-    color: #00ffff;
-}
-
-.stat-item span {
-    color: #fff;
-    font-weight: bold;
-    margin-left: 8px;
-}
-
-.stats-section {
-    display: flex;
-    gap: 25px;
-    margin-bottom: 25px;
-}
-
-.stats-group {
-    background-color: rgba(0, 0, 0, 0.2);
-    padding: 20px;
-    border-radius: 6px;
-    flex: 1;
-    border-left: 3px solid #00ffff;
-}
-
-.stats-group h3 {
-    margin-top: 0;
-    color: #00ffff;
-    border-bottom: 1px solid rgba(0, 255, 255, 0.2);
-    padding-bottom: 10px;
-    margin-bottom: 15px;
+.profile-titles p {
+    margin: 5px 0 0;
     font-size: 1.2rem;
-}
-
-.stats-group ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.stats-group li {
-    display: flex;
-    justify-content: space-between;
-    padding: 8px 0;
-    font-size: 1rem;
-}
-
-.stats-group li span {
-    font-weight: bold;
-    color: #ffffff;
-}
-
-.profile-edit-cta {
-    text-align: center;
-    margin-top: 40px;
-}
-
-.profile-edit-cta button {
-    padding: 12px 25px;
-    font-size: 1.1rem;
-    font-family: 'Chakra Petch', sans-serif;
-    background: transparent;
     color: #00ffff;
-    border: 2px solid #00ffff;
-    border-radius: 4px;
+}
+
+.profile-actions {
+    margin-left: auto;
+    display: flex;
+    gap: 10px;
+}
+.profile-actions .btn { font-size: 1rem; padding: 10px 15px; }
+.btn-save { border-color: #00ff00; color: #00ff00; }
+.btn-save:hover { background: #00ff00; color: #02040a; }
+.btn-cancel { border-color: #ff2d55; color: #ff2d55; }
+.btn-cancel:hover { background: #ff2d55; color: #fff; }
+.btn-edit { border-color: #00ffff; color: #00ffff; }
+.btn-edit:hover { background: #00ffff; color: #02040a; }
+
+.profile-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 30px;
+}
+
+.profile-tabs button {
+    padding: 10px 20px;
+    font-size: 1.1rem;
+    font-family: inherit;
+    color: rgba(224, 251, 252, 0.7);
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
     cursor: pointer;
     transition: all 0.3s;
 }
 
-.profile-edit-cta button:hover {
-    background: #00ffff;
-    color: #02040a;
-    box-shadow: 0 0 15px #00ffff;
+.profile-tabs button:hover {
+    color: #fff;
 }
 
-/* --- ESTILIZAÇÃO PARA MEMBROS DE HONRA --- */
-.gloria-profile {
-    border-color: #ffd700;
-    box-shadow: 0 0 20px rgba(255, 215, 0, 0.7), 0 0 30px rgba(255, 174, 0, 0.5);
+.profile-tabs button.active {
+    color: #00ffff;
+    border-bottom: 2px solid #00ffff;
 }
-.gloria-profile .profile-pic {
-    border-color: #ffd700;
-    box-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
+
+.status-section {
+    background: rgba(0, 255, 255, 0.05);
+    padding: 20px;
+    border: 1px solid rgba(0, 255, 255, 0.1);
+    border-radius: 6px;
+    margin-bottom: 20px;
 }
-.gloria-profile .profile-pic-wrapper::after {
-    content: '👑';
+
+.status-section h2, .status-section h3 {
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #fff;
+    border-bottom: 1px solid #ff00ff;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+.status-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.form-group { margin-bottom: 15px; }
+.form-group label { display: block; margin-bottom: 5px; color: #00ffff; }
+.form-input {
+    width: 100%;
+    padding: 8px;
+    background-color: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(0, 255, 255, 0.3);
+    color: #e0fbfc;
+    border-radius: 4px;
+}
+.form-input:read-only {
+    background-color: transparent;
+    border-color: transparent;
+}
+
+/* ... (estilos existentes) */
+
+/* Estilos da Seção de Busca */
+.profile-search-section {
+    padding: 20px;
+    margin-bottom: 30px;
+    background: rgba(0, 255, 255, 0.05);
+    border: 1px solid rgba(0, 255, 255, 0.1);
+    border-radius: 6px;
+    text-align: center;
+}
+
+.profile-search-section h2 {
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #fff;
+    margin-top: 0;
+    margin-bottom: 20px;
+}
+
+.search-form {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.search-input {
+    width: 100%;
+    max-width: 400px;
+    padding: 10px;
+    background-color: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(0, 255, 255, 0.3);
+    color: #e0fbfc;
+    border-radius: 4px;
+    font-family: inherit;
+    font-size: 1rem;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: #00ffff;
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+}
+
+.btn-search {
+    border-color: #ff00ff;
+    color: #ff00ff;
+}
+
+.btn-search:hover {
+    background: #ff00ff;
+    color: #02040a;
+}
+
+/* Mensagem de erro genérica */
+.error-message {
+  color: #ff2d55;
+  background-color: rgba(255, 45, 85, 0.1);
+  border: 1px solid #ff2d55;
+  text-align: center;
+  padding: 10px;
+  border-radius: 4px;
+  margin-top: 15px;
+  font-size: 0.9rem;
+}
+
+/* ... (estilos existentes) */
+
+/* Estilos da Busca com Dropdown */
+.profile-search-container {
+    padding: 20px;
+    margin-bottom: 30px;
+    background: rgba(0, 255, 255, 0.05);
+    border: 1px solid rgba(0, 255, 255, 0.1);
+    border-radius: 6px;
+    text-align: center;
+}
+
+.profile-search-container h2 {
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #fff;
+    margin-top: 0;
+    margin-bottom: 20px;
+}
+
+.search-wrapper {
+    position: relative;
+    max-width: 450px;
+    margin: 0 auto;
+}
+
+.search-input {
+    width: 100%;
+    padding: 12px;
+    background-color: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(0, 255, 255, 0.3);
+    color: #e0fbfc;
+    border-radius: 4px;
+    font-size: 1rem;
+    box-sizing: border-box;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: #00ffff;
+}
+
+.search-results-dropdown {
     position: absolute;
-    top: -15px;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 32px;
-    color: #ffd700;
-    text-shadow: 0 0 5px #ffd700, 0 0 10px #ffd700, 0 0 15px #ffae00, 0 0 20px #ffae00;
-    animation: flicker 1.5s infinite alternate;
+    width: 100%;
+    background: #0a192f;
+    border: 1px solid rgba(0, 255, 255, 0.5);
+    border-top: none;
+    border-radius: 0 0 4px 4px;
+    max-height: 300px;
+    overflow-y: auto;
+    z-index: 1000;
+    text-align: left;
 }
-@keyframes flicker {
-  0%, 100% {
-    opacity: 1;
-    text-shadow: 0 0 5px #ffd700, 0 0 10px #ffd700, 0 0 15px #ffae00, 0 0 20px #ffae00;
-  }
-  50% {
-    opacity: 0.8;
-    text-shadow: 0 0 5px #ffd700, 0 0 8px #ffd700, 0 0 12px #ffae00;
-  }
+
+.search-result-item {
+    padding: 10px 15px;
+    cursor: pointer;
+    border-bottom: 1px solid rgba(0, 255, 255, 0.1);
 }
+
+.search-result-item:hover {
+    background-color: rgba(0, 255, 255, 0.1);
+}
+
+.search-result-item:last-child {
+    border-bottom: none;
+}
+
+.result-nick {
+    margin: 0;
+    font-weight: bold;
+    color: #e0fbfc;
+}
+
+.result-habby-id {
+    margin: 0;
+    font-size: 0.85rem;
+    color: #8892b0;
+}
+
+.loader-small {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid #ff00ff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: translateY(-50%) rotate(0deg); }
+    100% { transform: translateY(-50%) rotate(360deg); }
+}
+
+
+/* Adicione este CSS em /src/styles/ProfilePage.css */
+
+.input-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem; /* Espaço entre o input e o símbolo */
+}
+
+.input-wrapper .form-input {
+    flex: 1; /* Faz o input ocupar o espaço disponível */
+}
+
+.percent-symbol {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: var(--glow-green, #39ff14);
+}
+
+/* Adicione este CSS em /src/styles/ProfilePage.css */
+
+.input-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem; /* Espaço entre o input e o símbolo */
+}
+
+.input-wrapper .form-input {
+    flex: 1; /* Faz o input ocupar o espaço disponível */
+}
+
+.percent-symbol {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: var(--glow-green, #39ff14);
+}
+
+
+.form-input-static {
+  width: 100%;
+  padding: 10px 12px;
+  background-color: #1e1e2f; /* Cor de fundo para campos estáticos */
+  color: #c0c0d0;
+  border: 1px solid #4a4a6a;
+  border-radius: 4px;
+  font-size: 1rem;
+  min-height: 42px; /* Garante a mesma altura dos inputs */
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  font-family: 'Chakra Petch', sans-serif;
+}
+
+
+/* ProfilePage.css */
+/* ... (estilos existentes) ... */
 
 @media (max-width: 768px) {
-    .stats-section {
-        flex-direction: column;
+    .profile-page-wrapper {
+        padding: 20px;
+        margin: 20px auto;
     }
-    .profile-main-info {
+
+    .profile-header {
         flex-direction: column;
         text-align: center;
+        gap: 20px;
+    }
+
+    .profile-actions {
+        margin-left: 0;
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    .profile-actions .btn {
+        width: 100%;
+    }
+    
+    .status-grid {
+        grid-template-columns: 1fr; /* Uma coluna para os status */
     }
 }
+
+

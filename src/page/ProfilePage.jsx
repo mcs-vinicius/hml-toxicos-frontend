@@ -10,25 +10,22 @@ const ProfilePage = ({ currentUser }) => {
     const [isEditing, setIsEditing] = useState(false);
     const [formData, setFormData] = useState({});
     const [isHonorMember, setIsHonorMember] = useState(false);
-    
-    // NOVO: Estado para guardar os dados do histórico
     const [history, setHistory] = useState(null);
 
     const fetchProfileData = async () => {
         if (!habby_id) return;
         setLoading(true);
         try {
-            // Busca todos os dados necessários em paralelo
             const [profileRes, honorRes, historyRes] = await Promise.all([
                 axios.get(`${import.meta.env.VITE_API_URL}/profile/${habby_id}`),
                 axios.get(`${import.meta.env.VITE_API_URL}/honor-status/${habby_id}`),
-                axios.get(`${import.meta.env.VITE_API_URL}/history/${habby_id}`) // Busca o histórico
+                axios.get(`${import.meta.env.VITE_API_URL}/history/${habby_id}`)
             ]);
             
             setProfile(profileRes.data);
             setFormData(profileRes.data);
             setIsHonorMember(honorRes.data.is_honor_member);
-            setHistory(historyRes.data); // Salva os dados do histórico
+            setHistory(historyRes.data);
 
         } catch (error) {
             console.error("Erro ao buscar dados do perfil:", error);
@@ -114,8 +111,8 @@ const ProfilePage = ({ currentUser }) => {
                         <div className="stat-item">HP: <span>{formatStat(isEditing ? formData.hp : profile.hp)}</span></div>
                     </div>
 
-                    {/* SEÇÃO DE HISTÓRICO RESTAURADA AQUI */}
-                    {history && history.position ? (
+                    {/* LÓGICA DE EXIBIÇÃO CORRIGIDA */}
+                    {history && history.position != null ? (
                         <div className="profile-history">
                             <div className="history-item">
                                 <h4>Última Posição</h4>
@@ -128,14 +125,17 @@ const ProfilePage = ({ currentUser }) => {
                             <div className="history-item">
                                 <h4>Evolução</h4>
                                 <p className={history.evolution > 0 ? 'positive' : history.evolution < 0 ? 'negative' : ''}>
-                                    {history.evolution > 0 ? `+${history.evolution}` : history.evolution}
+                                    {history.evolution > 0 ? `+${history.evolution}` : (history.evolution === 0 ? '–' : history.evolution)}
                                 </p>
                             </div>
                         </div>
-                    ) : null}
+                    ) : (
+                        <div className="profile-history-empty">
+                            <p>Sem dados de histórico de ranking para exibir.</p>
+                        </div>
+                    )}
                 </div>
             </div>
-
 
             {/* O restante do seu código de atributos permanece igual */}
             <div className="stats-section">

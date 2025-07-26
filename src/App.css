@@ -173,7 +173,7 @@
     content: '👑';
     position: absolute;
     /* AJUSTE PRINCIPAL AQUI: Move a coroa para cima da foto */
-    top: -30px; 
+    top: -40px; 
     left: 50%;
     transform: translateX(-50%);
     font-size: 32px;

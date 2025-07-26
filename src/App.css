@@ -15,19 +15,24 @@
   box-sizing: border-box;
 }
 
-.nav-left {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  flex-shrink: 0; /* Previne que os itens da esquerda encolham */
+.nav-left .nav-logo {
+  font-family: 'Chakra Petch', sans-serif;
+  font-weight: bold;
+  font-size: 1.5rem;
+  color: #fff;
+  text-decoration: none;
+  text-shadow: 0 0 8px #ff00ff;
 }
 
-/* O container do centro foi removido */
+.nav-center-desktop {
+  display: flex;
+  gap: 10px;
+}
 
 .nav-right {
   display: flex;
   align-items: center;
-  gap: 20px; /* Espaçamento entre a busca e o botão de sair */
+  gap: 15px;
 }
 
 .btt-menu {
@@ -38,12 +43,14 @@
   border-radius: 4px;
   transition: background-color 0.3s, color 0.3s;
   border: 1px solid transparent;
-  white-space: nowrap; /* Impede que o texto do botão quebre linha */
+  white-space: nowrap;
 }
 
-.btt-menu:hover {
+.btt-menu:hover,
+.btt-menu.active { /* Estilo para o link ativo */
   background-color: rgba(0, 255, 255, 0.1);
   border-color: rgba(0, 255, 255, 0.5);
+  text-shadow: 0 0 5px #00ffff;
 }
 
 .btt-logout {
@@ -53,59 +60,69 @@
   font-size: 1rem;
 }
 
+.hamburger-icon {
+  display: none; /* Escondido por padrão em telas grandes */
+  color: #fff;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.mobile-menu {
+  position: fixed;
+  top: 61px; /* Altura da navbar */
+  left: -100%; /* Começa fora da tela */
+  width: 250px;
+  height: calc(100vh - 61px);
+  background-color: rgba(10, 25, 47, 0.95);
+  backdrop-filter: blur(10px);
+  z-index: 999;
+  transition: left 0.3s ease-in-out;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid rgba(0, 255, 255, 0.3);
+}
+
+.mobile-menu.open {
+  left: 0; /* Entra na tela */
+}
+
+.btt-menu-mobile {
+  color: #e0fbfc;
+  text-decoration: none;
+  font-family: 'Chakra Petch', sans-serif;
+  padding: 15px 10px;
+  font-size: 1.1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  transition: background-color 0.2s;
+}
+
+.btt-menu-mobile:hover,
+.btt-menu-mobile.active {
+  background-color: rgba(0, 255, 255, 0.1);
+  color: #fff;
+}
+
+
+/* --- Media Query para Responsividade --- */
+
+@media (max-width: 1024px) {
+  /* Esconde os links do centro em telas menores */
+  .nav-center-desktop {
+    display: none;
+  }
+
+  /* Mostra o ícone do hambúrguer */
+  .hamburger-icon {
+    display: block;
+  }
+  
+  /* Garante que o nome do clã e a direita fiquem nos cantos */
+  .navsup {
+    justify-content: space-between;
+  }
+}
+
 .content-area {
   padding-top: 20px;
-}
-
-/* Adicione no final do seu arquivo src/App.css */
-
-/* --- ESTILIZAÇÃO GLOBAL PARA MEMBROS DE HONRA --- */
-
-/* Contêiner com brilho dourado (funciona em .profile-container e .searched-user-profile-modal) */
-.gloria-profile {
-    border: 2px solid #ffd700 !important;
-    box-shadow: 0 0 20px rgba(255, 215, 0, 0.7), 0 0 30px rgba(255, 174, 0, 0.5) !important;
-}
-
-/* Foto com borda dourada */
-.gloria-profile .profile-pic {
-    border-color: #ffd700 !important;
-    box-shadow: 0 0 20px rgba(255, 215, 0, 0.6) !important;
-}
-
-/* Coroa de neon sobre a foto */
-.gloria-profile .profile-pic-wrapper::after {
-    content: '👑';
-    position: absolute;
-    top: -15px;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 32px;
-    color: #ffd700;
-    text-shadow: 
-        0 0 5px #ffd700,
-        0 0 10px #ffd700,
-        0 0 15px #ffae00,
-        0 0 20px #ffae00;
-    animation: flicker 1.5s infinite alternate;
-    z-index: 10;
-}
-
-/* Animação de 'piscar' para o efeito neon */
-@keyframes flicker {
-  0%, 100% {
-    opacity: 1;
-    text-shadow: 
-        0 0 5px #ffd700,
-        0 0 10px #ffd700,
-        0 0 15px #ffae00,
-        0 0 20px #ffae00;
-  }
-  50% {
-    opacity: 0.8;
-    text-shadow: 
-        0 0 5px #ffd700,
-        0 0 8px #ffd700,
-        0 0 12px #ffae00;
-  }
 }

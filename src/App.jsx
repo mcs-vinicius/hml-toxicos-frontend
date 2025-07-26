@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { Routes, Route, Link, Navigate, useLocation } from "react-router-dom";
+import { Routes, Route, Link, Navigate, useLocation, NavLink } from "react-router-dom";
 import axios from "axios";
+import { FaBars, FaTimes } from 'react-icons/fa'; // Ícones para o menu
+import UserSearch from "./components/search/UserSearch.jsx";
+import SearchedUserProfile from "./components/search/SearchedUserProfile.jsx";
 
-// Pages & Components
+// Importe suas páginas e outros componentes
 import HomePage from "./page/Home.jsx";
 import LoginPage from "./components/auth/LoginPage.jsx";
 import RegisterUserPage from "./components/auth/RegisterUserPage.jsx";
@@ -12,10 +15,7 @@ import UserManagementPage from "./page/UserManagementPage.jsx";
 import ProfilePage from "./page/ProfilePage.jsx";
 import HonorPage from "./page/HonorPage.jsx";
 import HonorRegisterPage from "./components/honor/HonorRegisterPage.jsx";
-import UserSearch from "./components/search/UserSearch.jsx";
-import SearchedUserProfile from "./components/search/SearchedUserProfile.jsx";
 
-// CSS
 import "./App.css";
 
 axios.defaults.withCredentials = true;
@@ -28,7 +28,13 @@ const App = () => {
   });
 
   const [searchedHabbyId, setSearchedHabbyId] = useState(null);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
+
+  useEffect(() => {
+    // Fecha o menu móvel sempre que a rota mudar
+    setIsMobileMenuOpen(false);
+  }, [location]);
 
   useEffect(() => {
     const checkSession = async () => {
@@ -47,10 +53,8 @@ const App = () => {
     checkSession();
   }, []);
 
-  const handleUserSelect = (habbyId) => setSearchedHabbyId(habbyId);
-  const handleCloseModal = () => setSearchedHabbyId(null);
-
   const handleLogin = (userData) => setAuth({ isLoggedIn: true, user: userData, loading: false });
+  
   const handleLogout = async () => {
     try {
       await axios.post(`${import.meta.env.VITE_API_URL}/logout`);
@@ -59,6 +63,9 @@ const App = () => {
       console.error("Falha ao fazer logout:", error);
     }
   };
+
+  const handleUserSelect = (habbyId) => setSearchedHabbyId(habbyId);
+  const handleCloseModal = () => setSearchedHabbyId(null);
 
   const ProtectedRoute = ({ children, roles }) => {
     if (auth.loading) return <div>Verificando acesso...</div>;
@@ -73,29 +80,55 @@ const App = () => {
     <>
       <div className="navsup">
         <div className="nav-left">
-          <Link to="/" className="btt-menu">Home</Link>
-          <Link to="/results" className="btt-menu">Ranking</Link>
-          <Link to="/honor" className="btt-menu">Honra</Link>
+          <Link to="/" className="nav-logo">Tóxicøs</Link>
+        </div>
+
+        {/* Links de navegação para telas de desktop */}
+        <div className="nav-center-desktop">
+          <NavLink to="/" className="btt-menu">Home</NavLink>
+          <NavLink to="/results" className="btt-menu">Ranking</NavLink>
+          <NavLink to="/honor" className="btt-menu">Honra</NavLink>
           {auth.isLoggedIn && (
-            <Link to={`/profile/${auth.user.habby_id}`} className="btt-menu">Meu Perfil</Link>
+            <NavLink to={`/profile/${auth.user.habby_id}`} className="btt-menu">Meu Perfil</NavLink>
           )}
           {auth.isLoggedIn && ['admin', 'leader'].includes(auth.user.role) && (
             <>
-              <Link to="/register-member" className="btt-menu">Temporada</Link>
-              <Link to="/register-honor" className="btt-menu">Gerenciar Honra</Link>
-              <Link to="/user-management" className="btt-menu">Gerenciar Usuários</Link>
+              <NavLink to="/register-member" className="btt-menu">Temporada</NavLink>
+              <NavLink to="/register-honor" className="btt-menu">Gerenciar Honra</NavLink>
+              <NavLink to="/user-management" className="btt-menu">Gerenciar Usuários</NavLink>
             </>
           )}
         </div>
 
         <div className="nav-right">
-            {auth.isLoggedIn && <UserSearch onUserSelect={handleUserSelect} />}
-            {auth.isLoggedIn ? (
-                <button onClick={handleLogout} className="btt-menu btt-logout">Sair</button>
-            ) : (
-                <Link to="/login" className="btt-menu">Login</Link>
-            )}
+          {auth.isLoggedIn && <UserSearch onUserSelect={handleUserSelect} />}
+          {auth.isLoggedIn ? (
+            <button onClick={handleLogout} className="btt-menu btt-logout">Sair</button>
+          ) : (
+            <Link to="/login" className="btt-menu">Login</Link>
+          )}
+          
+          <div className="hamburger-icon" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
+            {isMobileMenuOpen ? <FaTimes /> : <FaBars />}
+          </div>
         </div>
+      </div>
+
+      {/* Menu Lateral para Telas Móveis */}
+      <div className={`mobile-menu ${isMobileMenuOpen ? 'open' : ''}`}>
+          <NavLink to="/" className="btt-menu-mobile">Home</NavLink>
+          <NavLink to="/results" className="btt-menu-mobile">Ranking</NavLink>
+          <NavLink to="/honor" className="btt-menu-mobile">Honra</NavLink>
+          {auth.isLoggedIn && (
+            <NavLink to={`/profile/${auth.user.habby_id}`} className="btt-menu-mobile">Meu Perfil</NavLink>
+          )}
+          {auth.isLoggedIn && ['admin', 'leader'].includes(auth.user.role) && (
+            <>
+              <NavLink to="/register-member" className="btt-menu-mobile">Temporada</NavLink>
+              <NavLink to="/register-honor" className="btt-menu-mobile">Gerenciar Honra</NavLink>
+              <NavLink to="/user-management" className="btt-menu-mobile">Gerenciar Usuários</NavLink>
+            </>
+          )}
       </div>
       
       <div className="content-area">

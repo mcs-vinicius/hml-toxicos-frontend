@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Routes, Route, Link, Navigate, useLocation, NavLink } from "react-router-dom";
 import axios from "axios";
-import { FaBars, FaTimes } from 'react-icons/fa'; // Ícones para o menu
+import { FaBars, FaTimes } from 'react-icons/fa';
 import UserSearch from "./components/search/UserSearch.jsx";
 import SearchedUserProfile from "./components/search/SearchedUserProfile.jsx";
 
@@ -32,7 +32,6 @@ const App = () => {
   const location = useLocation();
 
   useEffect(() => {
-    // Fecha o menu móvel sempre que a rota mudar
     setIsMobileMenuOpen(false);
   }, [location]);
 
@@ -54,7 +53,6 @@ const App = () => {
   }, []);
 
   const handleLogin = (userData) => setAuth({ isLoggedIn: true, user: userData, loading: false });
-  
   const handleLogout = async () => {
     try {
       await axios.post(`${import.meta.env.VITE_API_URL}/logout`);
@@ -83,7 +81,6 @@ const App = () => {
           <Link to="/" className="nav-logo">Tóxicøs</Link>
         </div>
 
-        {/* Links de navegação para telas de desktop */}
         <div className="nav-center-desktop">
           <NavLink to="/" className="btt-menu">Home</NavLink>
           <NavLink to="/results" className="btt-menu">Ranking</NavLink>
@@ -101,12 +98,17 @@ const App = () => {
         </div>
 
         <div className="nav-right">
-          {auth.isLoggedIn && <UserSearch onUserSelect={handleUserSelect} />}
-          {auth.isLoggedIn ? (
-            <button onClick={handleLogout} className="btt-menu btt-logout">Sair</button>
-          ) : (
-            <Link to="/login" className="btt-menu">Login</Link>
-          )}
+          {/* A busca e o login/logout agora são gerenciados pela classe .desktop-only */}
+          <div className="desktop-only">
+            {auth.isLoggedIn && <UserSearch onUserSelect={handleUserSelect} />}
+          </div>
+          <div className="desktop-only">
+            {auth.isLoggedIn ? (
+              <button onClick={handleLogout} className="btt-menu btt-logout">Sair</button>
+            ) : (
+              <Link to="/login" className="btt-menu">Login</Link>
+            )}
+          </div>
           
           <div className="hamburger-icon" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
             {isMobileMenuOpen ? <FaTimes /> : <FaBars />}
@@ -114,8 +116,14 @@ const App = () => {
         </div>
       </div>
 
-      {/* Menu Lateral para Telas Móveis */}
       <div className={`mobile-menu ${isMobileMenuOpen ? 'open' : ''}`}>
+          {/* BUSCA ADICIONADA AO MENU MÓVEL */}
+          {auth.isLoggedIn && (
+            <div className="mobile-search-wrapper">
+              <UserSearch onUserSelect={handleUserSelect} />
+            </div>
+          )}
+          
           <NavLink to="/" className="btt-menu-mobile">Home</NavLink>
           <NavLink to="/results" className="btt-menu-mobile">Ranking</NavLink>
           <NavLink to="/honor" className="btt-menu-mobile">Honra</NavLink>
@@ -129,6 +137,15 @@ const App = () => {
               <NavLink to="/user-management" className="btt-menu-mobile">Gerenciar Usuários</NavLink>
             </>
           )}
+
+          {/* LOGIN/LOGOUT ADICIONADO AO FINAL DO MENU MÓVEL */}
+          <div className="mobile-auth-section">
+            {auth.isLoggedIn ? (
+              <button onClick={handleLogout} className="btt-menu-mobile btt-logout-mobile">Sair</button>
+            ) : (
+              <NavLink to="/login" className="btt-menu-mobile">Login</NavLink>
+            )}
+          </div>
       </div>
       
       <div className="content-area">

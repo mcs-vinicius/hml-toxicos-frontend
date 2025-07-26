@@ -47,7 +47,7 @@
 }
 
 .btt-menu:hover,
-.btt-menu.active { /* Estilo para o link ativo */
+.btt-menu.active {
   background-color: rgba(0, 255, 255, 0.1);
   border-color: rgba(0, 255, 255, 0.5);
   text-shadow: 0 0 5px #00ffff;
@@ -61,40 +61,53 @@
 }
 
 .hamburger-icon {
-  display: none; /* Escondido por padrão em telas grandes */
+  display: none;
   color: #fff;
   font-size: 1.5rem;
   cursor: pointer;
+  z-index: 1001; /* Garante que fique acima da busca */
 }
 
 .mobile-menu {
   position: fixed;
-  top: 61px; /* Altura da navbar */
-  left: -100%; /* Começa fora da tela */
-  width: 250px;
+  top: 61px;
+  left: -100%;
+  width: 280px; /* Um pouco mais largo para a busca */
   height: calc(100vh - 61px);
   background-color: rgba(10, 25, 47, 0.95);
   backdrop-filter: blur(10px);
   z-index: 999;
   transition: left 0.3s ease-in-out;
-  padding: 20px;
   display: flex;
   flex-direction: column;
   border-right: 1px solid rgba(0, 255, 255, 0.3);
 }
 
 .mobile-menu.open {
-  left: 0; /* Entra na tela */
+  left: 0;
+}
+
+.mobile-search-wrapper {
+  padding: 20px 15px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+/* Ajusta a largura da busca dentro do menu */
+.mobile-search-wrapper .search-wrapper {
+  width: 100%;
 }
 
 .btt-menu-mobile {
   color: #e0fbfc;
   text-decoration: none;
   font-family: 'Chakra Petch', sans-serif;
-  padding: 15px 10px;
+  padding: 15px 20px;
   font-size: 1.1rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   transition: background-color 0.2s;
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  text-align: left;
 }
 
 .btt-menu-mobile:hover,
@@ -103,21 +116,33 @@
   color: #fff;
 }
 
+.mobile-auth-section {
+  margin-top: auto; /* Empurra para o final do menu */
+  padding-top: 10px;
+  border-top: 1px solid rgba(0, 255, 255, 0.2);
+}
+
+.btt-logout-mobile {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #ff4d4d;
+}
+.btt-logout-mobile:hover {
+  background-color: rgba(255, 77, 77, 0.1);
+}
 
 /* --- Media Query para Responsividade --- */
 
 @media (max-width: 1024px) {
-  /* Esconde os links do centro em telas menores */
-  .nav-center-desktop {
-    display: none;
+  .nav-center-desktop, .desktop-only {
+    display: none; /* Esconde os links do centro e a busca/login do desktop */
   }
 
-  /* Mostra o ícone do hambúrguer */
   .hamburger-icon {
     display: block;
   }
   
-  /* Garante que o nome do clã e a direita fiquem nos cantos */
   .navsup {
     justify-content: space-between;
   }

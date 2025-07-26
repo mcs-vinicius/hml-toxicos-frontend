@@ -152,8 +152,7 @@
   padding-top: 20px;
 }
 
-/* Cole este bloco no final do seu arquivo src/App.css, 
-   substituindo a versão anterior se ela existir. */
+
 
 /* --- ESTILIZAÇÃO GLOBAL PARA MEMBROS DE HONRA --- */
 
@@ -174,7 +173,7 @@
     content: '👑';
     position: absolute;
     /* AJUSTE PRINCIPAL AQUI: Move a coroa para cima da foto */
-    top: -20px; 
+    top: -30px; 
     left: 50%;
     transform: translateX(-50%);
     font-size: 32px;

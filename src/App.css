@@ -151,3 +151,58 @@
 .content-area {
   padding-top: 20px;
 }
+
+/* Cole este bloco no final do seu arquivo src/App.css, 
+   substituindo a versão anterior se ela existir. */
+
+/* --- ESTILIZAÇÃO GLOBAL PARA MEMBROS DE HONRA --- */
+
+/* Contêiner com brilho dourado */
+.gloria-profile {
+    border: 2px solid #ffd700 !important;
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.7), 0 0 30px rgba(255, 174, 0, 0.5) !important;
+}
+
+/* Foto com borda dourada */
+.gloria-profile .profile-pic {
+    border-color: #ffd700 !important;
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.6) !important;
+}
+
+/* Coroa de neon sobre a foto */
+.gloria-profile .profile-pic-wrapper::after {
+    content: '👑';
+    position: absolute;
+    /* AJUSTE PRINCIPAL AQUI: Move a coroa para cima da foto */
+    top: -20px; 
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 32px;
+    color: #ffd700;
+    text-shadow: 
+        0 0 5px #ffd700,
+        0 0 10px #ffd700,
+        0 0 15px #ffae00,
+        0 0 20px #ffae00;
+    animation: flicker 1.5s infinite alternate;
+    z-index: 10;
+}
+
+/* Animação de 'piscar' para o efeito neon */
+@keyframes flicker {
+  0%, 100% {
+    opacity: 1;
+    text-shadow: 
+        0 0 5px #ffd700,
+        0 0 10px #ffd700,
+        0 0 15px #ffae00,
+        0 0 20px #ffae00;
+  }
+  50% {
+    opacity: 0.8;
+    text-shadow: 
+        0 0 5px #ffd700,
+        0 0 8px #ffd700,
+        0 0 12px #ffae00;
+  }
+}

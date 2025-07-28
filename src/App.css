@@ -15,19 +15,24 @@
   box-sizing: border-box;
 }
 
-.nav-left {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  flex-shrink: 0; /* Previne que os itens da esquerda encolham */
+.nav-left .nav-logo {
+  font-family: 'Chakra Petch', sans-serif;
+  font-weight: bold;
+  font-size: 1.5rem;
+  color: #fff;
+  text-decoration: none;
+  text-shadow: 0 0 8px #ff00ff;
 }
 
-/* O container do centro foi removido */
+.nav-center-desktop {
+  display: flex;
+  gap: 10px;
+}
 
 .nav-right {
   display: flex;
   align-items: center;
-  gap: 20px; /* Espaçamento entre a busca e o botão de sair */
+  gap: 15px;
 }
 
 .btt-menu {
@@ -38,12 +43,14 @@
   border-radius: 4px;
   transition: background-color 0.3s, color 0.3s;
   border: 1px solid transparent;
-  white-space: nowrap; /* Impede que o texto do botão quebre linha */
+  white-space: nowrap;
 }
 
-.btt-menu:hover {
+.btt-menu:hover,
+.btt-menu.active {
   background-color: rgba(0, 255, 255, 0.1);
   border-color: rgba(0, 255, 255, 0.5);
+  text-shadow: 0 0 5px #00ffff;
 }
 
 .btt-logout {
@@ -53,15 +60,103 @@
   font-size: 1rem;
 }
 
+.hamburger-icon {
+  display: none;
+  color: #fff;
+  font-size: 1.5rem;
+  cursor: pointer;
+  z-index: 1001; /* Garante que fique acima da busca */
+}
+
+.mobile-menu {
+  position: fixed;
+  top: 61px;
+  left: -100%;
+  width: 280px; /* Um pouco mais largo para a busca */
+  height: calc(100vh - 61px);
+  background-color: rgba(10, 25, 47, 0.95);
+  backdrop-filter: blur(10px);
+  z-index: 999;
+  transition: left 0.3s ease-in-out;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid rgba(0, 255, 255, 0.3);
+}
+
+.mobile-menu.open {
+  left: 0;
+}
+
+.mobile-search-wrapper {
+  padding: 20px 15px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+/* Ajusta a largura da busca dentro do menu */
+.mobile-search-wrapper .search-wrapper {
+  width: 100%;
+}
+
+.btt-menu-mobile {
+  color: #e0fbfc;
+  text-decoration: none;
+  font-family: 'Chakra Petch', sans-serif;
+  padding: 15px 20px;
+  font-size: 1.1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  transition: background-color 0.2s;
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  text-align: left;
+}
+
+.btt-menu-mobile:hover,
+.btt-menu-mobile.active {
+  background-color: rgba(0, 255, 255, 0.1);
+  color: #fff;
+}
+
+.mobile-auth-section {
+  margin-top: auto; /* Empurra para o final do menu */
+  padding-top: 10px;
+  border-top: 1px solid rgba(0, 255, 255, 0.2);
+}
+
+.btt-logout-mobile {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #ff4d4d;
+}
+.btt-logout-mobile:hover {
+  background-color: rgba(255, 77, 77, 0.1);
+}
+
+/* --- Media Query para Responsividade --- */
+
+@media (max-width: 1024px) {
+  .nav-center-desktop, .desktop-only {
+    display: none; /* Esconde os links do centro e a busca/login do desktop */
+  }
+
+  .hamburger-icon {
+    display: block;
+  }
+  
+  .navsup {
+    justify-content: space-between;
+  }
+}
+
 .content-area {
   padding-top: 20px;
 }
 
-/* Adicione no final do seu arquivo src/App.css */
+
 
 /* --- ESTILIZAÇÃO GLOBAL PARA MEMBROS DE HONRA --- */
 
-/* Contêiner com brilho dourado (funciona em .profile-container e .searched-user-profile-modal) */
+/* Contêiner com brilho dourado */
 .gloria-profile {
     border: 2px solid #ffd700 !important;
     box-shadow: 0 0 20px rgba(255, 215, 0, 0.7), 0 0 30px rgba(255, 174, 0, 0.5) !important;
@@ -77,7 +172,8 @@
 .gloria-profile .profile-pic-wrapper::after {
     content: '👑';
     position: absolute;
-    top: -15px;
+    /* AJUSTE PRINCIPAL AQUI: Move a coroa para cima da foto */
+    top: -40px; 
     left: 50%;
     transform: translateX(-50%);
     font-size: 32px;

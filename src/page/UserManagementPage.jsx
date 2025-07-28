@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import '../styles/UserManagementPage.css';
-import { FaCrown, FaUserShield, FaUser, FaTrash, FaKey } from 'react-icons/fa'; // Ícone de chave adicionado
+import { FaCrown, FaUserShield, FaUser, FaTrash, FaKey } from 'react-icons/fa';
 
 const UserManagementPage = ({ currentUser }) => {
     const [users, setUsers] = useState([]);
@@ -53,7 +53,6 @@ const UserManagementPage = ({ currentUser }) => {
         }
     };
 
-    // NOVA FUNÇÃO: Redefinir senha
     const handleResetPassword = async (userId, username) => {
         const confirmation = `Você está prestes a redefinir a senha do usuário ${username}. Uma nova senha temporária será gerada. Deseja continuar?`;
         if (window.confirm(confirmation)) {
@@ -61,7 +60,6 @@ const UserManagementPage = ({ currentUser }) => {
                 const response = await axios.post(`${API_URL}/users/${userId}/reset-password`, {}, { withCredentials: true });
                 const tempPassword = response.data.temporary_password;
                 
-                // Exibe a senha temporária em um alerta para o admin
                 alert(`Senha redefinida com sucesso!\n\nUsuário: ${username}\nNova Senha Temporária: ${tempPassword}\n\nPor favor, envie esta senha para o usuário.`);
                 setSuccessMessage(response.data.message);
                 setTimeout(() => setSuccessMessage(''), 4000);
@@ -106,42 +104,47 @@ const UserManagementPage = ({ currentUser }) => {
                                     </div>
                                 </td>
                                 <td>{user.habby_id}</td>
-                                <td className="role-cell">
-                                    {getRoleIcon(user.role)}
-                                    <span className="role-text">{user.role}</span>
+                                <td>
+                                    <div className="role-cell">
+                                        {getRoleIcon(user.role)}
+                                        <span className="role-text">{user.role}</span>
+                                    </div>
                                 </td>
                                 <td className="actions-cell">
-                                    {currentUser?.role === 'admin' && currentUser?.id !== user.id && user.role !== 'admin' && (
-                                        <select
-                                            value={user.role}
-                                            onChange={(e) => handleRoleChange(user.id, e.target.value)}
-                                            className="role-select"
-                                        >
-                                            <option value="member">Membro</option>
-                                            <option value="leader">Líder</option>
-                                        </select>
-                                    )}
+                                    {/* Container para alinhar os botões e o select */}
+                                    <div className="action-buttons-container">
+                                        {currentUser?.role === 'admin' && currentUser?.id !== user.id && user.role !== 'admin' && (
+                                            <select
+                                                value={user.role}
+                                                onChange={(e) => handleRoleChange(user.id, e.target.value)}
+                                                className="role-select"
+                                                title="Alterar nível de acesso"
+                                            >
+                                                <option value="member">Membro</option>
+                                                <option value="leader">Líder</option>
+                                            </select>
+                                        )}
 
-                                    {/* Botão de Redefinir Senha */}
-                                    {currentUser?.role === 'admin' && currentUser?.id !== user.id && (
-                                         <button 
-                                            className="action-button reset-password" 
-                                            title="Redefinir Senha"
-                                            onClick={() => handleResetPassword(user.id, user.username)}
-                                        >
-                                            <FaKey />
-                                        </button>
-                                    )}
+                                        {currentUser?.role === 'admin' && currentUser?.id !== user.id && (
+                                             <button 
+                                                className="action-button reset-password" 
+                                                title="Redefinir Senha"
+                                                onClick={() => handleResetPassword(user.id, user.username)}
+                                            >
+                                                <FaKey />
+                                            </button>
+                                        )}
 
-                                    {currentUser?.id !== user.id && (user.role === 'member' || currentUser.role === 'admin') && user.role !== 'admin' && (
-                                        <button 
-                                            className="action-button delete" 
-                                            title="Excluir Usuário"
-                                            onClick={() => handleDeleteUser(user.id, user.username)}
-                                        >
-                                            <FaTrash />
-                                        </button>
-                                    )}
+                                        {currentUser?.id !== user.id && (user.role === 'member' || currentUser.role === 'admin') && user.role !== 'admin' && (
+                                            <button 
+                                                className="action-button delete" 
+                                                title="Excluir Usuário"
+                                                onClick={() => handleDeleteUser(user.id, user.username)}
+                                            >
+                                                <FaTrash />
+                                            </button>
+                                        )}
+                                    </div>
                                 </td>
                             </tr>
                         ))}
@@ -151,6 +154,5 @@ const UserManagementPage = ({ currentUser }) => {
         </div>
     );
 };
-
 
 export default UserManagementPage;

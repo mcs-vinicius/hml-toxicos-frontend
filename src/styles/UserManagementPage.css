@@ -1,171 +1,153 @@
 /* src/styles/UserManagementPage.css */
+
 .user-management-container {
-    padding: 100px 20px;
-    font-family: 'Chakra Petch', sans-serif;
+    padding: 2rem;
     color: #e0fbfc;
+    max-width: 1200px;
+    margin: 0 auto;
+    font-family: 'Chakra Petch', sans-serif;
 }
 
 .user-management-container h1 {
-    color: #ffffff;
     text-align: center;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 4px;
-    margin-bottom: 40px;
-    text-shadow: 0 0 5px #fff, 0 0 15px #ff00ff;
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+    color: #ffffff;
+    text-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff;
 }
 
 .user-list-table-wrapper {
-    max-width: 1000px;
-    margin: auto;
-    background-color: rgba(10, 25, 47, 0.85);
-    border: 1px solid #00ffff;
+    overflow-x: auto; /* Garante que a tabela não quebre o layout em telas menores */
+    background-color: rgba(0, 25, 51, 0.7);
+    border: 1px solid rgba(0, 255, 255, 0.2);
     border-radius: 8px;
-    padding: 20px;
-    overflow-x: auto;
+    padding: 1rem;
 }
 
-.user-list-table-wrapper table {
+.user-list-table {
     width: 100%;
     border-collapse: collapse;
+    min-width: 800px; /* Largura mínima para evitar quebra de layout interna */
 }
 
-.user-list-table-wrapper th, .user-list-table-wrapper td {
-    padding: 15px;
+.user-list-table th,
+.user-list-table td {
+    padding: 12px 15px;
     text-align: left;
     border-bottom: 1px solid rgba(0, 255, 255, 0.2);
 }
 
-.user-list-table-wrapper th {
+.user-list-table th {
     color: #00ffff;
+    font-weight: 600;
     text-transform: uppercase;
+    font-size: 0.9rem;
 }
 
-.profile-thumbnail {
-    width: 40px;
-    height: 40px;
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.user-avatar {
+    width: 45px;
+    height: 45px;
     border-radius: 50%;
     object-fit: cover;
     border: 2px solid #00ffff;
 }
 
-.action-buttons {
+.role-cell {
     display: flex;
-    gap: 5px;
     align-items: center;
-    justify-content: center ;
+    gap: 8px;
 }
 
-.action-space{
-    width: 330px;
-    height: 47px;
+.role-icon {
+    font-size: 1.2rem;
 }
 
-.btn {
-    padding: 8px 12px;
-    font-family: 'Chakra Petch', sans-serif;
-    text-transform: uppercase;
-    cursor: pointer;
+.role-icon.admin { color: #ffd700; }
+.role-icon.leader { color: #00aaff; }
+.role-icon.member { color: #e0fbfc; }
+
+.role-text {
+    text-transform: capitalize;
+}
+
+/* --- SEÇÃO DE AÇÕES CORRIGIDA --- */
+.actions-cell {
+    /* Centraliza verticalmente o conteúdo da célula */
+    vertical-align: middle;
+}
+
+.action-buttons-container {
+    /* Usa Flexbox para alinhar os botões e o select */
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Espaçamento entre os itens */
+}
+
+.role-select {
+    background-color: #021a2b;
+    color: #e0fbfc;
+    border: 1px solid #00ffff;
     border-radius: 4px;
-    background: transparent;
-    transition: all 0.3s ease;
-}
-
-.btn-view { border: 1px solid #00ffff; color: #00ffff; }
-.btn-view:hover { background: #00ffff; color: #02040a; }
-
-.btn-promote { border: 1px solid #00ff00; color: #00ff00; }
-.btn-promote:hover { background: #00ff00; color: #02040a; }
-
-.btn-demote { border: 1px solid #ffd700; color: #ffd700; }
-.btn-demote:hover { background: #ffd700; color: #02040a; }
-
-.btn-delete { border: 1px solid #ff2d55; color: #ff2d55; }
-.btn-delete:hover { background: #ff2d55; color: #fff; }
-
-
-/* UserManagementPage.css */
-/* ... (estilos existentes) ... */
-
-@media (max-width: 768px) {
-    .user-management-container {
-        padding: 60px 10px;
-    }
-    
-    .user-list-table-wrapper table, 
-    .user-list-table-wrapper thead, 
-    .user-list-table-wrapper tbody, 
-    .user-list-table-wrapper th, 
-    .user-list-table-wrapper td, 
-    .user-list-table-wrapper tr {
-        display: block;
-    }
-    
-    .user-list-table-wrapper thead tr {
-        position: absolute;
-        top: -9999px;
-        left: -9999px;
-    }
-    
-    .user-list-table-wrapper tr {
-        border: 1px solid rgba(0, 255, 255, 0.2);
-        margin-bottom: 15px;
-    }
-    
-    .user-list-table-wrapper td {
-        border: none;
-        border-bottom: 1px solid rgba(0, 255, 255, 0.1);
-        position: relative;
-        padding-left: 120px; /* Espaço para o rótulo */
-        text-align: right;
-        min-height: 50px; /* Altura mínima para acomodar a imagem de perfil */
-        display: flex;
-        align-items: center;
-        justify-content: flex-end;
-    }
-    
-    .user-list-table-wrapper td:before {
-        content: attr(data-label);
-        position: absolute;
-        left: 10px;
-        width: 100px; /* Largura fixa para o rótulo */
-        white-space: nowrap;
-        text-align: left;
-        font-weight: bold;
-        color: #00ffff;
-    }
-
-    .action-buttons {
-        flex-direction: row;
-        
-        gap: 5px;
-    }
-    
-    .action-space {
-        width: auto;
-        height: auto;
-    }
-
-    .btn {
-    padding: 2px 2px;
-    font-family: 'Chakra Petch', sans-serif;
-    text-transform: uppercase;
+    padding: 8px 10px;
+    font-family: inherit;
+    font-size: 14px;
     cursor: pointer;
-    border-radius: 4px;
-    background: transparent;
-    transition: all 0.3s ease;
-    font-size: 10px;
 }
 
-.btn-view { border: 1px solid #00ffff; color: #00ffff; }
-.btn-view:hover { background: #00ffff; color: #02040a; }
+.action-button {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 1.3rem; /* Tamanho do ícone */
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s ease, color 0.2s ease;
+}
 
-.btn-promote { border: 1px solid #00ff00; color: #00ff00; }
-.btn-promote:hover { background: #00ff00; color: #02040a; }
+.action-button:hover {
+    transform: scale(1.2);
+}
 
-.btn-demote { border: 1px solid #ffd700; color: #ffd700; }
-.btn-demote:hover { background: #ffd700; color: #02040a; }
+.action-button.reset-password {
+    color: #ffc107; /* Cor amarela para 'redefinir senha' */
+}
+.action-button.reset-password:hover {
+    color: #ffd966;
+}
 
-.btn-delete { border: 1px solid #ff2d55; color: #ff2d55; }
-.btn-delete:hover { background: #ff2d55; color: #fff; }
+.action-button.delete {
+    color: #ff4d4d; /* Cor vermelha para 'excluir' */
+}
+.action-button.delete:hover {
+    color: #ff7f7f;
+}
+/* --- FIM DA SEÇÃO CORRIGIDA --- */
+
+/* Mensagens de feedback */
+.error-message, .success-message {
+    text-align: center;
+    padding: 10px;
+    margin-bottom: 1rem;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.error-message {
+    background-color: rgba(255, 77, 77, 0.2);
+    color: #ff4d4d;
+    border: 1px solid #ff4d4d;
+}
+
+.success-message {
+    background-color: rgba(40, 167, 69, 0.2);
+    color: #28a745;
+    border: 1px solid #28a745;
 }

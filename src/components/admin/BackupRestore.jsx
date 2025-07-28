@@ -114,12 +114,20 @@ const BackupRestore = () => {
 
             setMessage('Backup gerado e baixado com sucesso!');
         } catch (err) {
-            setError('Erro ao gerar o backup. Verifique suas permissões.');
+            let errorMessage = 'Erro ao gerar o backup. Verifique o console do servidor para mais detalhes.';
+            if (err.response && err.response.data && err.response.data.error) {
+                errorMessage = err.response.data.error;
+                if(err.response.data.details) {
+                    errorMessage += ` Detalhes: ${err.response.data.details}`;
+                }
+            }
+            setError(errorMessage);
             console.error(err);
         } finally {
             setIsLoadingBackup(false);
         }
     };
+
 
     const handleFileChange = (event) => {
         setSelectedFile(event.target.files[0]);

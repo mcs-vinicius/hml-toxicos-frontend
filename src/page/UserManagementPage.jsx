@@ -1,107 +1,145 @@
 // src/page/UserManagementPage.jsx
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import '../styles/UserManagementPage.css'; // Criar este arquivo de estilo
+import '../styles/UserManagementPage.css';
+import { FaCrown, FaUserShield, FaUser, FaTrash, FaKey } from 'react-icons/fa'; // Ícone de chave adicionado
 
 const UserManagementPage = ({ currentUser }) => {
     const [users, setUsers] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState('');
-    const navigate = useNavigate();
+    const [successMessage, setSuccessMessage] = useState('');
+    
+    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
     useEffect(() => {
         const fetchUsers = async () => {
             try {
-                const response = await axios.get(`${import.meta.env.VITE_API_URL}/users`);
+                const response = await axios.get(`${API_URL}/users`, { withCredentials: true });
                 setUsers(response.data);
             } catch (err) {
-                setError('Falha ao carregar usuários. Você tem permissão para ver esta página?');
+                setError('Falha ao carregar usuários. Você pode não ter permissão.');
                 console.error(err);
+            } finally {
+                setIsLoading(false);
             }
         };
         fetchUsers();
-    }, []);
-
-    const handleRoleChange = async (userId, newRole) => {
-        if (!window.confirm(`Deseja alterar o nível deste usuário para ${newRole}?`)) return;
-        try {
-            await axios.put(`${import.meta.env.VITE_API_URL}/users/${userId}/role`, { role: newRole });
-            setUsers(users.map(u => u.id === userId ? { ...u, role: newRole } : u));
-        } catch (err) {
-            alert(err.response?.data?.error || 'Erro ao alterar nível.');
-        }
-    };
-
-    const handleDelete = async (userId, username) => {
-        if (!window.confirm(`Tem certeza que deseja excluir o usuário ${username}? Esta ação é irreversível.`)) return;
-        try {
-            await axios.delete(`${import.meta.env.VITE_API_URL}/users/${userId}`);
-            setUsers(users.filter(u => u.id !== userId));
-        } catch (err) {
-            alert(err.response?.data?.error || 'Erro ao excluir usuário.');
-        }
-    };
+    }, [API_URL]);
     
-    const canDelete = (userToDelete) => {
-        if (currentUser.role === 'admin' && currentUser.id !== userToDelete.id) {
-            return true;
+    const handleRoleChange = async (userId, newRole) => {
+        try {
+            const response = await axios.put(`${API_URL}/users/${userId}/role`, { role: newRole }, { withCredentials: true });
+            setUsers(users.map(u => (u.id === userId ? { ...u, role: newRole } : u)));
+            setSuccessMessage(response.data.message);
+            setTimeout(() => setSuccessMessage(''), 3000);
+        } catch (err) {
+            setError(err.response?.data?.error || 'Erro ao alterar o nível de acesso.');
+            setTimeout(() => setError(''), 3000);
         }
-        if (currentUser.role === 'leader' && userToDelete.role === 'member') {
-            return true;
-        }
-        return false;
     };
 
+    const handleDeleteUser = async (userId, username) => {
+        if (window.confirm(`Tem certeza que deseja excluir o usuário ${username}? Esta ação não pode ser desfeita.`)) {
+            try {
+                const response = await axios.delete(`${API_URL}/users/${userId}`, { withCredentials: true });
+                setUsers(users.filter(u => u.id !== userId));
+                setSuccessMessage(response.data.message);
+                setTimeout(() => setSuccessMessage(''), 3000);
+            } catch (err) {
+                setError(err.response?.data?.error || 'Erro ao excluir o usuário.');
+                setTimeout(() => setError(''), 3000);
+            }
+        }
+    };
+
+    // NOVA FUNÇÃO: Redefinir senha
+    const handleResetPassword = async (userId, username) => {
+        const confirmation = `Você está prestes a redefinir a senha do usuário ${username}. Uma nova senha temporária será gerada. Deseja continuar?`;
+        if (window.confirm(confirmation)) {
+            try {
+                const response = await axios.post(`${API_URL}/users/${userId}/reset-password`, {}, { withCredentials: true });
+                const tempPassword = response.data.temporary_password;
+                
+                // Exibe a senha temporária em um alerta para o admin
+                alert(`Senha redefinida com sucesso!\n\nUsuário: ${username}\nNova Senha Temporária: ${tempPassword}\n\nPor favor, envie esta senha para o usuário.`);
+                setSuccessMessage(response.data.message);
+                setTimeout(() => setSuccessMessage(''), 4000);
+
+            } catch (err) {
+                setError(err.response?.data?.error || 'Erro ao redefinir a senha.');
+                setTimeout(() => setError(''), 4000);
+            }
+        }
+    };
+
+    const getRoleIcon = (role) => {
+        if (role === 'admin') return <FaCrown title="Administrador" className="role-icon admin" />;
+        if (role === 'leader') return <FaUserShield title="Líder" className="role-icon leader" />;
+        return <FaUser title="Membro" className="role-icon member" />;
+    };
+
+    if (isLoading) return <p>Carregando usuários...</p>;
+    
     return (
         <div className="user-management-container">
-            <h1>Gerenciamento de Usuários</h1>
+            <h1>Gerenciar Usuários</h1>
             {error && <p className="error-message">{error}</p>}
+            {successMessage && <p className="success-message">{successMessage}</p>}
             <div className="user-list-table-wrapper">
-                <table>
+                <table className="user-list-table">
                     <thead>
                         <tr>
-                            <th>Foto</th>
-                            <th>Nick</th>
-                            <th>ID Habby</th>
+                            <th>Usuário</th>
+                            <th>Habby ID</th>
                             <th>Nível</th>
-                            <th className='action-space' >Ações</th>
+                            <th>Ações</th>
                         </tr>
                     </thead>
                     <tbody>
                         {users.map(user => (
                             <tr key={user.id}>
                                 <td>
-                                    <img 
-                                      src={user.profile_pic_url || `https://via.placeholder.com/40?text=${user.username.charAt(0)}`} 
-                                      alt="Perfil" 
-                                      className="profile-thumbnail"
-                                    />
+                                    <div className="user-info">
+                                        <img src={user.profile_pic_url} alt={user.nick || user.username} className="user-avatar" />
+                                        <span>{user.nick || user.username}</span>
+                                    </div>
                                 </td>
-                                <td data-label="Nick">{user.nick || user.username}</td>
-                                <td data-label="ID Habby">{user.habby_id}</td>
-                                <td data-label="Nível">{user.role}</td>
-                                <td data-label="Ações" className="action-buttons action-space"> 
-                                    <div></div>
-                                    <button onClick={() => navigate(`/profile/${user.habby_id}`)} className="btn btn-view">
-                                        Perfil
-                                    </button>
-                                    {currentUser.role === 'admin' && currentUser.id !== user.id && user.role !== 'admin' && (
-                                        <>
-                                            {user.role === 'member' && (
-                                                <button onClick={() => handleRoleChange(user.id, 'leader')} className="btn btn-promote">
-                                                    Promover
-                                                </button>
-                                            )}
-                                            {user.role === 'leader' && (
-                                                <button onClick={() => handleRoleChange(user.id, 'member')} className="btn btn-demote">
-                                                    Rebaixar
-                                                </button>
-                                            )}
-                                        </>
+                                <td>{user.habby_id}</td>
+                                <td className="role-cell">
+                                    {getRoleIcon(user.role)}
+                                    <span className="role-text">{user.role}</span>
+                                </td>
+                                <td className="actions-cell">
+                                    {currentUser?.role === 'admin' && currentUser?.id !== user.id && user.role !== 'admin' && (
+                                        <select
+                                            value={user.role}
+                                            onChange={(e) => handleRoleChange(user.id, e.target.value)}
+                                            className="role-select"
+                                        >
+                                            <option value="member">Membro</option>
+                                            <option value="leader">Líder</option>
+                                        </select>
                                     )}
-                                    {canDelete(user) && (
-                                        <button onClick={() => handleDelete(user.id, user.username)} className="btn btn-delete">
-                                            Excluir
+
+                                    {/* Botão de Redefinir Senha */}
+                                    {currentUser?.role === 'admin' && currentUser?.id !== user.id && (
+                                         <button 
+                                            className="action-button reset-password" 
+                                            title="Redefinir Senha"
+                                            onClick={() => handleResetPassword(user.id, user.username)}
+                                        >
+                                            <FaKey />
+                                        </button>
+                                    )}
+
+                                    {currentUser?.id !== user.id && (user.role === 'member' || currentUser.role === 'admin') && user.role !== 'admin' && (
+                                        <button 
+                                            className="action-button delete" 
+                                            title="Excluir Usuário"
+                                            onClick={() => handleDeleteUser(user.id, user.username)}
+                                        >
+                                            <FaTrash />
                                         </button>
                                     )}
                                 </td>
@@ -113,5 +151,6 @@ const UserManagementPage = ({ currentUser }) => {
         </div>
     );
 };
+
 
 export default UserManagementPage;

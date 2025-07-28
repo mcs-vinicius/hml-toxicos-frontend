@@ -185,6 +185,7 @@ const App = () => {
         </Routes>
       </div>
 
+
       {searchedHabbyId && (
         <SearchedUserProfile habbyId={searchedHabbyId} onClose={handleCloseModal} />
       )}

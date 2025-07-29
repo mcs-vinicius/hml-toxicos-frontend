@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import '../styles/HomePage.css'; 
+import '../styles/HomePage.css';
 import Cta from '../components/cta/Cta';
+import defaultAvatar from '../assets/logo/logoFE.png';
 
 const Home = ({ userRole }) => {
+  // --- State Declarations ---
   const [topPlayers, setTopPlayers] = useState([]);
   const [memberCount, setMemberCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
-  
   const [podiumSeasonDates, setPodiumSeasonDates] = useState({ start: '', end: '' });
-
   const [homeContent, setHomeContent] = useState({
     leader: '',
     focus: '',
@@ -19,6 +19,8 @@ const Home = ({ userRole }) => {
     content_section: ''
   });
   const [honorInfo, setHonorInfo] = useState({ members: [], period: '' });
+
+  // --- Functions ---
 
   const formatDate = (dateString) => {
     if (!dateString) return '';
@@ -40,7 +42,6 @@ const Home = ({ userRole }) => {
         const latestSeason = seasonsRes.data[seasonsRes.data.length - 1];
         setTopPlayers([...latestSeason.participants].sort((a, b) => b.fase - a.fase).slice(0, 3));
         setMemberCount(latestSeason.participants.length);
-        
         setPodiumSeasonDates({
           start: formatDate(latestSeason.start_date),
           end: formatDate(latestSeason.end_date)
@@ -61,22 +62,36 @@ const Home = ({ userRole }) => {
     fetchHomeData();
   }, []);
   
-  const handleInputChange = (e) => setHomeContent(p => ({ ...p, [e.target.name]: e.target.value }));
+  // Handlers reescritos para maior clareza e robustez
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setHomeContent(prevState => ({
+      ...prevState,
+      [name]: value
+    }));
+  };
+
   const handleRequirementChange = (index, value) => {
     const newRequirements = [...homeContent.requirements];
     newRequirements[index] = value;
-    setHomeContent(p => ({ ...p, requirements: newRequirements }));
+    setHomeContent(prevState => ({
+      ...prevState,
+      requirements: newRequirements
+    }));
   };
+
   const handleSaveChanges = async () => {
     try {
       await axios.put(`${import.meta.env.VITE_API_URL}/home-content`, homeContent);
       alert("Conteúdo salvo com sucesso!");
       setIsEditing(false);
     } catch (error) {
+      console.error("Falha ao salvar o conteúdo:", error);
       alert("Falha ao salvar o conteúdo.");
     }
   };
 
+  // --- Render ---
   return (
     <>
       <Cta/>
@@ -119,13 +134,13 @@ const Home = ({ userRole }) => {
                     <h3>Requisitos de Alistamento</h3>
                     {isEditing ? (
                         <div className="edit-fields">
-                            {homeContent.requirements.map((req, index) => (
+                            {homeContent.requirements && homeContent.requirements.map((req, index) => (
                                 <input key={index} type="text" value={req} onChange={(e) => handleRequirementChange(index, e.target.value)} />
                             ))}
                         </div>
                     ) : (
                         <ul className="requirements-list">
-                            {homeContent.requirements.map((req, index) => (
+                            {homeContent.requirements && homeContent.requirements.map((req, index) => (
                                 <li key={index}>{req}</li>
                             ))}
                         </ul>
@@ -165,12 +180,16 @@ const Home = ({ userRole }) => {
             ) : honorInfo.members && honorInfo.members.length > 0 ? (
                 <>
                 <div className="honor-members-grid">
-                    {honorInfo.members.map(member => (
-                    <div key={member.habby_id} className="honor-member-card gloria-profile">
+                    {honorInfo.members.map((member, index) => (
+                    <div key={`${member.name}-${index}`} className="honor-member-card gloria-profile">
                         <div className="profile-pic-wrapper">
-                        <img src={member.profile_pic_url} alt={member.name} className="profile-pic" />
+                        <img 
+                          src={member.profile_pic_url || defaultAvatar} 
+                          alt={member.nick || member.name} 
+                          className="profile-pic" 
+                        />
                         </div>
-                        <p className="honor-member-name">{member.name}</p>
+                        <p className="honor-member-name">{member.nick || member.name}</p>
                     </div>
                     ))}
                 </div>

@@ -160,7 +160,7 @@ thead tr {
   font-weight: 600;
 }
 
-td:nth-child(2) {
+td:nth-child(3) {
   text-align: left;
 }
 
@@ -297,14 +297,17 @@ tfoot tr {
 /* ... (estilos existentes) ... */
 
 .tier-emblem {
-  width: 40px;
+  width: 25px;
   height: auto;
+  margin-right: 10px;
   vertical-align: middle;
-  cursor: pointer;
 }
 
 .emblem-cell {
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  text-align: left;
 }
 
 @media (max-width: 768px) {
@@ -384,10 +387,6 @@ tfoot tr {
     justify-content: flex-end;
     align-items: center;
     min-height: 35px;
-  }
-
-  td.emblem-cell {
-    justify-content: flex-end; /* Alinha o emblema à direita no modo mobile */
   }
 
   td:last-child {

@@ -263,6 +263,7 @@ const ResultsPage = ({ currentUser }) => {
                   </tr>
                 </thead>
                 <tbody>
+                  {/* Top 30 Ativos */}
                   {rankingData.top30Total.map((p, i) => (
                     <tr key={p.id || i}>
                       <td data-label="Posição">{i + 1}º</td>
@@ -275,9 +276,10 @@ const ResultsPage = ({ currentUser }) => {
                       <td data-label="Total">{p.total}</td>
                     </tr>
                   ))}
+                  {/* Restante Inativo (com pontuação) */}
                   {rankingData.remainingTotal.map((p, i) => (
                     <tr key={p.id || i} className="inactive-participant">
-                      <td data-label="Posição">{i + 1}º</td>
+                      <td data-label="Posição">{30 + i + 1}º</td>
                       <td data-label="Nome" className="leftlabel">
                         {p.name}
                       </td>

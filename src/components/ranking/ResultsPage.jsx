@@ -184,8 +184,8 @@ const ResultsPage = ({ currentUser }) => {
                 <thead>
                   <tr>
                     <th>Posição</th>
-                    <th>Emblema</th>
                     <th>Nome</th>
+                    <th>Tier</th>
                     <th>Fase de Acesso</th>
                     <th>Evolução</th>
                   </tr>
@@ -196,16 +196,16 @@ const ResultsPage = ({ currentUser }) => {
                     return (
                       <tr key={p.id || i}>
                         <td data-label="Posição">{i + 1}º</td>
-                        <td data-label="Emblema" className="emblem-cell">
+                        <td data-label="Nome" className="leftlabel">
+                          {p.name}
+                        </td>
+                        <td data-label="Tier" className="emblem-cell">
                           <img
                             src={getTierImageUrl(tier.emblem)}
                             alt={tier.name}
                             className="tier-emblem"
                           />
                           <span>{tier.name}</span>
-                        </td>
-                        <td data-label="Nome" className="leftlabel">
-                          {p.name}
                         </td>
                         <td data-label="Fase de Acesso">{p.fase}</td>
                         {renderEvolution(p.name)}
@@ -217,16 +217,16 @@ const ResultsPage = ({ currentUser }) => {
                     return (
                       <tr key={p.id || i} className="inactive-participant">
                         <td data-label="Posição">{30 + i + 1}º</td>
-                        <td data-label="Emblema" className="emblem-cell">
+                        <td className="leftlabel" data-label="Nome">
+                          {p.name}
+                        </td>
+                        <td data-label="Tier" className="emblem-cell">
                           <img
                             src={getTierImageUrl(tier.emblem)}
                             alt={tier.name}
                             className="tier-emblem"
                           />
                           <span>{tier.name}</span>
-                        </td>
-                        <td className="leftlabel" data-label="Nome">
-                          {p.name}
                         </td>
                         <td data-label="Fase">{p.fase}</td>
                         {renderEvolution(p.name)}

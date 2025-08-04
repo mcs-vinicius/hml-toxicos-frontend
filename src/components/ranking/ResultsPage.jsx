@@ -203,9 +203,9 @@ const ResultsPage = ({ currentUser }) => {
                           <img
                             src={getTierImageUrl(tier.emblem)}
                             alt={tier.name}
-                            title={tier.name}
                             className="tier-emblem"
                           />
+                          <span>{tier.name}</span>
                         </td>
                         <td data-label="Fase de Acesso">{p.fase}</td>
                         {renderEvolution(p.name)}
@@ -224,9 +224,9 @@ const ResultsPage = ({ currentUser }) => {
                           <img
                             src={getTierImageUrl(tier.emblem)}
                             alt={tier.name}
-                            title={tier.name}
                             className="tier-emblem"
                           />
+                          <span>{tier.name}</span>
                         </td>
                         <td data-label="Fase">{p.fase}</td>
                         {renderEvolution(p.name)}

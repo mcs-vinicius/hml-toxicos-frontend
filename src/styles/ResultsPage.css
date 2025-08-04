@@ -160,7 +160,7 @@ thead tr {
   font-weight: 600;
 }
 
-td:nth-child(3) {
+td:nth-child(2) {
   text-align: left;
 }
 
@@ -296,18 +296,25 @@ tfoot tr {
 /* ResultsPage.css */
 /* ... (estilos existentes) ... */
 
-.tier-emblem {
-  width: 30px;
-  height: auto;
-  margin-right: 10px;
-  vertical-align: middle;
-}
-
+/* AJUSTES PARA A ALTURA DA LINHA */
 .emblem-cell {
   display: flex;
   align-items: center;
   justify-content: flex-start;
   text-align: left;
+  padding: 4px 10px; /* Reduz o padding vertical e horizontal */
+}
+
+.tier-emblem {
+  width: 28px; /* Diminui o tamanho do emblema */
+  height: auto;
+  margin-right: 8px; /* Diminui o espaço entre o emblema e o texto */
+  vertical-align: middle;
+}
+
+.emblem-cell span {
+  font-size: 0.9em; /* Reduz o tamanho da fonte do nome do tier */
+  line-height: 1; /* Garante que o texto não adicione altura extra */
 }
 
 @media (max-width: 768px) {

@@ -3,6 +3,11 @@ import axios from "axios";
 import "../../styles/ResultsPage.css";
 import { FaTrash } from "react-icons/fa"; // Importando o ícone
 
+// Helper para construir o URL da imagem dinamicamente, compatível com o Vite
+const getTierImageUrl = (emblem) => {
+  return new URL(`../../assets/tier/${emblem}.png`, import.meta.url).href;
+};
+
 const ResultsPage = ({ currentUser }) => {
   const [seasons, setSeasons] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -132,7 +137,7 @@ const ResultsPage = ({ currentUser }) => {
       return { name: "Aristocrata", emblem: "13" };
     if (fase >= 541 && fase <= 575) return { name: "Nobreza", emblem: "14" };
     if (fase >= 576) return { name: "Baleia", emblem: "15" };
-    return { name: "", emblem: "" };
+    return { name: "", emblem: "1" }; // Retorna um emblema padrão caso não encontre
   };
 
   const renderEvolution = (participantName) => {
@@ -161,7 +166,6 @@ const ResultsPage = ({ currentUser }) => {
               Temporada {currentPage} - {formatDateBR(season.start_date)} até{" "}
               {formatDateBR(season.end_date)}
             </div>
-            {/* NOVO: Botão de exclusão para admins */}
             {currentUser?.role === "admin" && (
               <button
                 className="btn-delete-season"
@@ -187,7 +191,6 @@ const ResultsPage = ({ currentUser }) => {
                   </tr>
                 </thead>
                 <tbody>
-                  {/* Top 30 Ativos */}
                   {rankingData.top30Fase.map((p, i) => {
                     const tier = getTier(p.fase);
                     return (
@@ -195,7 +198,7 @@ const ResultsPage = ({ currentUser }) => {
                         <td data-label="Posição">{i + 1}º</td>
                         <td data-label="Emblema" className="emblem-cell">
                           <img
-                            src={`/src/assets/tier/${tier.emblem}.png`}
+                            src={getTierImageUrl(tier.emblem)}
                             alt={tier.name}
                             className="tier-emblem"
                           />
@@ -209,7 +212,6 @@ const ResultsPage = ({ currentUser }) => {
                       </tr>
                     );
                   })}
-                  {/* Restante Inativo (com evolução) */}
                   {rankingData.remainingFase.map((p, i) => {
                     const tier = getTier(p.fase);
                     return (
@@ -217,7 +219,7 @@ const ResultsPage = ({ currentUser }) => {
                         <td data-label="Posição">{30 + i + 1}º</td>
                         <td data-label="Emblema" className="emblem-cell">
                           <img
-                            src={`/src/assets/tier/${tier.emblem}.png`}
+                            src={getTierImageUrl(tier.emblem)}
                             alt={tier.name}
                             className="tier-emblem"
                           />
@@ -261,7 +263,6 @@ const ResultsPage = ({ currentUser }) => {
                   </tr>
                 </thead>
                 <tbody>
-                  {/* Top 30 Ativos */}
                   {rankingData.top30Total.map((p, i) => (
                     <tr key={p.id || i}>
                       <td data-label="Posição">{i + 1}º</td>
@@ -274,7 +275,6 @@ const ResultsPage = ({ currentUser }) => {
                       <td data-label="Total">{p.total}</td>
                     </tr>
                   ))}
-                  {/* Restante Inativo (com pontuação) */}
                   {rankingData.remainingTotal.map((p, i) => (
                     <tr key={p.id || i} className="inactive-participant">
                       <td data-label="Posição">{i + 1}º</td>

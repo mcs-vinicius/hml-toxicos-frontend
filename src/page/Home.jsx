@@ -21,7 +21,6 @@ const Home = ({ userRole }) => {
   const [honorInfo, setHonorInfo] = useState({ members: [], period: '' });
 
   // --- Functions ---
-
   const formatDate = (dateString) => {
     if (!dateString) return '';
     const date = new Date(dateString);
@@ -38,6 +37,10 @@ const Home = ({ userRole }) => {
         axios.get(`${import.meta.env.VITE_API_URL}/latest-honor-members`)
       ]);
 
+      // !! PONTO DE DEPURACAO !!
+      // Verifique a consola do seu navegador para ver o que a API está a retornar.
+      console.log('DADOS RECEBIDOS DOS MEMBROS DE HONRA:', honorRes.data);
+
       if (seasonsRes.data && seasonsRes.data.length > 0) {
         const latestSeason = seasonsRes.data[seasonsRes.data.length - 1];
         setTopPlayers([...latestSeason.participants].sort((a, b) => b.fase - a.fase).slice(0, 3));
@@ -49,7 +52,10 @@ const Home = ({ userRole }) => {
       }
       
       setHomeContent(contentRes.data);
-      setHonorInfo(honorRes.data);
+      // Certifique-se de que o estado é atualizado apenas se os dados existirem
+      if (honorRes.data) {
+        setHonorInfo(honorRes.data);
+      }
 
     } catch (error) {
       console.error("Erro ao buscar dados para a Home:", error);
@@ -62,7 +68,6 @@ const Home = ({ userRole }) => {
     fetchHomeData();
   }, []);
   
-  // Handlers reescritos para maior clareza e robustez
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setHomeContent(prevState => ({
@@ -97,6 +102,8 @@ const Home = ({ userRole }) => {
       <Cta/>
       <div className="home-container">
         
+        {/* ... restante do seu código JSX ... */}
+        {/* Nenhuma alteração necessária no JSX a partir daqui, o código anterior está correto. */}
         {userRole === 'admin' && (
           <div className="admin-controls">
             {isEditing ? (

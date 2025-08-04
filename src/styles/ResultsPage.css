@@ -1,5 +1,5 @@
 /* --- Fonte e Animações Globais --- */
-@import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;600;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;600;700&display=swap");
 
 @keyframes fadeIn {
   from {
@@ -25,24 +25,31 @@
 body {
   /* Fundo escuro com um grid sutil */
   background-color: #02040a;
-  background-image: 
-    linear-gradient(rgba(0, 255, 255, 0.1) 1px, transparent 1px),
+  background-image: linear-gradient(
+      rgba(0, 255, 255, 0.1) 1px,
+      transparent 1px
+    ),
     linear-gradient(90deg, rgba(0, 255, 255, 0.1) 1px, transparent 1px);
   background-size: 30px 30px;
   color: #e0fbfc; /* Texto principal em tom ciano claro */
-  font-family: 'Chakra Petch', sans-serif;
+  font-family: "Chakra Petch", sans-serif;
   overflow-x: hidden; /* Previne scroll horizontal */
 }
 
 /* Efeito de scanline na tela inteira */
 body::after {
-  content: '';
+  content: "";
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 10%;
-  background: linear-gradient(to bottom, rgba(0, 255, 255, 0) 0%, rgba(0, 255, 255, 0.1) 50%, rgba(0, 255, 255, 0) 100%);
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 255, 255, 0) 0%,
+    rgba(0, 255, 255, 0.1) 50%,
+    rgba(0, 255, 255, 0) 100%
+  );
   animation: scanline 10s linear infinite;
   pointer-events: none;
   z-index: 999;
@@ -56,15 +63,17 @@ body::after {
   background-color: rgba(10, 25, 47, 0.8); /* Fundo semi-transparente */
   border: 1px solid #00ffff; /* Borda Ciano Neon */
   border-radius: 8px;
-  box-shadow: 0 0 30px rgba(0, 255, 255, 0.3), inset 0 0 20px rgba(0, 255, 255, 0.1);
+  box-shadow: 0 0 30px rgba(0, 255, 255, 0.3),
+    inset 0 0 20px rgba(0, 255, 255, 0.1);
   backdrop-filter: blur(5px); /* Efeito de vidro fosco */
   position: relative;
   animation: fadeIn 1s ease-out;
 }
 
 /* --- Cantoneiras Decorativas --- */
-.container::before, .container::after {
-  content: '';
+.container::before,
+.container::after {
+  content: "";
   position: absolute;
   width: 25px;
   height: 25px;
@@ -73,14 +82,15 @@ body::after {
   z-index: 2;
 }
 .container::before {
-  top: -5px; left: -5px;
+  top: -5px;
+  left: -5px;
   border-width: 2px 0 0 2px;
 }
 .container::after {
-  bottom: -5px; right: -5px;
+  bottom: -5px;
+  right: -5px;
   border-width: 0 2px 2px 0;
 }
-
 
 /* --- Tipografia e Títulos --- */
 .title {
@@ -137,7 +147,8 @@ table {
   border-collapse: collapse;
 }
 
-th, td {
+th,
+td {
   padding: 12px 15px;
   text-align: center;
   border-bottom: 1px solid rgba(0, 255, 255, 0.2);
@@ -149,7 +160,9 @@ thead tr {
   font-weight: 600;
 }
 
-td:nth-child(2) { text-align: left; }
+td:nth-child(3) {
+  text-align: left;
+}
 
 tbody tr {
   transition: background-color 0.3s ease;
@@ -186,7 +199,7 @@ tbody tr:hover {
   padding: 10px 20px;
   font-size: 1rem;
   font-weight: bold;
-  font-family: 'Chakra Petch', sans-serif;
+  font-family: "Chakra Petch", sans-serif;
   color: #00ffff;
   background-color: transparent;
   border: 2px solid #00ffff;
@@ -214,19 +227,18 @@ tbody tr:hover {
 .inactive-participant td {
   color: rgba(224, 251, 252, 0.4);
   font-style: italic;
-  
 }
 
 /* --- Estilo para o rodapé da tabela (Total) --- */
 tfoot tr {
-    background-color: rgba(0, 255, 255, 0.1);
-    color: #ffffff;
-    font-weight: bold;
-    text-transform: uppercase;
-    text-align: center;
+  background-color: rgba(0, 255, 255, 0.1);
+  color: #ffffff;
+  font-weight: bold;
+  text-transform: uppercase;
+  text-align: center;
 }
 
-.txtcenter{
+.txtcenter {
   display: flex;
   justify-content: center;
 }
@@ -263,7 +275,7 @@ tfoot tr {
   padding: 10px 15px;
   font-size: 0.9rem;
   font-weight: bold;
-  font-family: 'Chakra Petch', sans-serif;
+  font-family: "Chakra Petch", sans-serif;
   color: #ff2d55; /* Rosa/Vermelho Neon */
   background-color: transparent;
   border: 2px solid #ff2d55;
@@ -279,117 +291,134 @@ tfoot tr {
   box-shadow: 0 0 15px #ff2d55;
 }
 
-
 /* ... (resto do CSS) */
 
 /* ResultsPage.css */
 /* ... (estilos existentes) ... */
 
+.tier-emblem {
+  width: 30px;
+  height: auto;
+  margin-right: 10px;
+  vertical-align: middle;
+}
+
+.emblem-cell {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  text-align: left;
+}
+
 @media (max-width: 768px) {
-    .container {
-        padding: 20px 15px;
-        top: 80px;
-    }
+  .container {
+    padding: 20px 15px;
+    top: 80px;
+  }
 
-    .title {
-        font-size: 2rem;
-    }
+  .title {
+    font-size: 2rem;
+  }
 
-    .tables-container {
-        flex-direction: column;
-        gap: 40px;
-    }
-    
-    .table-wrapper {
-        min-width: unset;
-        border-radius: 6px;
-        /* * A MUDANÇA PRINCIPAL ESTÁ AQUI:
+  .tables-container {
+    flex-direction: column;
+    gap: 40px;
+  }
+
+  .table-wrapper {
+    min-width: unset;
+    border-radius: 6px;
+    /* * A MUDANÇA PRINCIPAL ESTÁ AQUI:
          * Definimos uma altura máxima e ativamos a rolagem vertical.
          * Agora, se a lista de cards for muito longa, ela se tornará rolável.
         */
-        max-height: 65vh; /* Ocupa no máximo 65% da altura da tela */
-        overflow-y: auto; /* Adiciona a barra de rolagem vertical quando necessário */
-        padding-right: 5px; /* Espaço para a barra de rolagem não sobrepor o conteúdo */
-    }
+    max-height: 65vh; /* Ocupa no máximo 65% da altura da tela */
+    overflow-y: auto; /* Adiciona a barra de rolagem vertical quando necessário */
+    padding-right: 5px; /* Espaço para a barra de rolagem não sobrepor o conteúdo */
+  }
 
-    /* Estilização da barra de rolagem (opcional, mas recomendado para a estética) */
-    .table-wrapper::-webkit-scrollbar {
-        width: 8px;
-    }
-    .table-wrapper::-webkit-scrollbar-track {
-        background: rgba(10, 25, 47, 0.5);
-        border-radius: 4px;
-    }
-    .table-wrapper::-webkit-scrollbar-thumb {
-        background-color: #00ffff;
-        border-radius: 4px;
-    }
-    .table-wrapper::-webkit-scrollbar-thumb:hover {
-        background-color: #00b3b3;
-    }
+  /* Estilização da barra de rolagem (opcional, mas recomendado para a estética) */
+  .table-wrapper::-webkit-scrollbar {
+    width: 8px;
+  }
+  .table-wrapper::-webkit-scrollbar-track {
+    background: rgba(10, 25, 47, 0.5);
+    border-radius: 4px;
+  }
+  .table-wrapper::-webkit-scrollbar-thumb {
+    background-color: #00ffff;
+    border-radius: 4px;
+  }
+  .table-wrapper::-webkit-scrollbar-thumb:hover {
+    background-color: #00b3b3;
+  }
 
-    /* Adaptação da tabela para layout de cards (mantém o que já funcionava) */
-    table, thead, tbody, th, td, tr {
-        display: block;
-    }
-    
-    thead tr {
-        position: absolute;
-        top: -9999px;
-        left: -9999px;
-    }
-    
-    tr {
-        border: 1px solid rgba(0, 255, 255, 0.2);
-        border-radius: 6px;
-        margin-bottom: 14px;
-        padding: 7px;
-        background-color: rgba(10, 25, 47, 0.5);
-    }
-    
-    td {
-        border: none;
-        border-bottom: 1px solid rgba(0, 255, 255, 0.1);
-        position: relative;
-        padding: 12px 10px 12px 45%;
-        text-align: right;
-        display: flex;
-        justify-content: flex-end;
-        align-items: center;
-        min-height: 35px;
-    }
+  /* Adaptação da tabela para layout de cards (mantém o que já funcionava) */
+  table,
+  thead,
+  tbody,
+  th,
+  td,
+  tr {
+    display: block;
+  }
 
-    td:last-child {
-        border-bottom: none;
-    }
-    
-    td:before {
-        content: attr(data-label); /* Lembre-se de usar data-label no HTML/JSX */
-        position: absolute;
-        left: 10px;
-        width: 40%;
-        padding-right: 15px;
-        white-space: nowrap;
-        text-align: left;
-        font-weight: bold;
-        color: #00ffff;
-    }
+  thead tr {
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+  }
 
-    .leftlabel {
-      justify-content: flex-end;
-    }
+  tr {
+    border: 1px solid rgba(0, 255, 255, 0.2);
+    border-radius: 6px;
+    margin-bottom: 14px;
+    padding: 7px;
+    background-color: rgba(10, 25, 47, 0.5);
+  }
 
-    .lvTotal{
-      width: 95%;
-      display: block;
-    }
-    .lvAA{
-      display: flex;
-      width: 100%;
-      justify-content: center;
-      
-    }
-    .lvtt{
-      width: 50%;
-    }
+  td {
+    border: none;
+    border-bottom: 1px solid rgba(0, 255, 255, 0.1);
+    position: relative;
+    padding: 12px 10px 12px 45%;
+    text-align: right;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    min-height: 35px;
+  }
+
+  td:last-child {
+    border-bottom: none;
+  }
+
+  td:before {
+    content: attr(data-label); /* Lembre-se de usar data-label no HTML/JSX */
+    position: absolute;
+    left: 10px;
+    width: 40%;
+    padding-right: 15px;
+    white-space: nowrap;
+    text-align: left;
+    font-weight: bold;
+    color: #00ffff;
+  }
+
+  .leftlabel {
+    justify-content: flex-end;
+  }
+
+  .lvTotal {
+    width: 95%;
+    display: block;
+  }
+  .lvAA {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+  }
+  .lvtt {
+    width: 50%;
+  }
 }

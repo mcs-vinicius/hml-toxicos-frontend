@@ -115,3 +115,9 @@
 .ranking-container th {
     color: #00ffff;
 }
+
+.ranking-container td.winner {
+    color: #ffd700;
+    font-weight: bold;
+    text-shadow: 0 0 8px #ffd700;
+}

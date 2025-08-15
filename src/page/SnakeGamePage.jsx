@@ -1,16 +1,14 @@
-// src/page/SnakeGamePage.jsx (Versão com Movimento Fluido)
+// src/page/SnakeGamePage.jsx (Versão Final Corrigida)
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import axios from 'axios';
 import './SnakeGame.css';
 
-// Configurações do Jogo
 const GRID_SIZE = 20;
 const CANVAS_SIZE = 500;
 const TILE_COUNT = CANVAS_SIZE / GRID_SIZE;
 
-// Níveis de Dificuldade
 const DIFFICULTIES = {
-    'Fácil': { speed: 2.5, points: 10 },    // Velocidade em pixels por frame
+    'Fácil': { speed: 2.5, points: 10 },
     'Normal': { speed: 3.5, points: 20 },
     'Difícil': { speed: 5, points: 40 },
     'Hardcore': { speed: 7, points: 80 },
@@ -19,7 +17,6 @@ const DIFFICULTY_LEVELS = ['Fácil', 'Normal', 'Difícil', 'Hardcore'];
 const LEVEL_UP_TIME = 180; // 3 minutos
 
 const SnakeGamePage = ({ currentUser }) => {
-    // Posições agora são em pixels para movimento fluido
     const [snake, setSnake] = useState([{ x: 12 * GRID_SIZE, y: 12 * GRID_SIZE }]);
     const [food, setFood] = useState({ x: 18, y: 18 });
     const [direction, setDirection] = useState({ x: 0, y: -1 });
@@ -30,6 +27,7 @@ const SnakeGamePage = ({ currentUser }) => {
     const [difficultyLevel, setDifficultyLevel] = useState(0);
     const [pointsPerFood, setPointsPerFood] = useState(DIFFICULTIES.Fácil.points);
     const [speed, setSpeed] = useState(DIFFICULTIES.Fácil.speed);
+    const [isGameWon, setIsGameWon] = useState(false);
 
     const canvasRef = useRef(null);
     const gameLoopRef = useRef();
@@ -41,22 +39,24 @@ const SnakeGamePage = ({ currentUser }) => {
         } catch (error) { console.error("Erro ao buscar ranking:", error); }
     }, []);
 
-    const generateFood = useCallback(() => {
-        const foodX = Math.floor(Math.random() * TILE_COUNT);
-        const foodY = Math.floor(Math.random() * TILE_COUNT);
-        // Evita que a comida apareça na cobra
-        if (snake.some(seg => Math.floor(seg.x / GRID_SIZE) === foodX && Math.floor(seg.y / GRID_SIZE) === foodY)) {
-            generateFood();
-        } else {
-            setFood({ x: foodX, y: foodY });
-        }
-    }, [snake]);
+    const generateFood = useCallback((currentSnake) => {
+        let newFoodPosition;
+        do {
+            newFoodPosition = {
+                x: Math.floor(Math.random() * TILE_COUNT),
+                y: Math.floor(Math.random() * TILE_COUNT),
+            };
+        } while (currentSnake.some(seg => Math.floor(seg.x / GRID_SIZE) === newFoodPosition.x && Math.floor(seg.y / GRID_SIZE) === newFoodPosition.y));
+        setFood(newFoodPosition);
+    }, []);
     
     const resetGame = useCallback(() => {
-        setSnake([{ x: 12 * GRID_SIZE, y: 12 * GRID_SIZE }]);
-        generateFood();
+        const initialSnake = [{ x: 12 * GRID_SIZE, y: 12 * GRID_SIZE }];
+        setSnake(initialSnake);
+        generateFood(initialSnake);
         setDirection({ x: 0, y: -1 });
         setIsGameOver(false);
+        setIsGameWon(false);
         setScore(0);
         setGameTime(0);
         setDifficultyLevel(0);
@@ -85,7 +85,7 @@ const SnakeGamePage = ({ currentUser }) => {
         return () => window.removeEventListener('keydown', handleKeyDown);
     }, [handleKeyDown]);
     
-    // Game Timer e Lógica de Dificuldade (igual à versão anterior)
+    // Timer e Lógica de Dificuldade
     useEffect(() => {
         if (isGameOver) return;
         const timer = setInterval(() => {
@@ -98,7 +98,7 @@ const SnakeGamePage = ({ currentUser }) => {
                         if (nextLevel > prevLevel) {
                             const newDifficultyName = DIFFICULTY_LEVELS[nextLevel];
                             setSpeed(DIFFICULTIES[newDifficultyName].speed);
-                            if (newDifficultyName === 'Hardcore' && prevLevel >= DIFFICULTY_LEVELS.indexOf('Hardcore') -1) {
+                             if (newDifficultyName === 'Hardcore' && prevLevel >= DIFFICULTY_LEVELS.indexOf('Hardcore') -1) {
                                 setPointsPerFood(p => p * 2);
                             } else {
                                 setPointsPerFood(DIFFICULTIES[newDifficultyName].points);
@@ -113,7 +113,7 @@ const SnakeGamePage = ({ currentUser }) => {
         return () => clearInterval(timer);
     }, [isGameOver, difficultyLevel]);
 
-    // Game Loop com requestAnimationFrame para fluidez
+    // Game Loop com requestAnimationFrame
     useEffect(() => {
         const gameLoop = () => {
             if (isGameOver) {
@@ -121,70 +121,72 @@ const SnakeGamePage = ({ currentUser }) => {
                 return;
             }
 
-            setSnake(prevSnake => {
-                const newSnake = prevSnake.map(seg => ({ ...seg })); // Deep copy
-                const head = newSnake[0];
+            let newSnake = JSON.parse(JSON.stringify(snake));
+            let head = { ...newSnake[0] };
 
-                // Movimento baseado em pixels
-                let newHeadX = head.x + direction.x * speed;
-                let newHeadY = head.y + direction.y * speed;
+            head.x += direction.x * speed;
+            head.y += direction.y * speed;
 
-                // Colisão com as paredes
-                if (newHeadX < 0 || newHeadX >= CANVAS_SIZE - GRID_SIZE || newHeadY < 0 || newHeadY >= CANVAS_SIZE - GRID_SIZE) {
+            // Lógica de atravessar paredes (Wrapping)
+            if (head.x >= CANVAS_SIZE) head.x = 0;
+            if (head.x < 0) head.x = CANVAS_SIZE - GRID_SIZE;
+            if (head.y >= CANVAS_SIZE) head.y = 0;
+            if (head.y < 0) head.y = CANVAS_SIZE - GRID_SIZE;
+
+            // Colisão com o corpo
+            for (let i = 1; i < newSnake.length; i++) {
+                if (Math.hypot(head.x - newSnake[i].x, head.y - newSnake[i].y) < GRID_SIZE) {
                     setIsGameOver(true);
-                    return prevSnake;
+                    return;
                 }
-
-                // Colisão com o próprio corpo
-                for (let i = 1; i < newSnake.length; i++) {
-                    if (Math.abs(newHeadX - newSnake[i].x) < GRID_SIZE && Math.abs(newHeadY - newSnake[i].y) < GRID_SIZE) {
-                         setIsGameOver(true);
-                         return prevSnake;
-                    }
-                }
-
-                // Movimento do corpo da cobra
-                for (let i = newSnake.length - 1; i > 0; i--) {
-                    newSnake[i] = { ...newSnake[i-1] };
-                }
+            }
+            
+            // Lógica de comer a fruta
+            const foodPixelX = food.x * GRID_SIZE;
+            const foodPixelY = food.y * GRID_SIZE;
+            if (Math.hypot(head.x - foodPixelX, head.y - foodPixelY) < GRID_SIZE) {
+                setScore(s => s + pointsPerFood);
+                const tail = newSnake[newSnake.length - 1];
+                newSnake.push({ ...tail }); // Adiciona novo segmento
                 
-                // Atualiza a cabeça
-                newSnake[0] = { x: newHeadX, y: newHeadY };
-
-                // Lógica de comer a fruta
-                if (Math.abs(head.x - food.x * GRID_SIZE) < GRID_SIZE && Math.abs(head.y - food.y * GRID_SIZE) < GRID_SIZE) {
-                    setScore(s => s + pointsPerFood);
-                    // Adiciona um novo segmento na posição do último
-                    const tail = newSnake[newSnake.length -1];
-                    newSnake.push({...tail});
-                    generateFood();
+                // Condição de Vitória
+                if(newSnake.length === TILE_COUNT * TILE_COUNT){
+                    setIsGameWon(true);
+                    setIsGameOver(true);
+                } else {
+                    generateFood(newSnake);
                 }
+            }
 
-                return newSnake;
-            });
+            // Movimento do corpo da cobra
+            for (let i = newSnake.length - 1; i > 0; i--) {
+                newSnake[i] = { ...newSnake[i - 1] };
+            }
+
+            newSnake[0] = head; // Atualiza a cabeça
+            setSnake(newSnake);
 
             gameLoopRef.current = requestAnimationFrame(gameLoop);
         };
 
         gameLoopRef.current = requestAnimationFrame(gameLoop);
         return () => cancelAnimationFrame(gameLoopRef.current);
-    }, [direction, food, speed, isGameOver, pointsPerFood, generateFood]);
+    }, [direction, food, speed, isGameOver, snake, pointsPerFood, generateFood]);
     
     // Salvar Pontuação
     useEffect(() => {
         if (isGameOver && score > 0 && currentUser) {
             axios.post(`${import.meta.env.VITE_API_URL}/snake-scores`, {
-                username: currentUser.username,
                 score: score,
-                difficulty: DIFFICULTY_LEVELS[difficultyLevel]
+                difficulty: DIFFICULTY_LEVELS[difficultyLevel],
+                completed: isGameWon
             }).then(() => fetchHighScores());
         }
-    }, [isGameOver, score, currentUser, difficultyLevel, fetchHighScores]);
+    }, [isGameOver, score, currentUser, difficultyLevel, isGameWon, fetchHighScores]);
 
     // Desenho no Canvas
     useEffect(() => {
         const context = canvasRef.current.getContext('2d');
-        
         const gradient = context.createLinearGradient(0, 0, 0, CANVAS_SIZE);
         gradient.addColorStop(0, '#0a192f');
         gradient.addColorStop(1, '#1d0a2e');
@@ -200,9 +202,8 @@ const SnakeGamePage = ({ currentUser }) => {
         }
 
         snake.forEach((segment, index) => {
-            const isHead = index === 0;
-            context.fillStyle = isHead ? '#39ff14' : '#00ffff';
-            context.shadowColor = isHead ? '#39ff14' : '#00ffff';
+            context.fillStyle = index === 0 ? '#39ff14' : '#00ffff';
+            context.shadowColor = index === 0 ? '#39ff14' : '#00ffff';
             context.shadowBlur = 10;
             context.fillRect(segment.x, segment.y, GRID_SIZE - 2, GRID_SIZE - 2);
         });
@@ -226,12 +227,13 @@ const SnakeGamePage = ({ currentUser }) => {
                 <canvas ref={canvasRef} id="game-canvas" width={CANVAS_SIZE} height={CANVAS_SIZE}></canvas>
                 {isGameOver && (
                     <div className="game-over-overlay">
-                        <h2>Fim de Jogo!</h2>
+                        <h2>{isGameWon ? "VOCÊ VENCEU!" : "Fim de Jogo!"}</h2>
                         <p>Sua pontuação final: {score}</p>
                         <button onClick={resetGame}>Jogar Novamente</button>
                     </div>
                 )}
             </div>
+            
             <div className="ranking-container">
                 <h2>Melhores Pontuações</h2>
                 <table>
@@ -242,7 +244,7 @@ const SnakeGamePage = ({ currentUser }) => {
                         {highScores.map((entry, index) => (
                             <tr key={index}>
                                 <td>{index + 1}º</td>
-                                <td>{entry.username}</td>
+                                <td className={entry.completed_game ? 'winner' : ''}>{entry.username}</td>
                                 <td>{entry.score}</td>
                                 <td>{entry.difficulty}</td>
                             </tr>

@@ -1,4 +1,4 @@
-/* src/page/SnakeGame.css - Versão Futurista */
+/* src/page/SnakeGame.css - Versão 2D Fluida */
 
 .snake-game-container {
     max-width: 900px;
@@ -25,23 +25,15 @@
     display: flex;
     justify-content: center;
     margin-bottom: 20px;
-    /* Efeito de perspectiva para a "visão 3D" */
-    perspective: 800px;
+    position: relative; /* Necessário para o overlay de Game Over */
 }
 
 #game-canvas {
-    background-color: transparent; /* O fundo agora é desenhado no canvas */
+    background-color: transparent; /* O fundo é desenhado dinamicamente */
     border: 2px solid #ff00ff;
     box-shadow: 0 0 25px rgba(255, 0, 255, 0.5);
-    /* Rotação para simular a perspectiva */
-    transform: rotateX(50deg) rotateZ(0deg);
-    transition: transform 0.5s ease;
+    /* Removemos a perspectiva e a rotação */
 }
-
-#game-canvas:hover {
-    transform: rotateX(45deg) rotateZ(0deg) scale(1.05);
-}
-
 
 .game-info {
     display: flex;
@@ -69,20 +61,46 @@
 
 .game-over-overlay {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: rgba(0,0,0,0.8);
-    padding: 30px;
-    border-radius: 8px;
-    border: 1px solid #ff00ff;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.85);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     z-index: 10;
 }
 
 .game-over-overlay h2 {
     color: #ff2d55;
     text-shadow: 0 0 10px #ff2d55;
+    font-size: 3rem;
+    margin: 0;
 }
+.game-over-overlay p {
+    font-size: 1.5rem;
+    margin: 10px 0 20px;
+}
+
+.game-over-overlay button {
+    background: transparent;
+    border: 1px solid #00ffff;
+    color: #00ffff;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+}
+
+.game-over-overlay button:hover {
+     background-color: rgba(0, 255, 255, 0.1);
+    box-shadow: 0 0 10px #00ffff;
+}
+
 
 /* Ranking Table */
 .ranking-container table {

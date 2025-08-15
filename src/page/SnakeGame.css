@@ -1,4 +1,4 @@
-/* src/page/SnakeGame.css */
+/* src/page/SnakeGame.css - Versão Futurista */
 
 .snake-game-container {
     max-width: 900px;
@@ -7,63 +7,93 @@
     background-color: rgba(10, 25, 47, 0.85);
     border: 1px solid #00ffff;
     border-radius: 8px;
-    box-shadow: 0 0 30px rgba(0, 255, 255, 0.3);
-    backdrop-filter: blur(5px);
+    box-shadow: 0 0 30px rgba(0, 255, 255, 0.3), inset 0 0 20px rgba(0, 255, 255, 0.1);
+    backdrop-filter: blur(8px);
     font-family: 'Chakra Petch', sans-serif;
     color: #e0fbfc;
     text-align: center;
 }
 
 .snake-game-container h1 {
-    text-shadow: 0 0 10px #ff00ff;
+    text-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff;
     margin-bottom: 20px;
+    text-transform: uppercase;
+    letter-spacing: 4px;
 }
 
 .game-area {
     display: flex;
     justify-content: center;
     margin-bottom: 20px;
+    /* Efeito de perspectiva para a "visão 3D" */
+    perspective: 800px;
 }
 
 #game-canvas {
-    background-color: rgba(0, 0, 0, 0.4);
-    border: 2px solid #00ffff;
-    box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+    background-color: transparent; /* O fundo agora é desenhado no canvas */
+    border: 2px solid #ff00ff;
+    box-shadow: 0 0 25px rgba(255, 0, 255, 0.5);
+    /* Rotação para simular a perspectiva */
+    transform: rotateX(50deg) rotateZ(0deg);
+    transition: transform 0.5s ease;
 }
 
-.game-controls, .game-info {
+#game-canvas:hover {
+    transform: rotateX(45deg) rotateZ(0deg) scale(1.05);
+}
+
+
+.game-info {
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
     align-items: center;
-    margin-top: 20px;
-}
-
-.game-controls button, .difficulty-selector select {
-    background: transparent;
-    border: 1px solid #00ffff;
-    color: #00ffff;
-    padding: 10px 15px;
+    padding: 10px;
+    background: rgba(0,0,0,0.3);
     border-radius: 4px;
-    cursor: pointer;
-    font-family: inherit;
-    font-size: 1rem;
-    transition: all 0.3s ease;
+    margin-bottom: 20px;
+    font-size: 1.2rem;
 }
 
-.game-controls button:hover, .difficulty-selector select:hover {
-    background-color: rgba(0, 255, 255, 0.1);
-    box-shadow: 0 0 10px #00ffff;
+.game-info span {
+    color: #fff;
+    font-weight: bold;
+    text-shadow: 0 0 5px #fff;
 }
 
-.mobile-controls {
-    display: none; /* Ativado em media queries */
+.difficulty-display {
+    color: #ffd700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-shadow: 0 0 8px #ffd700;
+}
+
+.game-over-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0,0,0,0.8);
+    padding: 30px;
+    border-radius: 8px;
+    border: 1px solid #ff00ff;
+    z-index: 10;
+}
+
+.game-over-overlay h2 {
+    color: #ff2d55;
+    text-shadow: 0 0 10px #ff2d55;
+}
+
+/* Ranking Table */
+.ranking-container table {
+    width: 100%;
     margin-top: 20px;
+    border-collapse: collapse;
 }
-
-@media (max-width: 768px) {
-    .mobile-controls {
-        display: flex;
-        justify-content: center;
-        gap: 10px;
-    }
+.ranking-container th, .ranking-container td {
+    padding: 8px;
+    border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+}
+.ranking-container th {
+    color: #00ffff;
 }

@@ -16,7 +16,8 @@ import UserManagementPage from "./page/UserManagementPage.jsx";
 import ProfilePage from "./page/ProfilePage.jsx";
 import HonorPage from "./page/HonorPage.jsx";
 import HonorRegisterPage from "./components/honor/HonorRegisterPage.jsx";
-import AdminToolsPage from "./page/AdminToolsPage.jsx"; // <<< NOVO
+import AdminToolsPage from "./page/AdminToolsPage.jsx";
+import SnakeGamePage from "./page/SnakeGamePage.jsx"; // <<< Jogo Importado
 
 import "./App.css";
 
@@ -87,6 +88,8 @@ const App = () => {
           <NavLink to="/" className="btt-menu">Home</NavLink>
           <NavLink to="/results" className="btt-menu">Ranking</NavLink>
           <NavLink to="/honor" className="btt-menu">Honra</NavLink>
+          {/* <<< NOVO LINK PARA O JOGO >>> */}
+          <NavLink to="/snake-game" className="btt-menu">Jogo</NavLink>
           {auth.isLoggedIn && (
             <NavLink to={`/profile/${auth.user.habby_id}`} className="btt-menu">Meu Perfil</NavLink>
           )}
@@ -97,7 +100,6 @@ const App = () => {
               <NavLink to="/user-management" className="btt-menu">Gerenciar Usuários</NavLink>
             </>
           )}
-          {/* LINK PARA ADMINS */}
           {auth.isLoggedIn && auth.user.role === 'admin' && (
             <NavLink to="/admin-tools" className="btt-menu">Admin Tools</NavLink>
           )}
@@ -131,6 +133,8 @@ const App = () => {
           <NavLink to="/" className="btt-menu-mobile">Home</NavLink>
           <NavLink to="/results" className="btt-menu-mobile">Ranking</NavLink>
           <NavLink to="/honor" className="btt-menu-mobile">Honra</NavLink>
+          {/* <<< NOVO LINK PARA O JOGO (MOBILE) >>> */}
+          <NavLink to="/snake-game" className="btt-menu-mobile">Jogo</NavLink>
           {auth.isLoggedIn && (
             <NavLink to={`/profile/${auth.user.habby_id}`} className="btt-menu-mobile">Meu Perfil</NavLink>
           )}
@@ -141,7 +145,6 @@ const App = () => {
               <NavLink to="/user-management" className="btt-menu-mobile">Gerenciar Usuários</NavLink>
             </>
           )}
-          {/* LINK PARA ADMINS (MÓVIL) */}
           {auth.isLoggedIn && auth.user.role === 'admin' && (
             <NavLink to="/admin-tools" className="btt-menu-mobile">Admin Tools</NavLink>
           )}
@@ -176,9 +179,15 @@ const App = () => {
                 <ProtectedRoute roles={['admin', 'leader', 'member']}><ProfilePage currentUser={auth.user}/></ProtectedRoute>
             } />
             
-            {/* ROTA PROTEGIDA PARA ADMINS */}
             <Route path="/admin-tools" element={
                 <ProtectedRoute roles={['admin']}><AdminToolsPage /></ProtectedRoute>
+            } />
+
+            {/* <<< NOVA ROTA PROTEGIDA PARA O JOGO >>> */}
+            <Route path="/snake-game" element={
+                <ProtectedRoute roles={['admin', 'leader', 'member']}>
+                    <SnakeGamePage currentUser={auth.user} />
+                </ProtectedRoute>
             } />
 
             <Route path="*" element={<Navigate to="/" replace />} />

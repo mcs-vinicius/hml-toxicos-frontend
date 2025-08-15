@@ -1,0 +1,69 @@
+/* src/page/SnakeGame.css */
+
+.snake-game-container {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 30px;
+    background-color: rgba(10, 25, 47, 0.85);
+    border: 1px solid #00ffff;
+    border-radius: 8px;
+    box-shadow: 0 0 30px rgba(0, 255, 255, 0.3);
+    backdrop-filter: blur(5px);
+    font-family: 'Chakra Petch', sans-serif;
+    color: #e0fbfc;
+    text-align: center;
+}
+
+.snake-game-container h1 {
+    text-shadow: 0 0 10px #ff00ff;
+    margin-bottom: 20px;
+}
+
+.game-area {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+#game-canvas {
+    background-color: rgba(0, 0, 0, 0.4);
+    border: 2px solid #00ffff;
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+}
+
+.game-controls, .game-info {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.game-controls button, .difficulty-selector select {
+    background: transparent;
+    border: 1px solid #00ffff;
+    color: #00ffff;
+    padding: 10px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.game-controls button:hover, .difficulty-selector select:hover {
+    background-color: rgba(0, 255, 255, 0.1);
+    box-shadow: 0 0 10px #00ffff;
+}
+
+.mobile-controls {
+    display: none; /* Ativado em media queries */
+    margin-top: 20px;
+}
+
+@media (max-width: 768px) {
+    .mobile-controls {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+    }
+}

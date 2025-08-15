@@ -1,4 +1,4 @@
-// src/page/SnakeGamePage.jsx (Versão Corrigida e com Novas Regras)
+// src/page/SnakeGamePage.jsx (Versão Final e Corrigida)
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import axios from 'axios';
 import './SnakeGame.css';
@@ -33,7 +33,7 @@ const SnakeGamePage = ({ currentUser }) => {
 
     const canvasRef = useRef(null);
     const gameLoopRef = useRef();
-    const directionRef = useRef(direction); // Ref para a direção para evitar stale state
+    const directionRef = useRef(direction);
 
     useEffect(() => {
         directionRef.current = direction;
@@ -121,68 +121,65 @@ const SnakeGamePage = ({ currentUser }) => {
         return () => clearInterval(timer);
     }, [isGameOver, difficultyLevel]);
 
-    // Game Loop com requestAnimationFrame
+    // Game Loop principal com requestAnimationFrame
     useEffect(() => {
         const gameLoop = () => {
             if (isGameOver) {
                 cancelAnimationFrame(gameLoopRef.current);
                 return;
             }
-    
+
             setSnake(prevSnake => {
                 const newSnake = JSON.parse(JSON.stringify(prevSnake));
                 const head = { ...newSnake[0] };
-    
+
                 head.x += direction.x * speed;
                 head.y += direction.y * speed;
-    
+                
                 // Lógica de atravessar paredes
                 if (head.x >= CANVAS_SIZE) head.x = 0;
                 if (head.x < 0) head.x = CANVAS_SIZE - GRID_SIZE;
                 if (head.y >= CANVAS_SIZE) head.y = 0;
                 if (head.y < 0) head.y = CANVAS_SIZE - GRID_SIZE;
-    
-                // Colisão com o corpo
-                for (let i = 1; i < newSnake.length; i++) {
-                    if (Math.hypot(head.x - newSnake[i].x, head.y - newSnake[i].y) < GRID_SIZE / 1.5) { // Tolerância ajustada
-                        setIsGameOver(true);
-                        return prevSnake; // Retorna o estado anterior para evitar atualização final
-                    }
-                }
-    
+                
+                // *** CORREÇÃO PRINCIPAL AQUI ***
+                // O corpo se move ANTES de qualquer verificação de colisão
+                const body = newSnake.slice(1);
+                body.unshift(head); // Adiciona a nova cabeça
+                
+                // Lógica de comer a fruta
                 const foodPixelX = food.x * GRID_SIZE;
                 const foodPixelY = food.y * GRID_SIZE;
-    
-                // Lógica de comer a fruta (CORRIGIDA)
                 if (Math.hypot(head.x - foodPixelX, head.y - foodPixelY) < GRID_SIZE) {
                     setScore(s => s + pointsPerFood);
-                    const tail = newSnake[newSnake.length - 1];
-                    newSnake.push({ ...tail });
-    
-                    if (newSnake.length === TILE_COUNT * TILE_COUNT) {
+                    // O crescimento acontece naturalmente, não removendo a cauda
+                    if (body.length === TILE_COUNT * TILE_COUNT) {
                         setIsGameWon(true);
                         setIsGameOver(true);
                     } else {
-                        generateFood(newSnake);
+                        generateFood(body);
+                    }
+                } else {
+                    body.pop(); // Remove a cauda se não comeu
+                }
+                
+                // Colisão com o corpo
+                for (let i = 1; i < body.length; i++) {
+                    if (Math.hypot(head.x - body[i].x, head.y - body[i].y) < GRID_SIZE / 2) {
+                        setIsGameOver(true);
+                        return prevSnake; // Retorna o estado antigo para não renderizar o estado de colisão
                     }
                 }
                 
-                // Atualiza o corpo ANTES de atualizar a cabeça
-                for (let i = newSnake.length - 1; i > 0; i--) {
-                    newSnake[i] = { ...newSnake[i - 1] };
-                }
-                
-                newSnake[0] = head;
-                return newSnake;
+                return body;
             });
-    
+
             gameLoopRef.current = requestAnimationFrame(gameLoop);
         };
-    
+
         gameLoopRef.current = requestAnimationFrame(gameLoop);
         return () => cancelAnimationFrame(gameLoopRef.current);
     }, [isGameOver, direction, food, speed, pointsPerFood, generateFood]);
-    
     
     // Salvar Pontuação
     useEffect(() => {
@@ -190,7 +187,8 @@ const SnakeGamePage = ({ currentUser }) => {
             axios.post(`${import.meta.env.VITE_API_URL}/snake-scores`, {
                 score: score,
                 difficulty: DIFFICULTY_LEVELS[difficultyLevel],
-                completed: isGameWon
+                completed: isGameWon,
+                username: currentUser.username // Enviando username para validação no backend
             }).then(() => fetchHighScores());
         }
     }, [isGameOver, score, currentUser, difficultyLevel, isGameWon, fetchHighScores]);
@@ -198,7 +196,6 @@ const SnakeGamePage = ({ currentUser }) => {
     // Desenho no Canvas
     useEffect(() => {
         const context = canvasRef.current.getContext('2d');
-        
         const gradient = context.createLinearGradient(0, 0, 0, CANVAS_SIZE);
         gradient.addColorStop(0, '#0a192f');
         gradient.addColorStop(1, '#1d0a2e');
@@ -217,8 +214,7 @@ const SnakeGamePage = ({ currentUser }) => {
             context.fillStyle = index === 0 ? '#39ff14' : '#00ffff';
             context.shadowColor = index === 0 ? '#39ff14' : '#00ffff';
             context.shadowBlur = 10;
-            // Usamos -1 e +2 para um pequeno overlap, criando um efeito de corpo contínuo
-            context.fillRect(segment.x - 1, segment.y - 1, GRID_SIZE, GRID_SIZE);
+            context.fillRect(segment.x, segment.y, GRID_SIZE - 2, GRID_SIZE - 2);
         });
 
         context.fillStyle = '#ff00ff';

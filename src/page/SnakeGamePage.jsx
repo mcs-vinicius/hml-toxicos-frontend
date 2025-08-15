@@ -1,4 +1,4 @@
-// src/page/SnakeGamePage.jsx (Versão Final e Corrigida)
+// src/page/SnakeGamePage.jsx (Versão Definitiva e Corrigida)
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import axios from 'axios';
 import './SnakeGame.css';
@@ -121,65 +121,67 @@ const SnakeGamePage = ({ currentUser }) => {
         return () => clearInterval(timer);
     }, [isGameOver, difficultyLevel]);
 
-    // Game Loop principal com requestAnimationFrame
+    // Game Loop com requestAnimationFrame
     useEffect(() => {
         const gameLoop = () => {
             if (isGameOver) {
                 cancelAnimationFrame(gameLoopRef.current);
                 return;
             }
-
+    
             setSnake(prevSnake => {
                 const newSnake = JSON.parse(JSON.stringify(prevSnake));
                 const head = { ...newSnake[0] };
-
+    
+                // 1. Calcular a nova posição da cabeça
                 head.x += direction.x * speed;
                 head.y += direction.y * speed;
-                
-                // Lógica de atravessar paredes
+    
+                // 2. Lógica de atravessar paredes
                 if (head.x >= CANVAS_SIZE) head.x = 0;
                 if (head.x < 0) head.x = CANVAS_SIZE - GRID_SIZE;
                 if (head.y >= CANVAS_SIZE) head.y = 0;
                 if (head.y < 0) head.y = CANVAS_SIZE - GRID_SIZE;
-                
-                // *** CORREÇÃO PRINCIPAL AQUI ***
-                // O corpo se move ANTES de qualquer verificação de colisão
-                const body = newSnake.slice(1);
-                body.unshift(head); // Adiciona a nova cabeça
-                
-                // Lógica de comer a fruta
+    
+                // 3. Adicionar a nova cabeça ao início da cobra
+                newSnake.unshift(head);
+    
+                // 4. Lógica de comer a fruta
                 const foodPixelX = food.x * GRID_SIZE;
                 const foodPixelY = food.y * GRID_SIZE;
                 if (Math.hypot(head.x - foodPixelX, head.y - foodPixelY) < GRID_SIZE) {
                     setScore(s => s + pointsPerFood);
-                    // O crescimento acontece naturalmente, não removendo a cauda
-                    if (body.length === TILE_COUNT * TILE_COUNT) {
+                    // Não remove a cauda, fazendo a cobra crescer
+    
+                    if (newSnake.length === TILE_COUNT * TILE_COUNT) {
                         setIsGameWon(true);
                         setIsGameOver(true);
                     } else {
-                        generateFood(body);
+                        generateFood(newSnake);
                     }
                 } else {
-                    body.pop(); // Remove a cauda se não comeu
+                    // Se não comeu, remove o último segmento da cauda
+                    newSnake.pop();
                 }
-                
-                // Colisão com o corpo
-                for (let i = 1; i < body.length; i++) {
-                    if (Math.hypot(head.x - body[i].x, head.y - body[i].y) < GRID_SIZE / 2) {
+    
+                // 5. Verificar colisão da cabeça com o resto do corpo
+                for (let i = 1; i < newSnake.length; i++) {
+                    if (Math.hypot(head.x - newSnake[i].x, head.y - newSnake[i].y) < GRID_SIZE / 2) {
                         setIsGameOver(true);
-                        return prevSnake; // Retorna o estado antigo para não renderizar o estado de colisão
+                        return prevSnake;
                     }
                 }
                 
-                return body;
+                return newSnake;
             });
-
+    
             gameLoopRef.current = requestAnimationFrame(gameLoop);
         };
-
+    
         gameLoopRef.current = requestAnimationFrame(gameLoop);
         return () => cancelAnimationFrame(gameLoopRef.current);
     }, [isGameOver, direction, food, speed, pointsPerFood, generateFood]);
+    
     
     // Salvar Pontuação
     useEffect(() => {
@@ -188,7 +190,7 @@ const SnakeGamePage = ({ currentUser }) => {
                 score: score,
                 difficulty: DIFFICULTY_LEVELS[difficultyLevel],
                 completed: isGameWon,
-                username: currentUser.username // Enviando username para validação no backend
+                username: currentUser.username
             }).then(() => fetchHighScores());
         }
     }, [isGameOver, score, currentUser, difficultyLevel, isGameWon, fetchHighScores]);

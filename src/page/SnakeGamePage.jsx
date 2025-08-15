@@ -1,4 +1,4 @@
-// src/page/SnakeGamePage.jsx (Versão Definitiva e Corrigida)
+// src/page/SnakeGamePage.jsx (Versão Final e Corrigida)
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import axios from 'axios';
 import './SnakeGame.css';
@@ -121,7 +121,7 @@ const SnakeGamePage = ({ currentUser }) => {
         return () => clearInterval(timer);
     }, [isGameOver, difficultyLevel]);
 
-    // Game Loop com requestAnimationFrame
+    // Game Loop com requestAnimationFrame (LÓGICA CORRIGIDA)
     useEffect(() => {
         const gameLoop = () => {
             if (isGameOver) {
@@ -129,7 +129,9 @@ const SnakeGamePage = ({ currentUser }) => {
                 return;
             }
     
+            // Usamos uma função de callback para garantir que temos o estado mais recente da cobra
             setSnake(prevSnake => {
+                // Copia profunda para evitar mutação
                 const newSnake = JSON.parse(JSON.stringify(prevSnake));
                 const head = { ...newSnake[0] };
     
@@ -139,37 +141,38 @@ const SnakeGamePage = ({ currentUser }) => {
     
                 // 2. Lógica de atravessar paredes
                 if (head.x >= CANVAS_SIZE) head.x = 0;
-                if (head.x < 0) head.x = CANVAS_SIZE - GRID_SIZE;
+                if (head.x < 0) head.x = CANVAS_SIZE;
                 if (head.y >= CANVAS_SIZE) head.y = 0;
-                if (head.y < 0) head.y = CANVAS_SIZE - GRID_SIZE;
+                if (head.y < 0) head.y = CANVAS_SIZE;
     
-                // 3. Adicionar a nova cabeça ao início da cobra
-                newSnake.unshift(head);
+                // 3. Verificar colisão com o corpo
+                for (let i = 1; i < newSnake.length; i++) {
+                    if (Math.hypot(head.x - newSnake[i].x, head.y - newSnake[i].y) < GRID_SIZE / 1.5) {
+                        setIsGameOver(true);
+                        return prevSnake; // Retorna o estado anterior, encerrando o loop para este jogador
+                    }
+                }
     
                 // 4. Lógica de comer a fruta
                 const foodPixelX = food.x * GRID_SIZE;
                 const foodPixelY = food.y * GRID_SIZE;
+                let ateComida = false;
                 if (Math.hypot(head.x - foodPixelX, head.y - foodPixelY) < GRID_SIZE) {
+                    ateComida = true;
                     setScore(s => s + pointsPerFood);
-                    // Não remove a cauda, fazendo a cobra crescer
-    
-                    if (newSnake.length === TILE_COUNT * TILE_COUNT) {
+                    
+                    if ((newSnake.length + 1) === (TILE_COUNT * TILE_COUNT)) {
                         setIsGameWon(true);
                         setIsGameOver(true);
                     } else {
                         generateFood(newSnake);
                     }
-                } else {
-                    // Se não comeu, remove o último segmento da cauda
-                    newSnake.pop();
                 }
     
-                // 5. Verificar colisão da cabeça com o resto do corpo
-                for (let i = 1; i < newSnake.length; i++) {
-                    if (Math.hypot(head.x - newSnake[i].x, head.y - newSnake[i].y) < GRID_SIZE / 2) {
-                        setIsGameOver(true);
-                        return prevSnake;
-                    }
+                // 5. Atualizar o corpo da cobra
+                newSnake.unshift(head); // Adiciona a nova cabeça
+                if (!ateComida) {
+                    newSnake.pop(); // Remove a cauda se não comeu
                 }
                 
                 return newSnake;
@@ -181,7 +184,6 @@ const SnakeGamePage = ({ currentUser }) => {
         gameLoopRef.current = requestAnimationFrame(gameLoop);
         return () => cancelAnimationFrame(gameLoopRef.current);
     }, [isGameOver, direction, food, speed, pointsPerFood, generateFood]);
-    
     
     // Salvar Pontuação
     useEffect(() => {
